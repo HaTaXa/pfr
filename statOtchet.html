@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <meta http-equiv="Expires" content="0"> --> <!-- 'страница всегда будет загружаться с сервера -->
+	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
+	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
+	<title>Статистика и отчет</title>
+	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<meta name="author" content="HaTaXa">
+	<meta name="copyright" content="HaTaXa">
+	<meta name="robots" content="index,follow"/> <!-- 'для поисковиков -->
+	<meta name ="revisit-after" content="15 days"> <!-- 'посещение программой роботом сайта и индексирование его содержания -->
+	<meta name="keywords" content="Мониторинг,Учет,заявка,ФГИС,ФРИ,АСТП,HaTaXa,CHB,НаТаХа,СНВ,Солянина,НаталИя,Владиславовна">
+	<!-- (!) подключение стилей -->
+	<link rel="stylesheet" href="css/topic.css"> <!-- 'вместо hm_topic.css -->
+	<link rel="stylesheet" href="css/loading.css"> <!-- 'загрузчик -->
+	<link rel="stylesheet" href="css/linkstyles.css"> <!-- 'стилизация ссылок -->
+	<link rel="stylesheet" href="css/animation.css">
+	<!-- <link type="text/css" href="css/footer.css" rel="stylesheet"> --> <!-- 'вместо hm_footer.css -->
+	<!-- (!) подключение скриптов + см.внизу -->
+	<script src="js/settings.js"></script>
+	<script type="text/javascript">forceReDirect();</script>
+	<script src="js/scripts.js"></script>
+
+	<!-- [if IE 9]>
+		<link id="iesvgcss" rel="stylesheet" type="text/css" href="svg.css" />
+	<![endif] -->
+</head>
+<body>
+	<!-- (!) loader - загрузчик -->
+	<script type="text/javascript">writeLoaderPreLoader();</script>
+	<noscript><div class="loader"><div class="loader-img"></div></div></noscript>
+	<!-- (!) idTabSliderTrack -->
+	<ul id="idTabSliderTrack" class="tab-slider-track">
+		<li id="idIndexTab" class="tabs tab-current">
+			<a href="#" id="idIndexTabLink">
+				<span>Статистика и отчет</span>
+			</a>
+		</li>
+	</ul>
+	<div id="idTopicBox" class="topic-box">
+		<!-- (!) idTopicHeader -->
+		<div id="idTopicHeader" class="topic-header">
+			<div id="idNavLinks" class="nav-links">
+				<div id="idPageToc" class="toc-page">
+					<img id="idPageIconToc" class="btn-icon" src="icon/toc-menu_off.png" title="На этой странице содержание отсутствует">
+					<span class="btn-text">Содержание</span>
+					<div id="idPageMenuToc" class="toc-menu" style="display: none;" title="Если меню содержание мешает, нажмите клавишу «Esc»"></div>
+				</div>
+				<p>
+					<span class="sync-toc">&lt;&lt;&nbsp;
+						<a class="sync-toc-link" rel="nofollow" href="index.html?rabotaVbd.html" target="_top">Просмотреть оглавление</a>&nbsp;&gt;&gt;
+					</span>
+					<span class="sync-toc-off">Навигация:&nbsp;</span>
+					<noscript>
+						<span class="sync-toc-off"><a href="about.html" target="hmcontent">Мониторинг заявок ФГИС «ФРИ» в АСТП</a>&nbsp;&#47;&ensp;</span>
+						<span class="sync-toc-off"><a href="intro.html" target="hmcontent">Проект «Учет заявок ФГИС "ФРИ" на АСТП»</a>:</span>
+					</noscript>
+				</p>
+			</div>
+			<div class="topic-title reflect">
+				<p>Статистика и отчет</p>
+			</div>
+		</div> <!-- idTopicHeader the end -->
+		<!-- (!) idMsgBox - всплывающее окно сообщения - работает через глобальную переменную в variables.js -->
+		<div id="idMsgBox" class="msg-box" style="display: none;">
+			<div id="idMsgContent" class="msg-content" style="display: none;">
+				<div id="idMsgImg" class="msg-icon msg-info"></div>
+				<div id="idMsgText" class="msg-text"></div>
+			</div>
+			<div id="idMsgBtn" class="msg-btn" title="Скрыть/Показать информационное сообщение"></div>
+		</div> <!-- idMsgBox the end -->
+		<!-- (!) idLinksComment-Комментарии
+			*см.функцию в файле comments.js -->
+		<!-- // <script type="text/javascript">writeCommentLink("1")</script> -->
+		<div id="idLinksComment" class="links-comment" style="display: none;">
+			<p id="idCommentLink1" class="comment-para comment-link1">
+				<a id="idCommentToggle1" class="comment-link" href="#" title="Просмотр и добавление комментариев">Комментарии (<span class="comments">0</span>)</a>
+			</p>
+		</div> <!-- idLinksComment the end -->
+		<!-- (!) idTopicBody -->
+		<div id="idTopicBody" class="topic-body">
+			<div id="idUnclicker"></div> <!-- (?) -->
+			<!-- (!) idContentText -->
+			<div id="idContentText" class="content-text">
+				<h1 id="bkmk1" class="heading1">
+					Статистика и отчет
+				</h1>
+				<p>
+					Вывод статистической отчетности формируется на основе критериев по полям в поисковом запросе.
+				</p>
+				<ul class="list-style-fri-expand unic-arrow1">
+					Формирование статистики осуществляется в разных формах вывода:
+					<li>
+						1. В виде графика;
+					</li>
+					<li>
+						2. В виде диаграмм.
+					</li>
+				</ul>
+				<ul class="list-style-fri-expand unic-arrow2">
+					Отчет формируется в двух вариантах:
+					<li>
+						1) Книжный;
+					</li>
+					<li>
+						2) Альбомный.
+					</li>
+				</ul>
+				<p>
+					В зависимости от выбранной ориентации сформированный отчет можно так же вывести на просмотр, сохранение и печать в режиме PDF.
+				</p>
+				<ul id="bkmk2" class="toggle-list list-offset">
+					<img class="toggle-icon" src="icon/tgl-fri.png" title="Нажмите, чтобы равернуть\свернуть">
+					Иллюстрация:
+					<li class="toggle-list list-style-expand">
+						– демонстрация данных о <a class="toggle-dropdown" href="#" num="1" title="Нажмите, чтобы равернуть\свернуть">статистике</a>;
+					</li>
+					<li>
+						<img class="toggle-icon" src="icon/tgl-expand1.gif" title="Нажмите, чтобы равернуть\свернуть">
+						– демонстрация вывода данных под <a class="toggle-dropdown" href="#" num="2" title="Нажмите, чтобы равернуть\свернуть">отчет</a>;
+					</li>
+					<li class="unic-arrow1">
+						– демонстрация вывода данных на просмотр, сохранение и печать в режиме <a class="toggle-dropdown" href="#" num="3" title="Нажмите, чтобы равернуть\свернуть">PDF</a>.
+					</li>
+				</ul>
+				<div class="toggle-content toggle-collapse">
+					<div class="lightbox toggle-collapse" num="1">
+						<div class="btn-box lightbox-btn-close" title="Закрыть окно просмотра изображений">&times;</div>
+						<div class="lightbox-img">
+							<div class="btn-box img-btn-prev"><a href="#">&#10094;</a></div>
+							<div class="zoomer"><img class="zoom-in" src="icon/zoom.png"></div>
+							<div class="img-viewer"></div>
+							<div class="btn-box img-btn-next"><a href="#">&#10095;</a></div>
+							<div class="btn-top"><a href="#bkmk2"></a></div>
+						</div>
+						<div class="img-title"></div>
+						<div class="img-slider">
+							<div class="btn-slider slider-btn-prev"><a href="#">&#10094;</a></div>
+							<div class="slider-track">
+								<div class="slider-item slider-current"><img src="img/screen-15.png" alt="Диаграмма № 1 - на основе выборки в поисковом запросе" cap="<p>Диаграмма № 1<br>(на основе выборки в поисковом запросе)</p>"></div>
+								<div class="slider-item"><img src="img/screen-16.png" alt="График № 1 - на основе выборки в поисковом запросе" cap="<p>График № 1<br>(на основе выборки в поисковом запросе)</p>"></div>
+								<div class="slider-item"><img src="img/screen-17.png" alt="Диаграмма № 2 - на основе выборки в поисковом запросе" cap="<p>Диаграмма № 2<br>(на основе выборки в поисковом запросе)"></div>
+								<div class="slider-item"><img src="img/screen-18.png" alt="График № 2 - на основе выборки в поисковом запросе" cap="<p>График № 2<br>(на основе выборки в поисковом запросе)</p>"></div>
+								<div class="slider-item"><img src="img/screen-19.png" alt="Диаграмма № 3 - на основе выборки в поисковом запросе" cap="<p>Диаграмма № 3<br>(на основе выборки в поисковом запросе)"></div>
+							</div>
+							<div class="btn-slider slider-btn-next"><a href="#">&#10095;</a></div>
+						</div>
+					</div>
+					<div class="lightbox toggle-collapse" num="2">
+						<div class="btn-box lightbox-btn-close" title="Закрыть окно просмотра изображений">&times;</div>
+						<div class="lightbox-img">
+							<div class="btn-box img-btn-prev"><a href="#">&#10094;</a></div>
+							<div class="zoomer"><img class="zoom-in" src="icon/zoom.png"></div>
+							<div class="img-viewer"></div>
+							<div class="btn-box img-btn-next"><a href="#">&#10095;</a></div>
+							<div class="btn-top"><a href="#bkmk2"></a></div>
+						</div>
+						<div class="img-title"></div>
+						<div class="img-slider">
+							<div class="btn-slider slider-btn-prev"><a href="#">&#10094;</a></div>
+							<div class="slider-track">
+								<div class="slider-item slider-current"><img src="img/screen-20.png" alt="Отчет в книжном варианте" cap="<p>Отчет в книжном варианте<br>(на основе выборки в поисковом запросе)</p>"></div>
+								<div class="slider-item"><img src="img/screen-21.png" alt="Отчет в альбомном варианте" cap="<p>Отчет в альбомном варианте<br>(на основе выборки в поисковом запросе)</p>"></div>
+							</div>
+							<div class="btn-slider slider-btn-next"><a href="#">&#10095;</a></div>
+						</div>
+					</div>
+					<div class="lightbox toggle-collapse" num="3">
+						<div class="btn-box lightbox-btn-close" title="Закрыть окно просмотра изображений">&times;</div>
+						<div class="lightbox-img">
+							<div class="zoomer"><img class="zoom-in" src="icon/zoom.png"></div>
+							<div class="img-viewer">
+								<img class="img-item" src="img/screen-22.png" alt="Отчет в формате PDF">
+							</div>
+							<div class="btn-top"><a href="#bkmk2"></a></div>
+						</div>
+						<div class="img-title"><p>Отчет в формате PDF</p></div>
+					</div>
+				</div>
+				<!-- (!) idContentFooter -->
+				<div id="idContentFooter" class="content-footer">
+					<p>
+						Межрегиональный Информационный Центр<br>
+						Отдела Внешнего Информационного Взаимодействия<br>
+						Пенсионного Фонда России
+						<br><br>
+						<b>Официальный сайт</b>:&nbsp;<a href="https://sfri.ru/" target="_blank"><i>ФГИС ФРИ</i></a>
+						<br><br>
+						&copy;&nbsp;2017 МИЦ ОВИВ ПФР
+					</p>
+				</div> <!-- idContentFooter the end -->
+			</div> <!-- idContentText the end -->
+		</div> <!-- idTopicBody the end -->
+		<!-- (!) idTopicFooter -->
+		<div id="idTopicFooter" class="topic-footer">
+			<div id="idTopicFooterLeft" class="topic-footer-left">
+				<p>
+					Межрегиональный Информационный Центр<br>
+					Отдела Внешнего Информационного Взаимодействия<br>
+					Пенсионного Фонда России<br>
+					127994, г. Москва, ул. Сущёвский Вал, д. 1
+				</p>
+			</div>
+			<div id="idTopicFooterCenter" class="topic-footer-center">
+				<a href="https://sfri.ru" target="_blank">www.sfri.ru</a>
+			</div>
+			<div id="idTopicFooterRight" class="topic-footer-right">
+				<p>
+					Не коммерческая тайна<br>
+					Для служебного пользования
+				</p>
+			</div>
+		</div> <!-- idTopicFooter the end -->
+	</div> <!-- idTopicBox the end -->
+	<!-- (!)*loader - вариант запуска сценария, если html код уже прописан -->
+	<!-- <script type="text/javascript">loaderPreLoader();</script> -->
+	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
+	<!-- локальное подключение библиотеки jquery: несжатый -->
+	<script src="js/jquery-3.6.0.js"></script>
+	<!-- локальное подключение библиотеки jquery: минимизированный -->
+	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<!-- ************************************************************ -->
+	<!-- ссылка на jquery CDN: несжатый -->
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->
+	<!-- ссылка на jquery CDN: минимизированный -->
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
+	<!-- ************************************************************ -->
+	<script src="js/topic.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+/* (i) Было прописано внутри тега хед файла hmftsearch.htm */
+
+body, html {
+	overflow: hidden;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	text-indent: 1.5em;
+}
+a {color: blue;}
+a:visited {color: blue;}
+a:hover {color: blue;}
+
+.submit {font-size: 10pt;}
+
+.zoom_button,
+.zoom_searchbox,
+.zoom_searchform {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+}
+
+.zoom_searchform {
+	flex-flow: row wrap;
+	font-size: 100%;
+}
+
+.zoom_button,
+.zoom_searchbox {
+	margin: 0 2px;
+	flex-wrap: nowrap;
+}
+
+.zoom_searchbox {flex: 2 2 auto;
+	/* margin-left: 26px; */
+	/* margin-left: 2em; */
+}
+
+.zoom_button {flex: 0 1 auto;}
+
+.submit,
+.zoom_results_per_page,
+.zoom_match {
+	width: 100%;
+	margin: 2px;
+	padding: 0;
+}
+
+.searchheading {font-size: 9pt; font-weight: bold; margin-top: 7px;}
+.summary {font-size: 9pt; margin-bottom: 5px; float: left;}
+.result_pagescount {font-size: 100%;}
+.suggestion {font-size: 9pt; clear: both;}
+.sorting {text-align: right; float: right; font-size: 9pt; font-weight: bold;}
+
+.result_pages {clear: left; font-size: 80%; white-space: nowrap; font-weight: bold;}
+.result_pages a:link {text-decoration: none; color: blue;}
+.result_pages a:visited {color: blue;}
+.result_pages a:hover {text-decoration: underline;}
+.searchtime {font-size: 80%;}
+
+p.zoom_ad {text-align: center;}
+p.zoom_advertising {display: none;}
+
+div.results {position: absolute; left: 0; right: 0; bottom: 0; overflow-y: scroll; padding-right: 5px; padding-top: 5px; padding-left: 7px;}
+.navtitle {font-size: 14pt; font-weight: bold; margin-bottom: 16px;}
+.navbar {font-size: 10pt;}
+.highlight {background: #FFFF40;}
+.results {font-size: 9pt;}
+.description {font-size: 9pt;}
+.context {font-size: 9pt;}
+.result_title {font-size: 9pt;}
+.category {color: #999999;}
+.zoom_match input {margin-left: 3px;}
+.zoom_categories {font-size: 80%;}
+.zoom_categories ul {display: inline; margin: 0px; padding: 0px;}
+.zoom_categories li {display: inline; margin-left: 15px; list-style-type: none;}
+.result_image {float: left; display: block;}
+.result_image img {margin: 10px; width: 80px; border: 0px;}
+.result_block {margin-top: 0px; margin-bottom: 10px; clear: left;}
+div.result_title {font-size: 110%;}
+div.description {font-style: italic;}
+div.infoline {font-weight: bold; margin-top: 2px;}
+.result_altblock {margin-top: 0px; margin-bottom: 10px; clear: left;}
+
+.recommended {
+	background: #DFFFBF;
+	border-top: 1px dotted #808080;
+	border-bottom: 1px dotted #808080;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.recommended_heading {float: right; font-weight: bold;}
+.recommend_block {margin-top: 15px; margin-bottom: 15px; clear: left;}
+.recommend_title {font-size: 100%;}
+.recommend_description {font-size: 100%; color: #008000;}
+.recommend_infoline {font-size: 80%; font-style: normal; color: #808080;}
+span.highlight {background-color: #ffff40;}
+
+@media (max-width: 501px) {
+	.zoom_searchbox {width: auto;}
+	.zoom_match {line-height: normal;}
+}

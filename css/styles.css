@@ -1,0 +1,2175 @@
+﻿/*
+(i) Символ «*» - универсальный селектор, совпадает с именем любого типа элемента. Соответствует любому отдельному элементу в дереве док.
+*Унивесальный селектор имеет нулевой приоритет (ниже только отсутствие приоритета вовсе).
+*/
+* {margin: 0; padding: 0;} /* - перебить CSS свойства, которые браузеры устанавливают по умолчанию для некоторых тегов, например, тегу гиперссылки <a> синий цвет текста и подчёркивание, тегу body они задают поля (padding) и тд.и т.п. */
+/*
+(i) считается хорошей практикой, но в моем случае придется много чего переписывать
+*/
+/* html {box-sizing: border-box;} */
+/*
+// *, *:after, *:before {box-sizing: inherit;}
+*/
+body, html {
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	height: 100%;
+}
+
+body {
+	background-color: #3f3f3f;
+	background-image: url(../icon/bg-body.jpeg);
+	overflow: hidden;
+}
+/**Избавление от общих контуров выбора */
+a, a:active, * :focus {
+	outline: 0;
+	-moz-outline-style: none;
+	outline-style: none; /**В отличие от линии, задаваемой через border, линия через outline отображается вокруг элемента, не влияя на ширину блока или его положение */
+}
+/* (!) Scrollbars */
+*,
+html * /* - если нужен общий стиль, его следует применять к тегу html, а не к body */
+{
+	scrollbar-width: thin;
+	scrollbar-color: gray #3f3f3f;
+	scroll-behavior: smooth; /* плавная прокрутка */
+}
+*::-webkit-scrollbar,
+html *::-webkit-scrollbar {
+	/* top: 0; *//* bottom: 0; *//* 'работать не будет-для всех браузеров высота scrollbara = высоте его элемента */
+	width: 10px;
+	height: 10px;
+}
+/**Варианты по умолчанию для элементов на странице */
+/* 'вариант-1 */
+/* *::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+	background: #3f3f3f;
+	border-radius: 100px;
+}
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+	background-color: silver;
+	border: 1px solid #3f3f3f;
+	border-radius: 100px;
+} */
+/* 'вариант-2 */
+/* *::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+	border: 1px solid #3f3f3f;
+	border-radius: 100px;
+}
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+	border: 5px solid #3f3f3f;
+	border-radius: 100px;
+} */
+/* 'вариант-3 */
+*::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+	border: 4px solid #fff;
+	border-radius: 100px;
+}
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+	background-color: #3f3f3f;
+	border: 4px solid #3f3f3f;
+	border-radius: 100px;
+}
+/* 'вариант-4 */
+/* *::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+	border: 4px solid #3f3f3f;
+	border-radius: 100px;
+}
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+	background: #3f3f3f;
+	border: 4px solid #fff;
+	border-radius: 100px;
+} */
+
+.slider-track::-webkit-scrollbar {
+	height: 3px;
+	/* display: none; */
+}
+.slider-track::-webkit-scrollbar-track {
+	background-color: transparent;
+	border: 1px solid transparent;
+}
+.slider-track::-webkit-scrollbar-thumb {
+	background-color: #fff;
+	border: 1px solid maroon;
+}
+/* Scrollbars the end */
+/**отражаем противоположно самый верхний div, чтобы scrollbar и треугольник для изменения размеров были слевой стороны */
+.reflect {
+	direction: rtl; /* ? влияет на кавычки елочки для текстовых элементов, поэтому данное св-во необходимо так же применить к элементам типа "р"/span.., чтобы вернуть обратно направление чтения по умолчанию (с лева на право). Применяется непосредственно к текущему элементу, применение к псевдоэлементу работать не будет. */
+	resize: both;
+}
+/* textarea, label, span, p, */
+.reflect * {
+	direction: ltr; /* ? влияет на кавычки елочки для текстовых элементов, поэтому данное св-во необходимо так же применить к элементам типа "р"/span.., чтобы вернуть обратно направление чтения по умолчанию (с лева на право). Применяется непосредственно к текущему элементу, применение к псевдоэлементу работать не будет. */
+}
+.reflect div {resize: none;}
+/**Компоненты главной страницы контейнера */
+/* (!).popups-вплывающее окно "Постоянная ссылка" */
+.popups {
+	position: absolute;
+	right: 10px; top: 60px;
+	width: 400px;
+	height: auto;
+	padding: 2px 2px 10px 4px;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: column wrap;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden auto;
+	z-index: 2;
+}
+.popups {
+	zoom: 1; /* (?) */
+	background-color:lightyellow;
+	background-image: url("../icon/spacer.gif"); /* (?) не понятно для чего */
+	border-width: 2px;
+	border-style: solid;
+	border-bottom-color: #333333;
+	border-right-color: #555555;
+	border-left-color: #EEEEEE;
+	border-top-color: #EEEEEE;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	box-shadow: 2px 2px 3px #969696;
+	-webkit-box-shadow: 2px 2px 3px #969696;
+	-moz-box-shadow: 2px 2px 3px #969696;
+	filter: progid: DXImageTransform.Microsoft.Shadow(color = #969696, Direction = 135, Strength = 3);
+}
+/* (!) lightbox-для просмотра изображений во весь экран в гл.окне,
+'см.класс lightbox в topic.css
+*/
+.lightbox {
+	position: absolute;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+	width: auto;
+	height: auto;
+	margin: auto;
+	padding: 4px;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	align-content: space-between;
+	justify-content: center;
+}
+.lightbox {
+	font-size: 1em;
+	/* font-size: 16px; */
+	font-family: 'Times New Roman', Times, Georgia, serif;
+	font-style: normal;
+	font-weight: bold;
+	text-align: center;
+	text-indent: 0;
+	color: #000;
+	background: rgba(0, 0, 0, 0.9);
+	z-index: 4;
+}
+.img-slider,
+.img-title,
+.lightbox-img,
+.lightbox {overflow: hidden;}
+
+.img-slider,
+.slider-track,
+.img-title,
+.lightbox-img {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	align-content: center;
+	justify-content: center;
+}
+.lightbox-img {
+	height: auto; /* высота будет вычисляться кодом js */
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+	-ms-flex-flow: row wrap; /* IE */
+}
+
+.zoomer {
+	position: absolute;
+	left: 4px; top: 4px;
+	width: auto;
+	height: auto;
+	margin: 6px;
+	padding: 6px;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 5px 5px 10px #000;
+	cursor: pointer;
+}
+
+.btn-slider,
+.btn-box,
+.zoomer {z-index: 1;}
+
+.zoom-out,
+.zoom-in {
+	width: 50px;
+	height: 50px;
+	display: block;
+}
+.btn-box a:hover,
+.btn-slider a:hover,
+.zoom-out:hover,
+.zoom-in:hover {transform: scale(1.3);}
+
+.img-viewer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 6px;
+	box-sizing: border-box; /* позволяет изменить алгоритм для расчета ширины и высоты, чтобы свойства width и height задавали размеры не контента, а размеры блока, т.е.margin, padding, border учитываться не будут */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	display: flex;
+	flex-flow: row wrap;
+	-ms-flex-flow: row wrap; /* IE */
+	align-items: center;
+	border: 1px solid #fff;
+	border-radius: 5px;
+	/* outline: 1px solid white; */ /* без влияния на размерность */
+	overflow: auto;
+}
+
+.img-item {
+	margin: auto;
+	display: block;
+	cursor: zoom-out;
+	cursor: -webkit-zoom-out;
+	cursor: -moz-zoom-out;
+	animation: 2s forwards;
+/*
+(?)*св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
+*/
+	will-change: animation;
+}
+/*
+(!) css правило img-zoom100 для lightbox в гл.окне работает противоположно правилу img-zoom100 для lightbox в теме топика
+*/
+.img-zoom100 {
+	max-width: 100%;
+	cursor: zoom-in;
+	cursor: -webkit-zoom-in;
+	cursor: -moz-zoom-in;
+}
+
+.btn-box {
+	position: absolute;
+	top: 50%;
+	width: 50px;
+	height: 50px;
+	display: flex;
+}
+
+.btn-slider,
+.btn-box {
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+}
+.btn-slider a:hover,
+.btn-slider a,
+.slider-item:hover,
+.slider-item,
+.zoom-out,
+.zoom-in,
+.btn-box a:hover,
+.btn-box a, /* .lightbox-btn-close, .img-btn-next, .img-btn-prev, */
+.btn-box:hover,
+.btn-box {
+	cursor: pointer;
+	transition: 0.6s ease; /**плавное появление/исчезновение при наведении курсора */
+	-webkit-transition: .6s ease; /* Chrome, Safari, iOS */
+	-moz-transition: .6s ease; /* Firefox */
+	-o-transition: .6s ease; /* Opera */
+	/* will-change: transition; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+
+.btn-slider a,
+.btn-box a {
+	width: 100%;
+	border-radius: 100px;
+	border-color: transparent;
+	line-height: 50px; /* - выравниваем "стрелки" (кнопки перехода) по высоте */
+	text-decoration: none;
+}
+.btn-slider a,
+.img-title,
+.lightbox-btn-close,
+.btn-box a {color: #fff;}
+.btn-slider a:hover,
+.btn-box a:hover {
+	border: 1px solid #fff;
+	background-color: rgba(0,0,0,0.4);
+}
+
+.lightbox-btn-close {
+	right: 30px; top: 20px;
+	width: auto;
+	height: auto;
+	margin: 6px;
+	padding: 6px;
+	line-height: 1;
+	border: none;
+	outline: none;
+	background-color: transparent;
+}
+.lightbox-btn-close:hover,
+.lightbox-btn-close {
+	transition: 0.3s ease; /**плавное появление/исчезновение при наведении курсора */
+	-webkit-transition: .3s ease; /* Chrome, Safari, iOS */
+	-moz-transition: .3s ease; /* Firefox */
+	-o-transition: .3s ease; /* Opera */
+	/* will-change: transition; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	text-shadow: 4px 0 #000, 0.4px 0 #000, -0.4px 0 #000, -0.4px 0 #000; /* - буквенная обводка */
+}
+.lightbox-btn-close:hover {
+	transform: rotate(180deg) scale(1.6, 1.6);
+	-webkit-transform: rotate(180deg) scale(1.6, 1.6); /* Chrome, Safari, iOS */
+	-moz-transform: rotate(180deg) scale(1.6, 1.6); /* Firefox */
+	-o-transform: rotate(180deg) scale(1.6, 1.6); /* Opera */
+	-ms-transform: rotate(180deg) scale(1.6, 1.6); /* IE */
+	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	text-shadow: -4px 0 #000, .4px 0 #000, 0 .4px #000, 0 -.4px #000; /* - буквенная обводка */
+}
+
+.img-btn-prev {
+	left: 0;
+	margin: 0 0 0 10px;
+	padding: 0 0 0 10px;
+}
+.slider-btn-prev a,
+.img-btn-prev a {
+	/* padding: 0 6px 0 0; */ /* x */
+	text-shadow: -2px 0px #000,
+				2px 0px #000,
+				0px 2px #000,
+				0px -2px #000,
+				4px 2px #000,
+				4px -2px #000; /* - буквенная обводка */
+}
+
+.img-btn-next {
+	right: 0;
+	margin: 0 20px 0 0;
+	padding: 0 10px 0 0;
+}
+.slider-btn-next a,
+.img-btn-next a {
+	/* padding: 0 0 0 6px; */ /* x */
+	text-shadow: -2px 0px #000,
+				2px 0px #000,
+				0px 2px #000,
+				0px -2px #000,
+				-4px 2px #000,
+				-4px -2px #000; /* - буквенная обводка */
+}
+
+.img-title {
+	margin: 6px;
+	flex: 1 1 100%;
+	flex-flow: column wrap;
+	-ms-flex-flow: column wrap;
+	cursor: default;
+}
+
+.slider-track,
+.img-slider {flex: 1 1 100%;}
+
+.img-slider {
+	margin: 6px;
+	flex-flow: row nowrap;
+	-ms-flex-flow: row nowrap; /* IE */
+}
+
+.slider-track {
+	min-width: 50px;
+	margin: 2px;
+	padding: 4px;
+	flex-flow: row nowrap;
+	-ms-flex-flow: row nowrap; /* IE */
+	overflow: auto hidden;
+}
+
+.slider-item,
+.btn-slider {
+	position: relative;
+	width: 50px;
+	height: 50px;
+	padding: 4px;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row nowrap;
+	-ms-flex-flow: row nowrap; /* IE */
+	align-items: center;
+	justify-content: center;
+}
+
+.slider-btn-prev,
+.slider-btn-next {
+	margin: 4px;
+	flex: 0 0 auto;
+}
+
+.slider-item {
+	margin: 5px;
+	min-width: fit-content;
+	/* outline: 1px dotted white; */ /* без влияния на размерность */
+	border: 1px dotted #fff;
+	border-radius: 5px;
+}
+.slider-item img {
+	width: 100%;
+	height: 100%;
+	display: block;
+	object-fit: contain; /* вписываем в область */
+	-o-object-fit: contain; /* Opera */
+	cursor: pointer;
+}
+.slider-item:hover {
+	border-style: solid;
+	transform: scale(1.2);
+}
+
+.slider-current {border-color: red;}
+/*
+(!).permalink
+ */
+.permalink {
+	position: relative;
+	width: 100%;
+	height: auto;
+	padding: 2px;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-between;
+	text-indent: 0;
+}
+
+.permalink-btn {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.permalink-btn div {
+	position: absolute;
+	right: 2px;
+	line-height: 1;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	font-size: 1em;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	transition: .3s;
+	-webkit-transition: .3s; /* Chrome, Safari, iOS */
+	-moz-transition: .3s; /* Firefox */
+	-o-transition: .3s; /* Opera */
+}
+.permalink-btn div:hover {
+	transition: .3s;
+	-webkit-transition: .3s;
+	-moz-transition: .3s;
+	-o-transition: .3s;
+	transform: rotate(180deg) scale(1.6, 1.6);
+	-webkit-transform: rotate(180deg) scale(1.6, 1.6); /* Chrome, Safari, iOS */
+	-moz-transform: rotate(180deg) scale(1.6, 1.6); /* Firefox */
+	-o-transform: rotate(180deg) scale(1.6, 1.6); /* Opera */
+	-ms-transform: rotate(180deg) scale(1.6, 1.6); /* IE */
+	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+
+.permalink-btn input,
+.permalink-btn div {cursor: pointer;}
+
+.permalink-btn input {
+	transition: .3s;
+	-webkit-transition: .3s; /* Chrome, Safari, iOS */
+	-moz-transition: .3s; /* Firefox */
+	-o-transition: .3s; /* Opera */
+}
+.permalink-btn input:hover {
+	transition: .3s;
+	-webkit-transition: .3s;
+	-moz-transition: .3s;
+	-o-transition: .3s;
+	transform: rotateY(360deg);
+	-webkit-transform: rotateY(360deg); /* Chrome, Safari, iOS */
+	-moz-transform: rotateY(360deg); /* Firefox */
+	-o-transform: rotateY(360deg); /* Opera */
+	-ms-transform: rotateY(360deg); /* IE */
+	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+
+[for="idTextArea"] {
+	margin: 4px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
+	font-weight: bold;
+	text-align: center;
+	cursor: default;
+}
+.permalink-info {color: #0000ff; /* blue */}
+.permalink-error {color: #ff0000; /* red */}
+
+.permalink-txt {
+	flex: 2 1 auto;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+}
+
+.permalink textarea {
+	position: relative;
+	width: 100%;
+	height: 40px;
+	flex: 2 1 auto;
+	text-align: center;
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 0.7em;
+	font-weight: bold;
+	overflow: auto;
+	resize: none;
+}
+/**Фреймворк главной страницы */
+.container {
+	position: absolute;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+}
+/* (!).banner-баннер */
+.banner {
+	position: relative;
+	left: 0; top: 0;
+	width: 100%;
+	height: 120px;
+	margin: auto;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row wrap; /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера */
+	align-items: center; /**либо align-content: center. Выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении - расположение вдоль поперечной оси на текущей линии */
+	/* align-content: center; *//**либо align-items: center. Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов */
+	justify-content: center; /* - после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
+	font-family: "Times New Roman", Times, serif;
+	color: rgb(0, 0, 0);
+	text-indent: 0;
+	text-align: center;
+	/* background-color: #fff; */
+	background: url(../icon/fgis-fri-banner.png) repeat center center #fff;
+	/* background-size: cover; */
+}
+
+.banner a {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+/* x -
+	.banner div {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: 100%;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row wrap; */ /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера */
+	/* align-items: center; */ /* - выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении - расположение вдоль поперечной оси на текущей линии */
+	/* justify-content: center; */ /* - после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
+	/* background: url(../icon/fgis-fri-banner.jpg) no-repeat center top #fff;
+} */
+.banner img {
+	position: absolute;
+	width: auto;
+	height: 100%;
+	/* margin: auto; */
+	padding: 0 4px;
+}
+.logo-ri {left: 25px;}
+.logo-fri {right: 25px;}
+
+.banner span {
+	position: absolute;
+	bottom: 10px;
+	width: auto;
+	height: auto;
+	font-size: 0.9em;
+	color: #fff;
+}
+.banner span:hover {text-decoration: underline dotted;}
+/* (!).topnav-заголовок меню банера
+x 'скорее всего не понадобится, т.к.при компиляции проекта меню баннера отсутствовало */
+.topnav {
+	border-color: #000000;
+	border-style: solid;
+	background-color: #3f3f3f;
+	border-radius: 5px 0 0 0;
+	-webkit-border-radius: 5px 0 0 0;
+	-moz-border-radius: 5px 0 0 0;
+}
+/**Цвет заголовка банера выпадающего меню */
+/* (!).topnav li-названия меню */
+.topnav li a:hover,
+.topnav li a:visited,
+.topnav li a {
+	color: silver;
+	text-decoration: none;
+	font-weight: bold;
+}
+.topnav li a:hover,
+.topnav li ul.subnav li a:hover {text-decoration: underline;}
+/* (!).subnav-пункты меню */
+.subnav li a {color: silver;}
+/**Граница и фон меню */
+.topnav li ul.subnav {
+	background: #3f3f3f;
+	border-color: #000000;
+	border-width: 0px 1px 1px 1px;
+}
+/**Тени меню и изогнутые углы */
+.subnav {
+	box-shadow: 2px 2px 2px #999;
+	-webkit-box-shadow: 2px 2px 2px #999;
+	-moz-box-shadow: 2px 2px 2px #999;
+	border-radius: 0px 0px 4px 4px;
+	-webkit-border-radius: 0px 0px 4px 4px;
+	-moz-border-radius: 0px 0px 4px 4px;
+}/* x 'скорее всего не понадобится */
+/* (!) Панель инструментов */
+img#button_off, /* (?) че за кнопки не пойму */
+img#social_off {border-color: transparent;}
+/* (?) нигде не фигурирует */
+.toolbar-table {
+	position: absolute;
+	left: 0; top: 0;
+	margin: 0;
+	border-width: 1px 0 1px 0;
+	border-style: solid;
+	border-collapse: collapse;
+}
+/* (!) .toolbar, .toolbar-banner */
+.toolbar-banner,
+.toolbar {
+	position: relative;
+	top: 0;
+	width: auto;
+	height: 48px;
+	padding: 0px 4px 0px 4px;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row wrap;
+}
+/**Фон и границы панели инструментов и других компонентов */
+.banner,
+.nav-pane,
+.nav-box,
+.tabs-menu,
+.topic-content,
+.toolbar-table, /* (?) нигде не фигурирует */
+.toolbar-banner,
+.toolbar {border-color: #000000;}
+/**Backgrounds */
+.toolbar-table, /* (?) нигде не фигурирует */
+.toolbar-banner,
+.toolbar {
+	background-color: #3f3f3f;
+	background: -webkit-linear-gradient(top, #dedede 3%, #3f3f3f 30%);
+	background: -moz-linear-gradient(top, #dedede 3%, #3f3f3f 30%);
+	background: -ms-linear-gradient(top, #dedede 3%, #3f3f3f 30%);
+	background: -o-linear-gradient(top,rgb(241,241,241) 3%,rgb(63,63,63) 30%);
+	border-width: 1px;
+}
+/**Border */
+.nav-pane,
+.nav-box,
+.topic-content,
+.toolbar-banner,
+.toolbar {
+	margin: 4px;
+	border: 1px solid;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+/**Shadows - тень */
+.nav-pane,
+.topic-content,
+.toolbar-banner,
+.toolbar {
+	box-shadow: 2px 2px 2px #3f3f3f;
+	-webkit-box-shadow: 2px 2px 2px #3f3f3f;
+	-moz-box-shadow: 2px 2px 2px #3f3f3f;
+}
+
+.toolbar-banner {
+	height: 49px;
+	margin: 0 4px 4px 4px;
+	border-top-style: none;
+}
+
+.toolbar-right,
+.toolbar-center,
+.toolbar-left,
+.toolbar-search {
+	position: relative;
+	padding: 2px 0;
+	display: flex;
+	flex-flow: row nowrap; /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
+
+}
+
+.toolbar-search {
+	order: 1; /* - порядок появления в flex-контейнере */
+	min-width: 150px;
+	/* flex-grow: 0; *//* - Растягивание flex-элемента при необходимости. */
+	/* flex-shrink: 1; *//* - Способность гибкого элемента сжиматься при необходимости. */
+	/* flex-basis: 150px; *//* - Размер элемента по умолчанию ПЕРЕД распределением оставшегося пространства. */
+	flex: 0 1 16vw; /* - вьюпорт 16vw, изменение ширины элемента относительно ширины видимой области браузера. */
+}
+
+.toolbar-right,
+.toolbar-center,
+.toolbar-left {
+	flex: 1 1 auto; /**Сокращенная запись свойств для текущего flex-элемента: flex-grow, flex-shrink и flex-basis. */
+}
+.toolbar-left {
+	order: 2; /* - порядок появления в flex-контейнере */
+	justify-content: flex-start; /* - выравнивание вдоль главной оси. Не для всех браузеров */
+}
+.toolbar-center {
+	order: 3; /* - порядок появления в flex-контейнере */
+	justify-content: center; /* - выравнивание вдоль главной оси. Не для всех браузеров */
+}
+.toolbar-right {
+	order: 4; /* - порядок появления в контейнере flex */
+	justify-content: flex-end; /* - выравнивание вдоль главной оси. Не для всех браузеров */
+}
+
+.toolbar-box {
+	position: relative;
+	width: auto;
+	height: auto;
+	padding: 2px 1px 2px 1px;
+	display: flex;
+	flex-flow: row wrap; /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
+	align-items: center;
+	justify-content: center; /* - выравнивание вдоль главной оси. Не для всех браузеров */
+	font-family: Tahoma, Verdana, Arial, sans-serif, Helvetica;
+	font-size: 9px;
+	font-weight: normal;
+	text-indent: 0;
+	line-height: 1em;
+}
+/* (!) Quick search box */
+.toolbar-box-search {
+	/* flex-grow: 1; *//**Растягивание flex-элемента при необходимости. */
+	/* flex-shrink: 1; *//**Способность гибкого элемента сжиматься при необходимости. */
+	/* flex-basis: auto; *//**Размер элемента по умолчанию ПЕРЕД распределением оставшегося пространства. */
+	flex: 1 1 auto; /**Сокращенная запись свойств для текущего flex-элемента: flex-grow, flex-shrink и flex-basis */
+}
+/* (!) checkboxes */
+[for="idTextExpandCollapse"],
+[for="idBannerShowHide"] {display: contents;}
+#idTextExpandCollapse,
+#idBannerShowHide,
+#idTopicPaneNavShowHide,
+#idToolbarNavShowHide {display: none;} /* - скрываем "квадратик" checkbox */
+/* (!).toolbar-nav-pane - Иконка Скрыть/Показать панель навигации */
+.btn-icon-search-H,
+.btn-icon-search,
+.toolbar-nav-pane {
+	position: relative;
+	border: 1px solid;
+	cursor: pointer;
+}
+.toolbar-nav-pane {
+	height: 20px;
+	border-color: #fff;
+	border-radius: 8px 0 0 8px;
+	background-color: transparent;
+}
+.toolbar-nav-pane:hover {background-color: #dedede;}
+
+.btn-icon-navigation {
+	width: 16px;
+	height: 2px;
+	margin: 3px 1px 3px 3px;
+	content: "";
+	border-top: 3px solid #fff;
+	border-bottom: 8px double #fff;
+	box-sizing: unset;
+}
+.btn-icon-navigation:hover {border-color: #000;}
+/* 'the end .toolbar-nav-pane - Иконка Скрыть/Показать панель навигации */
+.btn-icon-search-H,
+.btn-icon-search {
+	padding: 2px;
+	background-color: #dedede;
+	border-color: #dedede;
+	border-radius: 0 8px 8px 0;
+}
+.btn-icon-search-H:hover,
+.btn-icon-search:hover {background-color: transparent;}
+
+.btn-icon-H,
+.btn-icon-search-H {
+	cursor: default;
+	display: none;
+}
+
+.toolbar-box-search input {
+	width: 80px;
+	height: 20px;
+	/* flex-grow: 1; *//**Растягивание flex-элемента при необходимости. */
+	/* flex-shrink: 1; *//**Способность гибкого элемента сжиматься при необходимости. */
+	/* flex-basis: auto; *//**Размер элемента по умолчанию ПЕРЕД распределением оставшегося пространства. */
+	flex: 1 1 auto; /**Сокращенная запись свойств для текущего flex-элемента: flex-grow, flex-shrink и flex-basis */
+	border: 1px solid #fff;
+	/* float: left; *//**Выравнивание по левому краю, а все остальные элементы обтекают по правой стороне */
+}
+
+.toolbar-box-search span {
+	top: 0;
+	flex: 1 1 100%;
+	font-weight: bold;
+}
+/* 'the end Quick search box */
+.toolbar-box-right,
+.toolbar-box-center,
+.toolbar-box-left {flex: 0 1 auto;}
+/*
+(!) Позиционирование для всех компонентов: и ссылок, и иконок
+*/
+.btn-icon,
+.btn-icon-H,
+.toolbar-box-right a {
+	position: absolute;
+	left: 0; right: 0;
+	top: 0;
+	margin: 0 auto;
+}
+/* (i) имя класса так же присутствует в стилях topic.css и navigation.css, но правила разные */
+.feedback-tooltip-title,
+.feedback-tooltip,
+.btn-icon-H,
+.btn-icon {padding: 2px 4px 2px 4px;}
+.feedback-tooltip,
+.btn-icon-H,
+.btn-icon {
+	border: 1px solid transparent;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+.feedback-tooltip,
+.toolbar:hover,
+.toolbar-banner:hover,
+.btn-icon-H:hover,
+.btn-icon:hover {border-color: #fff;}
+/*
+(!)#idFeedBackOn
+*во всем проекте прописан в 2-х местах:
+- 1) в пан.инструментов и
+- 2) в пан.нав.
+x не используется
+(i) переделано как анимационная всплывающая подсказка через div, а в коде js события mouseover/mouseout исключены
+*/
+/* #idFeedBackOn:hover { */
+	/* position: absolute; *//* - не выводит изображение на передний план, поэтому использ.fixed */
+	/* position: fixed; *//* - устраняем смещение всплывающей картинки */
+	/* left: 50%; */
+	/* top: 50%; */
+	/* transform: translate(-80%, -5%); *//* (x, y)
+	*Трансформирует элемент, в частности, позволяет его масштабировать, вращать, сдвигать, наклонять, а также комбинировать виды трансформаций */
+/* 	transform: translateX(-80%);
+	-webkit-transform: translateX(-80%); */ /* Chrome, Safari, iOS */
+/* 	-moz-transform: translateX(-80%); */ /* Firefox */
+/* 	-o-transform: translateX(-80%); */ /* Opera */
+/* 	-ms-transform: translateX(-80%); */ /* IE */
+/* } */
+/* (!).feedback-tooltip - анимационная всплывающая подсказка для кнопки E-mail на пан.инструментов
+(i) имя класса так же присутствует в стилях topic.css и navigation.css, но правила разные
+*/
+.feedback-tooltip-title,
+.feedback-tooltip-triangle,
+.feedback-tooltip {
+	position: absolute;
+	left: 0; right: 0;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+}
+/**фон подсказки */
+.feedback-tooltip{
+	width: 120px;
+	height: 130px;
+	align-content: space-between;
+	background: url(../icon/support.gif) no-repeat center transparent;
+}
+/**текст подсказки */
+.feedback-tooltip-title {width: auto; height: auto;}
+.feedback-tooltip-title span {
+	width: 100%; height: auto;
+	font-size: 11px;
+	text-align: center;
+	line-height: normal;
+	color: #fff;
+}
+/* (i) перенос текста, пробелы, дефисы, тире */
+.btn-text-off,
+.btn-text-on,
+.feedback-tooltip-title span {
+	white-space: normal; /* - текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: normal; /* - чтобы игнорировались "черточки" - перенос текста */
+	word-spacing: normal; /* - нормальный интервал между словами, определенный текущим шрифтом и/или браузером */
+	hyphens: auto; /* - чтобы браузер не обращал внимания на мягкий дефис, вставляем hyphens: none для Chrome, с Firefox все сложнее */
+	-moz-hyphens: auto; /* - все равно не работает */
+	-ms-hyphens: auto;
+	/* text-wrap: balance; */ /* (!) new - экспериментальный - не очень удобный, может переносится одна буква от всего слова */
+}
+.title-txt-top {
+	top: 0;
+	align-items: flex-start;
+	align-content: flex-start;
+}
+.title-txt-center {
+	top: 0; bottom: 0;
+	align-items: center;
+	align-content: center;
+}
+.title-txt-bottom {
+	bottom: 0;
+	align-items: flex-end;
+	align-content: flex-end;
+}
+.title-txt-custom {bottom: 30px;}
+/**треугольник */
+.feedback-tooltip-triangle {
+	top: -22px;
+	width: 0;
+	margin: auto;
+	background-color: transparent;
+	border-left: 30px solid transparent;
+	border-bottom: 20px solid #fff;
+}
+/* *анимация
+(!) с псевдоэлементами не срабатывает и работать не будет, или будет влиять не на те элементы, на кот.нужно
+*/
+.feedback-tooltip {
+	/* (i) изначальное положение при 0-ом размере, иначе появление будет из другого места, даже если изначально все элементы будут иметь значение width: 0; height: 0; вдобавок ко всему, надо учесть, чтобы все элементы не перекрывали саму кнопку */
+	transform: translate(-50px, -40px) scale(0); /* (x, y) */
+	-webkit-transform: translate(-50px, -40px) scale(0); /* Chrome, Safari, iOS */
+	-moz-transform: translate(-50px, -40px) scale(0); /* Firefox */
+	-o-transform: translate(-50px, -40px) scale(0); /* Opera */
+	-ms-transform: translate(-50px, -40px) scale(0); /* IE */
+	will-change: transform; /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+.btn-icon:hover+.feedback-tooltip {
+	animation: tooltipToAppear ease 2s both;
+	-webkit-animation: tooltipToAppear ease 2s both;
+	-moz-animation: tooltipToAppear ease 2s both;
+	-o-animation: tooltipToAppear ease 2s both;
+	will-change: animation; /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	z-index: 2; /* - перекрываем.topic-controls {z-index: 1;} */
+}
+@keyframes tooltipToAppear {
+	0% {
+		opacity: 0;
+		transform: translate(-50px, -40px) scale(.1);
+		-webkit-transform: translate(-50px, -40px) scale(.1);
+		-moz-transform: translate(-50px, -40px) scale(.1);
+		-o-transform: translate(-50px, -40px) scale(.1);
+		-ms-transform: translate(-50px, -40px) scale(.1);
+	}
+	100% {
+		transform: translate(-72px, 64px);
+		-webkit-transform: translate(-72px, 64px);
+		-moz-transform: translate(-72px, 64px);
+		-o-transform: translate(-72px, 64px);
+		-ms-transform: translate(-72px, 64px);
+		opacity: 1;
+	}
+}
+.btn-icon:hover+.feedback-tooltip .feedback-tooltip-title span,
+.btn-icon:hover+.feedback-tooltip .feedback-tooltip-title {
+	animation: titleToAppear ease 10s both;
+	-webkit-animation: titleToAppear ease 10s both;
+	-moz-animation: titleToAppear ease 10s both;
+	-o-animation: titleToAppear ease 10s both;
+	will-change: animation; /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	/* (i) первичный вариант */
+	/* transition: 2s 3s;
+	transform-origin: center bottom;
+	-webkit-transform-origin: center bottom;
+	-moz-transform-origin: center bottom;
+	-o-transform-origin: 100% 0;
+	-ms-transform-origin: center bottom;
+	transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-moz-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	opacity: 1; */
+}
+@keyframes titleToAppear {
+	0% {opacity: 0;}
+	20% {
+		opacity: 1;
+		transform: scale(-1, 1);
+		-webkit-transform: scale(-1, 1);
+		-moz-transform: scale(-1, 1);
+		-o-transform: scale(-1, 1);
+		-ms-transform: scale(-1, 1);
+	}
+	40% {
+		transform: scale(1);
+		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		-o-transform: scale(1);
+		-ms-transform: scale(1);
+	}
+	/* 80% {opacity: 1;} */
+	100% {opacity: 1;}
+}
+
+.btn-text-off,
+.btn-text-on {
+	position: relative;
+	top: 12px;
+	margin: 1px;
+	text-indent: 0;
+	text-align: center;
+	text-transform: capitalize; /* преобразование текста элемента в заглавные или прописные символы */
+	user-select: none;
+	cursor: default;
+}
+.btn-text-on {color: #dedede; /* color: #f1f1f1; */}
+.btn-text-off {color: #a1a1a1;}
+.btn-text-off,
+.btn-text-on {
+	hyphens: none; /* - чтобы браузер не обращал внимания на мягкий дефис, вставляем hyphens: none для Chrome, с Firefox все сложнее */
+	-moz-hyphens: auto; /* - все равно не работает */
+	-ms-hyphens: auto;
+}
+/* (!) Панель навигации */
+/**Предотвращение выбора инструментов */
+.topic-controls *,
+.nav-pane * {
+	-webkit-touch-callout: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+/* (!).nav-pane */
+.nav-pane {
+	position: absolute;
+	left: 0; bottom: 0;
+	width: 294px;
+	/* min-width: 14vw; */ /* - вьюпорт, изменение ширины элемента относительно ширины видимой области браузера */
+	padding: 2px;
+}
+.topic-pane,
+.nav-pane {top: 54px;}
+.topic-pane-banner,
+.nav-pane-banner {top: 170px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
+/**фон */
+.nav-pane {
+	background-color: #2a2a2a;
+	background: -webkit-linear-gradient(top, #888888, #000000);
+	background: -moz-linear-gradient(top, #888888, #000000);
+	background: -o-linear-gradient(top,rgb(136, 136, 136),rgb(0, 0, 0));
+	background: -ms-linear-gradient(top, #888888, #000000);
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
+}
+/*
+(!).splitter-right - боковой разделитель между боковой панелью навигации и текстовым топиком
+*/
+.splitter-right {
+	position: absolute;
+	right: 0; top: 0; bottom: 0px;
+	width: 4px;
+	cursor: col-resize;
+	/* z-index: 1; */ /* накладывается поверх lightbox */
+}
+/*
+(!).splitter-bottom - нижний разделитель между боковой панелью навигации и текстовым топиком
+*/
+.splitter-bottom {
+	position: absolute;
+	left: 0; right: 0; bottom: 0px;
+	height: 4px;
+	/* cursor: move; */ /* (i) Указывает на то, что что-то должно быть перемещено - резервный вариант, если курсор захвата не поддерживается, как в IE */
+	/* cursor: row-resize; */
+	cursor: grab;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+	/* z-index: 1; */
+	display: none;
+}
+.icon-grab {
+	cursor: grabbing;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+}
+
+.nav-box {
+	position: absolute;
+	left: 0px; right: 0px;
+	top: 0px; bottom: 0px;
+	/**др.вариант, менее контрастный, см.его так же в navigation.css
+	background-color: #5e5e5e;
+	background: -webkit-linear-gradient(top, #666666, #222222);
+	background: -moz-linear-gradient(top, #666666, #222222);
+	background: -o-linear-gradient(top,rgb(102, 102, 102),rgb(34, 34, 34));
+	background: -ms-linear-gradient(top, #666666, #222222);
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222); */
+}
+
+iframe#hmsearch,
+iframe#hmkeywords,
+iframe#hmcontent,
+iframe#hmnavigation {
+	position: absolute;
+	left: 0; top: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	/* scroll-behavior: auto; */ /**test */
+}
+/* *Панель Тема (топиков)
+(!).topic-pane */
+.topic-pane {
+	position: absolute;
+	left: 304px; right: 0px;
+	bottom: 0px;
+	margin-top: 4px;
+}
+/* .topic-pane-extend,
+.topic-pane-expand {left: 0;} */ /* x использовалось при display: block; */
+/* (!).topic-controls-компоненты вкладок */
+.topic-controls {
+	position: relative;
+	/* left: 8px; */
+	left: 0; top: 0;
+	width: auto;
+	height: 32px;
+	margin: 0 8px;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 auto;
+	justify-content: flex-start;
+	background-color: transparent;
+	z-index: 1;
+}
+/* (!).nav-handle-кнопка скрыть/показать панель навигации */
+.nav-handle {
+	position: relative;
+	left: 0; top: 10px;
+	width: 20px;
+	height: 18px;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+}
+.nav-handle:hover {top: 12px;}
+
+.tabs,
+.tabsCtab,
+.nav-handle {
+	margin: 0 4px 0 0;
+	color: #888;
+	border-width: 1px;
+	border-style: solid;
+	border-bottom: 0px;
+	border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
+}
+/* (!) Подавление контуров выбора HTML
+- Убираем границу вокруг ссылок */
+.tabs a,
+.tabs a:active,
+.nav-handle a {outline: none;}
+.nav-handle a {
+	position: relative;
+	top: 0;
+	width: auto;
+	height: auto;
+}
+
+.nav-handle-icon {
+	position: relative;
+	width: auto;
+	height: auto;
+	margin: auto;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 0 0 16px;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+/* (!).navhandle-navpane-show-трансформация иконки на кнопке в панеле топика
+TODO: *переделать в псевдо не получится, см.спецификацию:
+'Псевдоэлементы, созданные с помощью ::before и ::after содержатся в блоке форматирования элемента, и поэтому не применяются к замещаемым элементам, таким как <img> или <br> */
+.navhandle-navpane-show {
+	transform: rotate(0deg) scale(1, 1);
+	-webkit-transform: rotate(0deg) scale(1, 1);
+	-moz-transform: rotate(0deg) scale(1, 1);
+	-o-transform: rotate(0deg) scale(1, 1);
+	-ms-transform: rotate(0deg) scale(1, 1);
+	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+.navhandle-navpane-hide {
+	transform: rotate(0deg) scale(-1, 1);
+	-webkit-transform: rotate(0deg) scale(-1, 1);
+	-moz-transform: rotate(0deg) scale(-1, 1);
+	-o-transform: rotate(0deg) scale(-1, 1);
+	-ms-transform: rotate(0deg) scale(-1, 1);
+	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+
+.tabsCtab {
+	position: relative;
+	left: 0; top: 10px;
+	width: 58px;
+	height: 19px;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	font-family: Tahoma, Verdana, Arial, sans-serif, Helvetica;
+	font-size: 11px;
+	font-weight: normal;
+}
+.tabsCtab:hover {top: 12px;}
+
+.tabsCtab-right {
+	position: absolute;
+	left: 0; top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 auto;
+	align-items: center;
+	justify-content: center;
+	border: 0px solid black;
+}
+
+.tab-player-H, /* x скорее всего не понадобится */
+.tab-player {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+.tab-player {border: 1px solid transparent;}
+.tab-player:hover {
+	background-color: #fff;
+	border: 1px solid #999;
+}
+#idToggleMenuTab {cursor: pointer;}
+.tab-player-H {display: none;} /* x скорее всего нет надобности */
+/* (!).tabs-menu-box-настройки для меню вкладок и меню баннеров */
+.tabs-menu-box {
+	position: absolute;
+	left: 0; top: 30px;
+	max-width: 410px;
+}
+/* TODO: 'сделать плавно, см.в нав.пан.всплывающую подсказку */
+.tabsmenubox-hide {
+	opacity: 0;
+	transform: translateY(.7em) scale(.3);
+	transform-origin: center bottom;
+}
+.tabsmenubox-show {
+	opacity: 1;
+	transition: .6s .9s;
+	transform: translateY(0);
+}
+ul.subnav,
+.tabs-menu {
+	clear: both;
+	padding: 3px;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.tabsCtab-right,
+ul.subnav, /* (?) не понятно к чему */
+.tabs-menu {/* z-index: 101; */ /* x */}
+/* (!) Цвет фона, тени и углы выпадающей вкладки списка меню */
+.tabs-menu {
+	background-color: #3f3f3f;
+	box-shadow: 2px 2px 2px #999;
+	-webkit-box-shadow: 2px 2px 2px #999;
+	-moz-box-shadow: 2px 2px 2px #999;
+	filter: progid: DXImageTransform.Microsoft.Shadow(color = #aaaaaa, direction = 120, trength = 3);
+	border-top-color: #3f3f3f;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+/* (!).tabs-list-список компонентов меню раскрывающихся вкладок */
+.tabs-list {
+	list-style:none;
+	font-family: Verdana, Arial, sans-serif, Helvetica;
+	font-size: 11px;
+}
+.tabs-list li {
+	text-indent:0;
+	list-style-image:none;
+	/* white-space: nowrap; */
+}
+/* (!).tabs-list li-выпадающие вкладки списка элементов меню */
+.tabs-list li a {
+	text-decoration: none;
+	color: silver;
+}
+.tabs-list li a:visited {
+	color: silver;
+}
+.tabs-list li a:hover {
+	color: white;
+	text-decoration: underline;
+}
+/* (!).tabs-window-вкладки панели тем - топиков */
+.tab-slider-track,
+.tab-slider,
+.tabs-window {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 1 1 100%;
+}
+.tab-slider,
+.tabs-window {
+	justify-content: center;
+	overflow: hidden;
+}
+.tab-slider {border-bottom: 0;}
+/* (!).tab-slider-track-вкладки */
+.tab-slider-track {
+	min-width: 50px;
+	list-style:none;
+	font-family: 'Lucida Grande', 'Trebuchet MS', Arial, Verdana, sans-serif;
+	overflow: hidden;
+}
+/* Тень */ /* TODO: (?) */
+.tab-slider-track {
+	/* box-shadow: 35px 0 30px -20px #000 inset,
+				-35px 0 30px -20px #000 inset; */
+}
+.nav-handle,
+.tabsCtab,
+.tabs-menu-box,
+.tab-player-H, /* x скорее всего не понадобится */
+.tab-player,
+.tab-slider-track {/* z-index: 2; */ /* x */}
+/**Одиночная вкладка */
+.tabs {
+	position: relative;
+	top: 0;
+	width: auto;
+	height: 28px;
+	padding: 0;
+	float: left;
+	text-indent: 0;
+	list-style-image: none;
+}
+.tabs:hover {top: 12px;}
+.tab-current:hover,
+.tab-current {top: 10px;}
+/**Не текущие вкладки */
+.nav-handle,
+.tabs {
+	background-color: #6e6e6e;
+	background: -webkit-linear-gradient(top, #f1f1f1 3%, #888888 20%);
+	background: -moz-linear-gradient(top, #f1f1f1 3%, #888888 20%);
+	background: -o-linear-gradient(top,rgb(255,255,255) 3%,rgb(136,136,136) 20%);
+	background: -ms-linear-gradient(top, #f1f1f1 3%, #888888 20%);
+}
+/**Текущая вкладка */
+.nav-handle:hover,
+.tabsCtab,
+.tab-current {
+	background-color: #3f3f3f;
+	background: -webkit-linear-gradient(top, #f1f1f1 3%, #3f3f3f 20%);
+	background: -moz-linear-gradient(top, #f1f1f1 3%, #3f3f3f 20%);
+	background: -o-linear-gradient(top,rgb(255,255,255) 3%,rgb(63,63,63) 20%);
+	background: -ms-linear-gradient(top, #f1f1f1 3%, #3f3f3f 20%);
+}
+/**Границы и затенение вкладок */
+.nav-handle,
+.tabsCtab,
+.tab-current,
+.tabs {
+	border-color: #000000;
+	box-shadow: 2px -1px 4px -1px #3f3f3f;
+	-webkit-box-shadow: 2px -1px 4px -1px #3f3f3f;
+	-moz-box-shadow: 2px -1px 4px -1px #3f3f3f;
+}
+/**плавное появление при наведении курсора */
+.nav-handle,
+.tabsCtab,
+.tab-current,
+.tabs span:hover,
+.tabs span,
+.tabs a:hover,
+.tabs a,
+.tabs:hover,
+.tabs {
+	transition: 0.3s ease;
+	transition: .3s ease;
+	-webkit-transition: .3s ease; /* Chrome, Safari, iOS */
+	-moz-transition: .3s ease; /* Firefox */
+	-o-transition: .3s ease; /* Opera */
+}
+
+.tabs a {
+	position: relative;
+	top: 8px;
+	width: auto;
+	height: auto;
+	display: block;
+	padding: 0px 10px 0px 8px;
+	font-size: 13px;
+	text-align: center;
+	text-decoration: none;
+}
+/**Текущая вкладка */
+.tab-current a {
+	top: 3px; /* (i) для .tabs a:hover см.в коде js событие наведение курсора на ссылку вкладки, т.к.стиль становится наибольшим приоритетным по сравнению с отдельными классами */
+	cursor: default;
+	/* color: #000; */
+}
+
+.tabs span {
+	position: relative;
+	top: 0;
+	height: auto;
+	display: block;
+	/* line-height: 28px; */
+}
+/* (i) перенос текста, пробелы, дефисы, тире */
+.tabs span {
+	white-space: nowrap; /* - текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
+	overflow-wrap: normal;
+	word-wrap: normal;
+	word-break: normal; /* - чтобы игнорировались "черточки" - перенос текста */
+	word-spacing: normal; /* - нормальный интервал между словами, определенный текущим шрифтом и/или браузером */
+	hyphens: none; /* - чтобы браузер не обращал внимания на мягкий дефис, вставляем hyphens: none для Chrome, с Firefox все сложнее */
+	-moz-hyphens: none; /* - все равно не работает */
+	-ms-hyphens: none;
+	text-wrap: nowrap; /* (!) new - экспериментальный */
+	/* truncate - усечение длинного текста во вкладке */
+	max-width: 120px;
+	text-overflow: ellipsis;
+	overflow: hidden; /* усечение длинного текста во вкладке */
+}
+/**Цвет текста вкладок */
+/**Не текущие вкладки */
+.tabs span {color: #dedede;}
+.tabs span:hover {color: #fff;}
+/**Текущая вкладка */
+.tab-current span {color: #737373;}
+/* (!).close-tab-мини-кнопка закрытия вкладки */
+.close-tab {
+	position: absolute;
+	right: 1px; top: 1px;
+	border: 0;
+	cursor: default;
+	z-index: 1;
+	display: none;
+}
+/* (!).topic-content-содержимое контейнеров */
+.topic-content {
+	position: absolute;
+	top: 25px; left: 0; right: 0; bottom: 0;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.topic-box,
+.topic-content {background-color: #fff;}
+/* (i).topic-box-имя класса так же присутствует в стилях topic.css, но правила разные */
+.new-tab-box, /* (?) предположительно класс создается кодом js */
+.search-box,
+.keywords-box,
+.topic-box {
+	position: absolute;
+	left: 2px; right: 2px;
+	top: 0; bottom: 0;
+}
+/* (?) не понятно где и для чего */
+.interface {
+	font-family: Verdana, Arial, sans-serif, Helvetica;
+	font-size: 8pt;
+	font-weight: bold;
+}
+/* (!).panes .pane-изначальное скрытие всех панелей
+(?) не понятно для каких панелей предусмотрен данные классы */
+.panes .pane {/* display: none; */}
+/* (!) ul.topnav-выпадающее меню в заголовке баннера
+(?) Видимо оно не было загружено в скине, т.к.некоторые опции были платными
+x скорее всего эта часть не понадобится */
+ul.topnav {
+	position: absolute;
+	bottom: 0px; right: 0;
+	border-width: 1px 0px 0px 1px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: auto;
+	font-size: 11px;
+	font-family: Verdana, Arial, sans-serif, Helvetica;
+	z-index: 1000;
+	white-space: nowrap;
+}
+ul.topnav li {
+	float: left;
+	margin: 0;
+	padding: 0 0 0 0;
+	font-weight: bold;
+	position: relative;
+}
+ul.topnav li a {
+	padding: 2px 5px;
+	display: block;
+	float: left;
+}
+ul.topnav li a:hover {text-decoration: underline;}
+ul.topnav li span {
+	width: 17px;
+	height: 35px;
+	float: left;
+}
+ul.topnav li span.subhover {
+	background-position: center bottom;
+	cursor: pointer;
+}
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute;
+	left: 0; top: 17px;
+	float: left;
+	margin: 0px;
+}
+ul.topnav li ul.subnav li {
+	margin: 0; padding: 0;
+	clear: both;
+	width: auto;
+}
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: auto;
+	font-weight: normal;
+}
+/* (!) МЕДИА ЗАПРОСЫ
+(!) Анимация */
+/**баннер */
+/* x использовалась в ф.animateBanner */
+/* @keyframes bannerShow {
+	0% {top: -120px;}
+	100% {top: 0;}
+}
+@keyframes bannerHide {
+	0% {top: 0;}
+	100% {top: -120px;}
+} */
+/* (!) Адаптация */
+/* 'Portrait tablets and medium desktops
+- Портретные планшеты и средние настольные компьютеры */
+/**диапазон от 992px до 1199px */
+@media (min-width: 992px) and (max-width: 1199px) {}
+/**диапазон < 960px */
+@media screen and (max-width: 960px) {}
+/**диапазон < 775px */
+@media screen and (max-width: 775px) {
+	.toolbar-box-left span.text-wrap,
+	.toolbar-box-right span.text-wrap {width: min-content;}
+}
+/* 'Portrait tablets and small desktops
+- Портретные планшеты и небольшие настольные компьютеры */
+/**диапазон от 768px до 991px */
+@media (min-width: 768px) and (max-width: 991px) {}
+/* 'Landscape phones and portrait tablets
+- Альбомные телефоны и планшеты с портретом */
+@media screen and (max-width: 740px) {
+	/* HACK: 'граница, когда после вкладки Поиск почти не остается места для др.вкладок чтобы не уходить за пределы видимости экрана */
+}
+/**диапазон < 714px */
+@media screen and (max-width: 714px) {.toolbar-box-center span.text-wrap {width: min-content;}}
+/* (!) диапазон > 646px */
+@media screen and (min-width: 646px) {
+	/* (!) Анимация > 646 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes panelBannerShow {
+		0% {top: 56px;}
+		100% {top: 172px;} */ /* (nav-pane, topic-pane: top: 56px + banner height: 120px) - margin-top: 4px */
+	/* }
+	@keyframes panelBannerHide {
+		0% {top: 172px;}
+		100% {top: 56px;}
+	} */
+	/**панель навигации */
+	/* x использовалась в ф.animateNavPane */
+	/* @keyframes navpaneHide {
+		0% {left: 0;}
+		100% {left: -314px;}
+	}
+	@keyframes navpaneShow {
+		0% {left: -314px;}
+		100% {left: 0;}
+	}
+	@keyframes topicpaneNavPaneHide {
+		0% {left: 314px;}
+		100% {left: 0;}
+	}
+	@keyframes topicpaneNavPaneShow {
+		0% {left: 0;}
+		100% {left: 314px;}
+	} */
+}
+/* (!)*диапазон < 646px */
+@media screen and (max-width: 646px) {
+	.toolbar {height: 98px;}
+	.toolbar-banner {height: 99px;}
+
+	.toolbar-search {
+		flex: 1 1 100%;
+		flex-wrap: wrap;
+	}
+	.toolbar-box-search {align-items: flex-end;}
+	.toolbar-box-search span {
+		position: absolute;
+		top: 12px;
+	}
+
+	.toolbar-box-left span.text-wrap,
+	.toolbar-box-right span.text-wrap,
+	.toolbar-box-center span.text-wrap {width: auto;}
+
+	.topic-pane,
+	.nav-pane {top: 104px;}
+	.topic-pane-banner,
+	.nav-pane-banner {top: 220px;} /* [nav-pane, topic-pane] top: banner height: 120px + toolbar (height + margin-top): (100px + 4px) */
+	/* (!) Анимация < 646 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes panelBannerShow {
+		0% {top: 104px;}
+		100% {top: 220px;}
+	}
+	@keyframes panelBannerHide {
+		0% {top: 220px;}
+		100% {top: 104px;}
+	} */
+}
+/* (!)*диапазон < 624px */
+@media screen and (max-width: 624px) {
+	.toolbar-box-search span {top: 8px;}
+	.toolbar-box-left span.text-wrap,
+	.toolbar-box-right span.text-wrap {width: min-content;}
+}
+/* (!)*диапазон < 564px */
+@media screen and (max-width: 564px) {.toolbar-box-center span.text-wrap {width: min-content;}}
+/* (!)*диапазон < 527px */
+@media screen and (max-width: 527px) {
+	.banner {
+		background-position-x: inherit;
+		/* background-size: cover; */
+		/* background-size: contain; */
+		/* background-size: 100%; */
+	}
+}
+/* (!)*диапазон < 500px */
+@media screen and (max-width: 500px) {
+	.popups {max-width: 50vw;}
+
+	.container {
+		display: flex;
+		flex-flow: column nowrap;
+	}
+
+	.toolbar-banner,
+	.toolbar,
+	.banner {z-index: 1;}
+	/* 'убираем тень */
+	.nav-pane,
+	.topic-content,
+	.toolbar-banner,
+	.toolbar {
+		box-shadow: none;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: 0 0 0;
+	}/* 'убираем тень */
+	/* x использовалось при display: block; */
+	/* .nav-pane {
+		right: 0;
+		width: auto;
+		height: 344px;
+		min-height: 250px; для splitterBottom
+	} */
+
+	.toolbar-banner,
+	.toolbar {flex: 0 0 auto;}
+	/* .topic-pane-banner, */ /* x использовалось при display: block; */
+	/* .nav-pane-banner, */ /* x использовалось при display: block; */
+	.topic-pane,
+	.nav-pane {
+		position: relative;
+		top: 0;
+		width: auto;
+		height: auto;
+		display: flex;
+		flex: 1 1 auto;
+		flex-wrap: nowrap;
+		z-index: 0;
+	}
+	/* .topic-pane-banner, */ /* x использовалось при display: block; */
+	.topic-pane {left: 0;}
+	/* x использовалось при display: block; */
+	/* .nav-pane-banner,
+	.nav-pane {z-index: 0;} */
+
+	.splitter-right {display: none;}
+	.splitter-bottom {display: block;}
+	/* x использовалось при display: block; */
+	/* .topic-pane {
+		left: 0; top: 458px;
+		min-height: 200px; для splitterBottom
+	}
+	.topic-pane-banner {top: 574px;} */
+	/* .topic-pane-extend {top: 104px;} */ /* - без пан.нав.банер скрыт */
+	/* .topic-pane-expand {top: 220px;} */ /* - без пан.нав.банер раскрыт */
+	/*(!).navhandle-navpane-show/hide - трансформация иконки на кнопке в панеле топика */
+	.navhandle-navpane-show {
+		transform: rotate(90deg) scale(1, 1);
+		-webkit-transform: rotate(90deg) scale(1, 1);
+		-moz-transform: rotate(90deg) scale(1, 1);
+		-o-transform: rotate(90deg) scale(1, 1);
+		-ms-transform: rotate(90deg) scale(1, 1);
+		/* will-change: transform; */ /**св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	}
+	.navhandle-navpane-hide {
+		transform: rotate(90deg) scale(-1, 1);
+		-webkit-transform: rotate(90deg) scale(-1, 1);
+		-moz-transform: rotate(90deg) scale(-1, 1);
+		-o-transform: rotate(90deg) scale(-1, 1);
+		-ms-transform: rotate(90deg) scale(-1, 1);
+		/* will-change: transform; */ /**св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	}
+	/* (!) Анимация < 500 */
+	/*
+	*баннер
+	'для нав.пан.действует правило анимации из диапазона < 646
+	*/
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes topicpaneBannerShow {
+		0% {top: 458px;}
+		100% {top: 574px;} */ /* 1) (topic-pane top: 458px + banner height: 120px) - margin-top: 4px */
+	/* }
+	@keyframes topicpaneBannerHide {
+		0% {top: 574px;} */ /* 2) nav-pane top: 104px + banner height: 120px + nav-pane height: 350px или 3) toolbar height: 100px + banner height: 120px + nav-pane height: 350px + margin-top: 4px */
+		/* 100% {top: 458px;}
+	} */
+	/**панель навигации */
+	/* x использовалась в ф.animateNavPane */
+	/* @keyframes navpaneHide {
+		0% {top: 104px;}
+		100% {top: -250px;} */ /* = toolbar height: 100px - nav-pane height: 350px */
+	/* }
+	@keyframes navpaneShow {
+		0% {top: -250px;} */ /* = toolbar height: 100px - nav-pane height: 350px */
+		/* 100% {top: 104px;}
+	}
+	@keyframes navpaneHideBanner {
+		0% {top: 220px;}
+		100% {top: -130px;} */ /* = (toolbar height: 100px + banner height: 120px) - nav-pane height: 350px */
+	/* }
+	@keyframes navpaneShowBanner {
+		0% {top: -130px;} */ /* = (toolbar height: 100px + banner height: 120px) - nav-pane height: 350px */
+		/* 100% {top: 220px;}
+	}
+	@keyframes topicpaneExpand { */ /* - без пан.нав.банер раскрыт */
+		/* 0% {top: 574px;}
+		100% {top: 220px;}
+	}
+	@keyframes topicpaneExtend { */ /* - без пан.нав.банер скрыт */
+		/* 0% {top: 458px;}
+		100% {top: 104px;}
+	}
+	@keyframes topicpaneNavPaneShow {
+		0% {top: 104px;}
+		100% {top: 458px;}
+	}
+	@keyframes topicpaneNavPaneShowBanner {
+		0% {top: 220px;}
+		100% {top: 574px;}
+	} */
+}
+/* (!)*диапазон < 496 */
+@media screen and (max-width: 496px) {
+	.toolbar {height: 148px;}
+	.toolbar-banner {height: 149px;}
+
+	.toolbar-right {order: 3;}
+	.toolbar-center {order: 4;}
+	.toolbar-left,
+	.toolbar-center,
+	.toolbar-right {justify-content: space-around;}
+
+	.toolbar-box-search span {top: 10px;}
+	.toolbar-box-center span.text-wrap {width: auto;}
+	/* x использовалось при display: block; */
+	/* .nav-pane {top: 154px;}
+	.nav-pane-banner {top: 270px;} */
+
+	/* .topic-pane {top: 508px;} */
+	/* .topic-pane-banner {top: 624px;} */
+	/* .topic-pane-extend {top: 154px;} */ /* - без пан.нав.банер скрыт */
+	/* .topic-pane-expand {top: 270px;} */ /* - без пан.нав.банер раскрыт */
+	/* (!) Анимация < 496 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes panelBannerShow {
+		0% {top: 154px;}
+		100% {top: 270px;} */ /* 1) toolbar height: 150px + banner height: 120px */
+	/* }
+	@keyframes panelBannerHide {
+		0% {top: 270px;} */ /* 2) (nav-pane top: 154px + banner height: 120px) - margin top: 4px */
+		/* 100% {top: 154px;}
+	}
+	@keyframes topicpaneBannerShow {
+		0% {top: 508px;}
+		100% {top: 624px;} */ /* 1) nav-pane top: 154px + banner height: 120px + nav-pane height: 350px */
+	/* }
+	@keyframes topicpaneBannerHide {
+		0% {top: 624px;} */ /* 2) toolbar height: 150px + banner height: 120px + nav-pane height: 350px + margin top: 4px */
+		/* 100% {top: 508px;}
+	} */
+	/**панель навигации */
+	/* x использовалась в ф.animateNavPane */
+	/* @keyframes navpaneHide {
+		0% {top: 154px;}
+		100% {top: -200px;} */ /* nav-pane height: 350px - toolbar top: 150px */
+	/* }
+	@keyframes navpaneShow {
+		0% {top: -200px;} */ /* nav-pane height: 350px - toolbar top: 150px */
+		/* 100% {top: 154px;}
+	}
+	@keyframes navpaneHideBanner {
+		0% {top: 270px;}
+		100% {top: -80px;} */ /* nav-pane height: 350px - (toolbar top: 150px + banner height: 120px) */
+	/* }
+	@keyframes navpaneShowBanner {
+		0% {top: -80px;} */ /* nav-pane height: 350px - (toolbar top: 150px + banner height: 120px) */
+		/* 100% {top: 270px;}
+	}
+	@keyframes topicpaneExpand { */ /* - без пан.нав.банер раскрыт */
+		/* 0% {top: 624px;}
+		100% {top: 270px;}
+	}
+	@keyframes topicpaneExtend { */ /* - без пан.нав.банер скрыт */
+		/* 0% {top: 508px;}
+		100% {top: 154px;}
+	}
+	@keyframes topicpaneNavPaneShow {
+		0% {top: 154px;}
+		100% {top: 508px;}
+	}
+	@keyframes topicpaneNavPaneShowBanner {
+		0% {top: 270px;}
+		100% {top: 574px;}
+	} */
+}
+/* 'Landscape phones and smaller
+- Ландшафтные телефоны и меньшие */
+/* x диапазон < 457px */
+@media screen and (max-width: 457px) {
+	/* .nav-pane {height: 304px;} */
+	/* .topic-pane {top: 468px;} */
+	/* .topic-pane-banner {top: 584px;} */
+	/* .topic-pane-extend {top: 154px;} */ /* - без пан.нав.банер скрыт */
+	/* .topic-pane-expand {top: 270px;} */ /* - без пан.нав.банер раскрыт */
+	/* (!) Анимация < 457 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes topicpaneBannerShow {
+		0% {top: 466px;}
+		100% {top: 584px;}
+	}
+	@keyframes topicpaneBannerHide {
+		0% {top: 584px;}
+		100% {top: 466px;}
+	} */
+	/**панель навигации */
+	/* x использовалась в ф.animateNavPane */
+	/* @keyframes navpaneHide {
+		0% {top: 154px;}
+		100% {top: -160px;} */ /* nav-pane height: 310px - toolbar top: 150px */
+	/* }
+	@keyframes navpaneShow {
+		0% {top: -160px;} */ /* nav-pane height: 310px - toolbar top: 150px */
+		/* 100% {top: 154px;}
+	}
+	@keyframes navpaneHideBanner {
+		0% {top: 270px;}
+		100% {top: -40px;} */ /* nav-pane height: 310px - (toolbar top: 150px + banner height: 120px) */
+	/* }
+	@keyframes navpaneShowBanner {
+		0% {top: -40px;} */ /* nav-pane height: 310px - (toolbar top: 150px + banner height: 120px) */
+		/* 100% {top: 270px;}
+	}
+	@keyframes topicpaneExpand { */ /* - без пан.нав.банер раскрыт */
+		/* 0% {top: 582px;}
+		100% {top: 270px;}
+	}
+	@keyframes topicpaneExtend { */ /* - без пан.нав.банер скрыт */
+		/* 0% {top: 466px;}
+		100% {top: 154px;}
+	}
+	@keyframes topicpaneNavPaneShow {
+		0% {top: 154px;}
+		100% {top: 466px;}
+	}
+	@keyframes topicpaneNavPaneShowBanner {
+		0% {top: 270px;}
+		100% {top: 582px;}
+	} */
+}
+/* (!)*диапазон < 397 */
+@media screen and (max-width: 397px) {
+	.toolbar {height: 198px;}
+	.toolbar-banner {height: 199px;}
+
+	.toolbar-box-right,
+	.toolbar-box-center,
+	.toolbar-box-left,
+	.toolbar-left,
+	.toolbar-right,
+	.toolbar-center {flex-basis: 100%;}
+
+	.toolbar-box-search span {top: 14px;}
+	.toolbar-box-left span.text-wrap,
+	.toolbar-box-center span.text-wrap {width: auto;}
+	/**анимация подсказки для кнопки e-mail */
+	.feedback-tooltip {
+		transform: translate(-40px, -40px) scale(0); /* (x, y) */
+		-webkit-transform: translate(-40px, -40px) scale(0); /* Chrome, Safari, iOS */
+		-moz-transform: translate(-40px, -40px) scale(0); /* Firefox */
+		-o-transform: translate(-40px, -40px) scale(0); /* Opera */
+		-ms-transform: translate(-40px, -40px) scale(0); /* IE */
+	}
+	.feedback-tooltip-triangle {
+		border-left: none;
+		border-right: 30px solid transparent;
+	}
+	@keyframes tooltipToAppear {
+		0% {
+			opacity: 0;
+			transform: translate(-40px, -40px) scale(.1);
+			-webkit-transform: translate(-40px, -40px) scale(.1);
+			-moz-transform: translate(-40px, -40px) scale(.1);
+			-o-transform: translate(-40px, -40px) scale(.1);
+			-ms-transform: translate(-40px, -40px) scale(.1);
+		}
+		100% {
+			transform: translate(0px, 60px);
+			-webkit-transform: translate(0px, 60px);
+			-moz-transform: translate(0px, 60px);
+			-o-transform: translate(0px, 60px);
+			-ms-transform: translate(0px, 60px);
+			opacity: 1;
+		}
+	}
+	/* x использовалось при display: block; */
+	/* .nav-pane {top: 204px;}
+	.nav-pane-banner {top: 320px;} */
+
+	/* .topic-pane {top: 518px;} */
+	/* .topic-pane-banner {top: 634px;} */
+	/* .topic-pane-extend {top: 204px;} */ /* - без пан.нав.банер скрыт */
+	/* .topic-pane-expand {top: 320px;} */ /* - без пан.нав.банер раскрыт */
+	/* (!) Анимация < 397 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes panelBannerShow {
+		0% {top: 204px;}
+		100% {top: 320px;}
+	}
+	@keyframes panelBannerHide {
+		0% {top: 320px;}
+		100% {top: 204px;}
+	}
+	@keyframes topicpaneBannerShow {
+		0% {top: 518px;}
+		100% {top: 634px;}
+	}
+	@keyframes topicpaneBannerHide {
+		0% {top: 634px;}
+		100% {top: 518px;}
+	} */
+	/**панель навигации */
+	/* x использовалась в ф.animateNavPane */
+	/* @keyframes navpaneHide {
+		0% {top: 204px;}
+		100% {top: -110px;} */ /* nav-pane height: 310px - toolbar top: 200px */
+	/* }
+	@keyframes navpaneShow {
+		0% {top: -110px;} */ /* nav-pane height: 310px - toolbar top: 200px */
+		/* 100% {top: 204px;}
+	}
+	@keyframes navpaneHideBanner {
+		0% {top: 320px;}
+		100% {top: 10px;} */ /* nav-pane height: 310px - (toolbar top: 200px + banner height: 120px) */
+	/* }
+	@keyframes navpaneShowBanner {
+		0% {top: 10px;} */ /* nav-pane height: 310px - (toolbar top: 200px + banner height: 120px) */
+		/* 100% {top: 320px;}
+	}
+	@keyframes topicpaneExpand { */ /* - без пан.нав.банер раскрыт */
+		/* 0% {top: 634px;}
+		100% {top: 320px;}
+	}
+	@keyframes topicpaneExtend { */ /* - без пан.нав.банер скрыт */
+		/* 0% {top: 518px;}
+		100% {top: 204px;}
+	}
+	@keyframes topicpaneNavPaneShow {
+		0% {top: 204px;}
+		100% {top: 518px;}
+	}
+	@keyframes topicpaneNavPaneShowBanner {
+		0% {top: 320px;}
+		100% {top: 634px;}
+	} */
+}
+/* (!)*диапазон < 346px */
+@media screen and (max-width: 346px) {.toolbar-box-search span {top: 10px;}}
+/* (!)*диапазон < 226px */
+@media screen and (max-width: 226px) {
+	.toolbar {height: 98px;}
+	.toolbar-banner {height: 99px;}
+
+	.toolbar-left,
+	.toolbar-right,
+	.toolbar-center {height: 18px;}
+	.toolbar-center {padding: 0 0 6px 0;}
+
+	.toolbar-box-search {align-items: center;}
+
+	.toolbar-box span {display: none;}
+	/* x использовалось при display: block; */
+	/* .nav-pane {
+		right: 0; top: 104px;
+		width: auto; height: 344px;
+	}
+	.nav-pane-banner {top: 220px;} */
+
+	/* .topic-pane {left: 0; top: 458px;} */ /* - с пан.нав.баннер скрыт */
+	/* .topic-pane-banner {top: 574px;} */ /* - с пан.нав.баннер раскрыт */
+	/* .topic-pane-extend {top: 104px;} */ /* - без пан.нав.банер скрыт */
+	/* .topic-pane-expand {top: 220px;} */ /* - без пан.нав.банер раскрыт */
+	/* (!) Анимация < 226 */
+	/**баннер */
+	/* x использовалась в ф.animateBanner */
+	/* @keyframes panelBannerShow {
+		0% {top: 104px;}
+		100% {top: 220px;}
+	}
+	@keyframes panelBannerHide {
+		0% {top: 220px;}
+		100% {top: 104px;}
+	}
+	@keyframes topicpaneBannerShow {
+		0% {top: 458px;}
+		100% {top: 578px;}
+	}
+	@keyframes topicpaneBannerHide {
+		0% {top: 578px;}
+		100% {top: 458px;}
+	} */
+}
+/* (!)*диапазон < 220px */
+@media screen and (max-width: 220px) {
+	.toolbar-search {min-width: max-content;}
+	/**анимация подсказки для кнопки e-mail */
+	.feedback-tooltip {
+		transform: translate(-34px, -40px) scale(0); /* (x, y) */
+		-webkit-transform: translate(-34px, -40px) scale(0); /* Chrome, Safari, iOS */
+		-moz-transform: translate(-34px, -40px) scale(0); /* Firefox */
+		-o-transform: translate(-34px, -40px) scale(0); /* Opera */
+		-ms-transform: translate(-34px, -40px) scale(0); /* IE */
+	}
+	@keyframes tooltipToAppear {
+		0% {
+			opacity: 0;
+			transform: translate(-34px, -40px) scale(.1);
+			-webkit-transform: translate(-34px, -40px) scale(.1);
+			-moz-transform: translate(-34px, -40px) scale(.1);
+			-o-transform: translate(-34px, -40px) scale(.1);
+			-ms-transform: translate(-34px, -40px) scale(.1);
+		}
+		100% {
+			transform: translate(-21px, 60px);
+			-webkit-transform: translate(-21px, 60px);
+			-moz-transform: translate(-21px, 60px);
+			-o-transform: translate(-21px, 60px);
+			-ms-transform: translate(-21px, 60px);
+			opacity: 1;
+		}
+	}
+}

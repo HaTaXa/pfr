@@ -1,0 +1,33 @@
+/* (i) Hyperlink colors and behaviors - Цвет и поведение гиперссылок */
+
+.topiclink {color: blue; text-decoration: underline;}
+.topiclink:visited {color: blue;}
+.topiclink:hover {color: blue;}
+.weblink {color: blue; text-decoration: underline;}
+.weblink:visited {color: blue;}
+.weblink:hover {color: blue;}
+.popuplink {color: blue; font-weight: bold; font-style: italic; text-decoration: underline;}
+.popuplink:visited {color: blue;}
+.popuplink:hover {color: red; }
+.filelink {color: magenta; text-decoration: underline;}
+.filelink:visited {color: magenta;}
+.filelink:hover {color: blue; }
+.scriptlink{color: blue; text-decoration: underline;}
+.scriptlink:visited {color: blue;}
+.scriptlink:hover {color: blue;}
+.toggle-inline {color: green; font-weight: bold; font-style: italic; text-decoration: none;}
+.toggle-inline:active {color: green; font-weight: bold; font-style: italic; text-decoration: underline;}
+.toggle-inline:visited {color: green; font-weight: normal; font-style: normal; text-decoration: none;}
+.toggle-inline:hover {color: blue; font-weight: bold; font-style: italic; text-decoration: underline;}
+.toggle-dropdown {color: red; font-weight: bold; font-style: italic; text-decoration: none;}
+.toggle-dropdown:active {color: red; font-weight: bold; font-style: italic; text-decoration: underline;}
+.toggle-dropdown:visited {color: red; font-weight: normal; font-style: normal; text-decoration: none;}
+.toggle-dropdown:hover {color: blue; font-weight: bold; font-style: italic; text-decoration: underline;}
+.comment-link {color: blue; font-size: 10pt; font-family: "Arial"; font-style: normal; font-weight: bold; text-decoration: none;}
+.comment-link:visited {color: blue;}
+.comment-link:hover {text-decoration: underline;}
+
+/* (i) Link to display entire user interface when topic is opened on its own
+- Ссылка для отображения всего пользовательского интерфейса, когда тема открыта сама по себе
+*данный класс прописан так же в topic.css */
+/* .sync-toc {display: none;} */

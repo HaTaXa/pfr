@@ -1,0 +1,71 @@
+/* (!) function animationOffset-анимационное смещение для: 1) вкладок на панели тема топика, 2) слайдера изображений в скрытом контенте */
+@keyframes jumpToLeft {
+	/* from {transform: translateX(0);} */
+	/* to {transform: translateX(-10px);} */
+	from, to {
+		transform: translateX(-10px);
+		-webkit-transform: translateX(-10px);
+		-moz-transform: translateX(-10px);
+		-o-transform: translateX(-10px);
+		-ms-transform: translateX(-10px);
+		/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	}
+}
+@keyframes jumpToRight {
+	/* from {transform: translateX(0);} */
+	/* to {transform: translateX(10px);} */
+		from, to {
+		transform: translateX(10px);
+		-webkit-transform: translateX(10px);
+		-moz-transform: translateX(10px);
+		-o-transform: translateX(10px);
+		-ms-transform: translateX(10px);
+		/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	}
+}
+/**для function setImageCurrent-установить изо.текущим */
+@keyframes img-item-center {
+	0% {opacity: 0;}
+	100% {opacity: 1;}
+}
+/**для function goToImage-переключение по изо.в lightbox */
+@keyframes img-item-left {
+	0% {
+		opacity: 0;
+		transform: translateX(100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+@keyframes img-item-right {
+	0% {
+		opacity: 0;
+		transform: translateX(-100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+@keyframes img-item-up {
+	0% {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes img-item-down {
+	0% {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

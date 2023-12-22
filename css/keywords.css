@@ -1,0 +1,63 @@
+/* (i) см.файл hmkwindex.htm */
+html, body {
+	overflow: hidden;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+}
+div#hmidxheader {
+	position: absolute;
+	background: transparent;
+	top: 10px; left: 10px; right: 18px;
+}
+div#idxheader {
+	position: relative;
+	top: 0px; left: 0px; right: 0px;
+	display: none;
+	background-color: white;
+	z-index: 100;
+}
+div#idxbody {
+	position: absolute;
+	top: 85px; bottom: 0; left: 9px; right: 0;
+	overflow-y: scroll;
+	margin-right: 2px;
+	padding-bottom: 5px;
+	border-top: 1px solid silver;
+}
+label {cursor: pointer;}
+.navtitle {font-size: 13pt; font-weight: bold; margin-bottom: 10px;}
+.nojstitle {font-size: 11pt; white-space: nowrap; margin-top: -8px;}
+.nojstitle a {color: black; text-decoration: none;}
+.nojstitle a:visited {color: black;}
+.nojstitle a:hover {text-decoration: underline;}
+#idx {margin: 0; padding: 0;} /* ~ div tag that wraps the keyword index - тег div, который обертывает индекс ключевых слов */
+#idx a {color: #000; text-decoration: none; outline: none;} /* ~ all links in index appear as text - все ссылки в индексе отображаются в виде текста */
+#idx a:visited {color: #000;}
+#idx a:hover {color: #000; text-decoration: underline;}
+
+#idx p {margin: 2px;} /* ~ keywords and secondary keywords - ключевые слова и вторичные ключевые слова */
+#idx p.idxkeyword2 {margin-left: 20px} /* indentation for secondary keywords */
+.idxsection {font-family: Arial,Helvetica; font-weight: normal; font-size: 14pt; color: #000000; text-decoration: none; margin-top: 15px; margin-bottom: 5px;}
+.idxkeyword {font-family: Arial,Helvetica; font-weight: normal; font-size: 11pt; color: #000000; text-decoration: none;}
+.idxkeyword2 {font-family: Arial,Helvetica; font-weight: normal; font-size: 11pt; color: #000000; text-decoration: none;}
+.idxlink {font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none;}
+p.idxkeyword a:link, p.idxkeyword2 a:link {color: black; text-decoration: none;}
+p.idxkeyword a:visited, p.idxkeyword2 a:visited {color: black;}
+p.idxkeyword a:hover, p.idxkeyword2 a:hover {color: black; text-decoration: underline;}
+span.idxlabel {font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt;}
+table\.idxtable {
+	background: #F4F4F4;
+	border: 1px solid #000000;
+	border-collapse: collapse;
+	box-shadow: 2px 2px 2px #B0B0B0;
+	-webkit-box-shadow: 2px 2px 2px #B0B0B0;
+	-moz-box-shadow: 2px 2px 2px #B0B0B0;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=B0B0B0, Direction=135, Strength=4);
+}
+td.idxtable {background: #F4F4F4;}
+td.idxtable a:link {color: black; text-decoration: none;}
+td.idxtable a:visited {color: black;}
+td.idxtable a:hover {color: black; text-decoration: underline;}
+a.idxrefs:link {color: black; text-decoration: none;}
+a.idxrefs:visited {color: black;}
+a.idxrefs:hover {color: black; text-decoration: underline;}
+.searchopts {font-size: 12px;}
