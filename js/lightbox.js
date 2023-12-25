@@ -1035,7 +1035,7 @@ function setToggleElement(elem = null, btnChecked = null) {
 						for (let i = 0; i < lbx.length; i++) {
 							if (lbx[i].querySelectorAll('.lightbox-img').length > 0) {
 								let imgItem = lbx[i].querySelector('.img-item');
-								// 'проверяем существование (existence) элемента img для просмотра изображений
+								// 'проверяем существование (existence) элемента.img-item в.img-viewer
 								if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
 									imgItem = writeImageElement(lbx[i]); // - создать дочерний элемент изо
 								} else {

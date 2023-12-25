@@ -481,9 +481,6 @@ function setHistoryPushState(hrefPage = window.top.hmtopicvars.currP) {
 		window.top.hmpermalink.url = window.top.hmpermalink.url.substring(0, window.top.hmpermalink.url.length - 1);
 	}
 	window.top.history.pushState('', '', window.top.hmpermalink.url);
-
-	console.log(`function setHistoryPushState(${hrefPage}) window.«${window.name}»:\n hrefPage[0]: ${hrefPage[0]}\n window.top.location.href.length[${window.top.location.href.length}]: ${window.top.location.href[window.top.location.href.length - 1]}\n window.top.hmpermalink.url: ${window.top.hmpermalink.url}`); // x -
-
 }
 // x (!) animateNavPane - через CSS
 // function animateNavPane (elem, animationName, valueShowHide) {

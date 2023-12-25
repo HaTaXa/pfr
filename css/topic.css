@@ -339,7 +339,59 @@ div#commentsWrapper {display: none;}
 	text-align: center;
 	font-weight: bold;
 	/* overflow: hidden; */ /**влияет на отображение контента в.msg-btn */
+	/* z-index: 0; */ /* чтобы msg-box:before/:after распологались под элементом */
 }
+.msg-box:before,
+.msg-box:after {
+	content: "";
+	position: absolute;
+	left: -2px;
+	right: -2px;
+	top: -2px;
+	bottom: 6px; /* чтобы кн.работала делаем bottom: 6px */
+	background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffff00",GradientType=1);
+	background-size: 600%;
+	/* z-index: -1; */ /* под элементом */
+	animation: msg-show 30s ease infinite;
+	-webkit-animation: msg-show 5s linear infinite;
+	-moz-animation: msg-show 5s linear infinite;
+	-o-animation: msg-show 5s linear infinite;
+	-ms-animation: msg-show 5s linear infinite;
+}
+.msg-box:after {
+	filter: blur(25px);
+}
+
+@keyframes msg-show {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-webkit-keyframes msg-show {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-moz-keyframes msg-show {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-o-keyframes msg-show {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-ms-keyframes msg-show {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+
 .msg-content {
 	position: relative;
 	left: 0; top: 0;
@@ -354,9 +406,15 @@ div#commentsWrapper {display: none;}
 	cursor: default;
 }
 .msg-content {
+	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -moz-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -o-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -ms-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
+	/* background-color: lightyellow; */
 	/* border: 1px solid silver; */
 	border: 1px solid #3f3f3f;
-	background-color: lightyellow;
 }
 
 .msg-icon {
@@ -372,6 +430,8 @@ div#commentsWrapper {display: none;}
 .msg-info {
 	background: url(../icon/info.png) no-repeat;
 	background-size: 100% 100%;
+	border-radius: 100px;
+	box-shadow: 0 0 20px 20px #fff;
 }
 .msg-text {
 	position: relative;
@@ -386,7 +446,7 @@ div#commentsWrapper {display: none;}
 	flex-flow: row wrap;
 	align-items: center;
 	justify-content: center;
-	color: #f00;
+	color: #fff; /* color: #f00; */
 	overflow: hidden auto;
 }
 .msg-text p {width: 100%;}
@@ -394,7 +454,7 @@ div#commentsWrapper {display: none;}
 .msg-btn {
 	position: relative;
 	left: 0; top: 0;
-	width: 100%;
+	width: auto;
 	height: auto;
 	padding: 2px;
 	display: flex;
@@ -408,6 +468,7 @@ div#commentsWrapper {display: none;}
 	-webkit-animation: msg-line-gradient 5s linear infinite;
 	-moz-animation: msg-line-gradient 5s linear infinite;
 	-o-animation: msg-line-gradient 5s linear infinite;
+	-ms-animation: msg-line-gradient 5s linear infinite;
 }
 /* .msg-btn:before {
 	content: "«";
@@ -447,41 +508,46 @@ div#commentsWrapper {display: none;}
 	-webkit-animation: msg-glow 5s linear infinite;
 	-moz-animation: msg-glow 5s linear infinite;
 	-o-animation: msg-glow 5s linear infinite;
+	-ms-animation: msg-glow 5s linear infinite;
 }
 .msg-show {
 	/* background: rgb(0,212,255); */
 	background: -webkit-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff",endColorstr="#020024",GradientType=1);
 	background: linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
-	background-size: 600% 200%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
+	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgb(0,212,255);
 }
 .msg-show:hover {
 	/* background: rgb(255,146,146); */
 	background: -webkit-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff9292",endColorstr="#4b0000",GradientType=1);
 	background: linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
-	background-size: 600% 200%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
+	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgba(255,146,146,.9);
 }
 .msg-hide {
 	/* background: rgb(9,255,0); */
 	background: -webkit-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#09ff00",endColorstr="#002400",GradientType=1);
 	background: linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
-	background-size: 600% 200%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
+	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(9,255,0,.9);
 }
 .msg-hide:hover {
 	/* background: rgb(255,244,0); */
 	background: -webkit-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fff400",endColorstr="#606001",GradientType=1);
 	background: linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
-	background-size: 600% 200%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
+	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(255,244,0,.9);
 }
 @keyframes msg-glow {
@@ -763,6 +829,7 @@ li.unic-check-mark:before,
 	text-indent: 0;
 	color: #000;
 }
+.slider-list,
 .img-slider,
 .img-title,
 .lightbox-video,
@@ -802,20 +869,20 @@ li.unic-check-mark:before,
 
 .toggle-collapse {display: none;} /* скрыть/отобразить lightbox */
 
-.img-slider,
-.slider-track,
 .img-title,
+.slider-track,
+.slider-list,
+.img-slider,
 .lightbox-img {
 	position: relative;
 	left: 0; top: 0;
 	width: auto;
-	height: auto;
+	height: auto; /* для lightbox-img высота будет вычисляться кодом js */
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 .lightbox-img {
-	height: auto; /* высота будет вычисляться кодом js */
 	flex: 1 1 100%;
 	flex-flow: row wrap;
 	-ms-flex-flow: row wrap; /* IE */
@@ -1045,30 +1112,13 @@ li.unic-check-mark:before,
 	cursor: default;
 }
 
-.slider-track,
-.img-slider {flex: 1 1 100%;}
-
 .img-slider {
 	margin: 6px;
-	flex-flow: row nowrap;
-	-ms-flex-flow: row nowrap; /* IE */
+	flex: 1 1 100%;
 }
 
+.slider-list,
 .img-slider {
-	box-shadow: 35px 0 30px -20px #000 inset,
-				-35px 0 30px -20px #000 inset;
-}
-
-.slider-track {
-	min-width: 50px;
-	margin: 2px;
-	padding: 4px;
-	flex-flow: row nowrap;
-	-ms-flex-flow: row nowrap; /* IE */
-	overflow: auto hidden;
-}
-
-.slider-track {
 	/* box-shadow: 0 1px 4px rgba(0, 0, 0, .3),
 				-23px 0 20px -23px rgba(0, 0, 0, .8),
 				23px 0 20px -23px rgba(0, 0, 0, .8),
@@ -1079,31 +1129,57 @@ li.unic-check-mark:before,
 				-35px 0 30px -20px #000 inset;
 }
 
+.slider-list {
+	margin: auto;
+	flex: 1 1 90%;
+}
+.img-slider,
+.slider-item,
+.btn-slider,
+.slider-track,
+.slider-list {
+	flex-flow: row nowrap;
+	-ms-flex-flow: row nowrap; /* IE */
+}
+
+.slider-track {
+	margin: 2px;
+	padding: 4px;
+	justify-content: flex-start;
+	overflow: auto hidden;
+}
+
+.btn-slider {width: 50px;}
 .slider-item,
 .btn-slider {
 	position: relative;
-	width: 50px;
 	height: 50px;
-	margin: 5px;
 	padding: 4px;
 	display: flex;
 	flex: 0 0 auto;
-	flex-flow: row nowrap;
-	-ms-flex-flow: row nowrap; /* IE */
 	align-items: center;
-	justify-content: center;
 }
 
-.slider-btn-prev,
-.slider-btn-next {flex: 0 0 auto;}
+.slider-btn-prev {
+	margin: auto auto auto 5px;
+	justify-content: flex-start;
+}
+
+.slider-btn-next {
+	margin: auto 5px auto auto;
+	justify-content: flex-end;
+}
 
 .slider-item {
+	margin: 5px;
 	min-width: fit-content;
+	justify-content: center;
 	/* outline: 1px dotted #000; */ /* без влияния на размерность */
 	border: 1px dotted #000;
 }
 .img-slider,
 .slider-track,
+.slider-list,
 .lightbox-img,
 .img-viewer,
 .slider-item {
@@ -1117,15 +1193,17 @@ li.unic-check-mark:before,
 	display: block;
 	object-fit: contain; /* вписываем в область */
 	-o-object-fit: contain; /* Opera */
-	/* pointer-events: none; */ /* (i)(!) чтобы img не перетаскивались мышью. Влияет кликабельность */
+	/* pointer-events: none; */ /* (i)(!) чтобы img не перетаскивались мышью, НО тогда будет влиять на кликабельность */
 	cursor: pointer;
-}
-.slider-item:hover {
-	border-style: solid;
-	transform: scale(1.2);
 }
 
 .slider-current {border-color: red;}
+.slider-item:hover,
+.slider-current {
+	border-style: solid;
+	transform: scale(1.1);
+	box-shadow: 0 0 20px 20px #3f3f3f;
+}
 /*
 (!).lightbox-video
 */

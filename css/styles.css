@@ -176,14 +176,16 @@ html *::-webkit-scrollbar-thumb {
 	background: rgba(0, 0, 0, 0.9);
 	z-index: 4;
 }
+.slider-list,
 .img-slider,
 .img-title,
 .lightbox-img,
 .lightbox {overflow: hidden;}
 
-.img-slider,
-.slider-track,
 .img-title,
+.slider-track,
+.slider-list,
+.img-slider,
 .lightbox-img {
 	position: relative;
 	left: 0; top: 0;
@@ -191,7 +193,6 @@ html *::-webkit-scrollbar-thumb {
 	height: auto;
 	display: flex;
 	align-items: center;
-	align-content: center;
 	justify-content: center;
 }
 .lightbox-img {
@@ -384,6 +385,8 @@ html *::-webkit-scrollbar-thumb {
 }
 
 .img-title {
+	width: auto;
+	height: auto;
 	margin: 6px;
 	flex: 1 1 100%;
 	flex-flow: column wrap;
@@ -391,11 +394,18 @@ html *::-webkit-scrollbar-thumb {
 	cursor: default;
 }
 
-.slider-track,
+/* .slider-track, */
+.slider-list,
 .img-slider {flex: 1 1 100%;}
 
-.img-slider {
-	margin: 6px;
+.img-slider {margin: 6px;}
+
+.slider-list {margin: auto;}
+.img-slider,
+.slider-item,
+.btn-slider,
+.slider-track,
+.slider-list {
 	flex-flow: row nowrap;
 	-ms-flex-flow: row nowrap; /* IE */
 }
@@ -404,8 +414,7 @@ html *::-webkit-scrollbar-thumb {
 	min-width: 50px;
 	margin: 2px;
 	padding: 4px;
-	flex-flow: row nowrap;
-	-ms-flex-flow: row nowrap; /* IE */
+	justify-content: flex-start;
 	overflow: auto hidden;
 }
 
@@ -414,27 +423,38 @@ html *::-webkit-scrollbar-thumb {
 	position: relative;
 	width: 50px;
 	height: 50px;
+	margin: 5px;
 	padding: 4px;
 	display: flex;
 	flex: 0 0 auto;
-	flex-flow: row nowrap;
-	-ms-flex-flow: row nowrap; /* IE */
 	align-items: center;
-	justify-content: center;
 }
 
-.slider-btn-prev,
+.slider-btn-prev {
+	margin: auto auto auto 5px;
+	justify-content: flex-start;
+}
+
 .slider-btn-next {
-	margin: 4px;
-	flex: 0 0 auto;
+	margin: auto 5px auto auto;
+	justify-content: flex-end;
 }
 
 .slider-item {
-	margin: 5px;
 	min-width: fit-content;
+	justify-content: center;
 	/* outline: 1px dotted white; */ /* без влияния на размерность */
 	border: 1px dotted #fff;
+}
+.img-slider,
+.slider-track,
+.slider-list,
+.lightbox-img,
+.img-viewer,
+.slider-item {
 	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
 }
 .slider-item img {
 	width: 100%;
@@ -442,14 +462,17 @@ html *::-webkit-scrollbar-thumb {
 	display: block;
 	object-fit: contain; /* вписываем в область */
 	-o-object-fit: contain; /* Opera */
+	/* pointer-events: none; */ /* (i)(!) чтобы img не перетаскивались мышью, НО тогда будет влиять на кликабельность */
 	cursor: pointer;
-}
-.slider-item:hover {
-	border-style: solid;
-	transform: scale(1.2);
 }
 
 .slider-current {border-color: red;}
+.slider-item:hover,
+.slider-current {
+	border-style: solid;
+	transform: scale(1.1);
+	box-shadow: 0 0 20px 20px #fff;
+}
 /*
 (!).permalink
  */
