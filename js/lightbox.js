@@ -1275,7 +1275,7 @@ function goToImage(elem, keyEvent = "") {
 						sldr.children[i].classList.remove('slider-current');
 						sldr.children[i - 1].classList.add('slider-current');
 					}
-					sldr.scrollLeft -= sldr.children[i - 1].clientWidth / 2; // - прокручиваем скроллбар
+					sldr.scrollLeft -= sldr.children[i - 1].clientWidth; // - прокручиваем скроллбар
 				}
 			} else if (elem.classList.contains('slider-btn-prev') || keyEvent === "ArrowLeft") {
 				if (i === 0) { // - изо.первое
@@ -1297,7 +1297,7 @@ function goToImage(elem, keyEvent = "") {
 						sldr.children[i].classList.remove('slider-current');
 						sldr.children[i - 1].classList.add('slider-current');
 					}
-					sldr.scrollLeft -= sldr.children[i - 1].clientWidth / 2; // - прокручиваем скроллбар
+					sldr.scrollLeft -= sldr.children[i - 1].clientWidth; // - прокручиваем скроллбар
 				}
 			} else if (elem.classList.contains('img-btn-next') || keyEvent === "ArrowDown") {
 				if (i === sldr.children.length - 1) { // - изо.последнее
@@ -1333,7 +1333,7 @@ function goToImage(elem, keyEvent = "") {
 					// 'переназначаем класс
 					sldr.children[i].classList.remove('slider-current');
 					sldr.children[i + 1].classList.add('slider-current');
-					sldr.scrollLeft += sldr.children[i + 1].clientWidth / 2; // - прокручиваем скроллбар
+					sldr.scrollLeft += sldr.children[i + 1].clientWidth; // - прокручиваем скроллбар
 				}
 			} else if (elem.classList.contains('slider-btn-next') || keyEvent === "ArrowRight") {
 				if (i === sldr.children.length - 1) { // - изо.последнее
@@ -1356,7 +1356,7 @@ function goToImage(elem, keyEvent = "") {
 					sldr.children[i].classList.remove('slider-current');
 					sldr.children[i + 1].classList.add('slider-current');
 				}
-				sldr.scrollLeft += sldr.children[i + 1].clientWidth / 2; // - прокручиваем скроллбар
+				sldr.scrollLeft += sldr.children[i + 1].clientWidth; // - прокручиваем скроллбар
 			}
 			setReSizeViewerImg(lbx); // - переустановить размер элемента просмотра изо
 			break;
