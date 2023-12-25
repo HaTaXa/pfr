@@ -394,13 +394,15 @@ html *::-webkit-scrollbar-thumb {
 	cursor: default;
 }
 
-/* .slider-track, */
-.slider-list,
-.img-slider {flex: 1 1 100%;}
+.img-slider {
+	margin: 6px;
+	flex: 1 1 100%;
+}
 
-.img-slider {margin: 6px;}
-
-.slider-list {margin: auto;}
+.slider-list {
+	margin: auto;
+	flex: 1 1 90%;
+}
 .img-slider,
 .slider-item,
 .btn-slider,
@@ -411,19 +413,17 @@ html *::-webkit-scrollbar-thumb {
 }
 
 .slider-track {
-	min-width: 50px;
 	margin: 2px;
 	padding: 4px;
 	justify-content: flex-start;
 	overflow: auto hidden;
 }
 
+.btn-slider {width: 50px;}
 .slider-item,
 .btn-slider {
 	position: relative;
-	width: 50px;
 	height: 50px;
-	margin: 5px;
 	padding: 4px;
 	display: flex;
 	flex: 0 0 auto;
@@ -441,6 +441,7 @@ html *::-webkit-scrollbar-thumb {
 }
 
 .slider-item {
+	margin: 5px;
 	min-width: fit-content;
 	justify-content: center;
 	/* outline: 1px dotted white; */ /* без влияния на размерность */
