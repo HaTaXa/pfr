@@ -339,7 +339,7 @@ div#commentsWrapper {display: none;}
 	text-align: center;
 	font-weight: bold;
 	/* overflow: hidden; */ /**влияет на отображение контента в.msg-btn */
-	/* z-index: 0; */ /* чтобы msg-box:before/:after распологались под элементом */
+	z-index: 0; /* чтобы msg-box:before/:after распологались под элементом */
 }
 .msg-box:before,
 .msg-box:after {
@@ -348,14 +348,14 @@ div#commentsWrapper {display: none;}
 	left: -2px;
 	right: -2px;
 	top: -2px;
-	bottom: 6px; /* чтобы кн.работала делаем bottom: 6px */
+	bottom: 0; /* чтобы кн.работала делаем bottom: 6px */
 	background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffff00",GradientType=1);
 	background-size: 600%;
-	/* z-index: -1; */ /* под элементом */
+	z-index: -1; /* под элементом */
 	animation: msg-show 30s ease infinite;
 	-webkit-animation: msg-show 5s linear infinite;
 	-moz-animation: msg-show 5s linear infinite;
@@ -426,6 +426,7 @@ div#commentsWrapper {display: none;}
 	display: flex;
 	flex: 0 0 auto;
 	flex-flow: row nowrap;
+	user-select: none;
 }
 .msg-info {
 	background: url(../icon/info.png) no-repeat;
@@ -433,6 +434,16 @@ div#commentsWrapper {display: none;}
 	border-radius: 100px;
 	box-shadow: 0 0 20px 20px #fff;
 }
+
+.msg-close {
+	background: url(../icon/finger-up.png) no-repeat;
+	background-size: 100% 100%;
+}
+.msg-close:hover {
+	background: url(../icon/finger-down.png) no-repeat;
+	background-size: 100% 100%;
+}
+
 .msg-text {
 	position: relative;
 	left: 0; top: 0;
