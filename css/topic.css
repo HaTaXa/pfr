@@ -139,10 +139,12 @@ html *::-webkit-scrollbar-thumb {
 .nav-links a, /* - чтобы перебить ссылкам назначенный браузером стиль по умолчанию */
 .topic-header {color: #737373;}
 .topic-header {
+	background: rgb(0,0,0);
 	background: -webkit-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -moz-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -o-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -ms-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 }
@@ -215,13 +217,12 @@ html *::-webkit-scrollbar-thumb {
 	-moz-border-radius: 3px;
 	/* background-color: #abdef7; */
 	background-color: #999;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#999));
-	background: -moz-linear-gradient(top, #ffffff, #999);
-	/* background: -o-linear-gradient(top, rgb(255, 255, 255), rgb(171, 222, 247)); */
+	background: -webkit-linear-gradient(linear, left top, left bottom, from(#ffffff), to(#999));
+	background: -moz-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
 	background: -o-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
-	background: -ms-linear-gradient(top, #ffffff, #999);
+	background: linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#999);
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#abdef7)";
+	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#999);
 	cursor: pointer;
 }
 .btn-text {user-select: none;}
@@ -349,11 +350,13 @@ div#commentsWrapper {display: none;}
 	right: -2px;
 	top: -2px;
 	bottom: 0; /* чтобы кн.работала делаем bottom: 6px */
+	background: rgb(255, 255, 255);
 	background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffff00",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #ffff00);
 	background-size: 600%;
 	z-index: -1; /* под элементом */
 	animation: msg-show 30s ease infinite;
@@ -406,10 +409,12 @@ div#commentsWrapper {display: none;}
 	cursor: default;
 }
 .msg-content {
+	background: rgb(0,0,0);
 	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -moz-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -o-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -ms-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 	/* background-color: lightyellow; */
@@ -511,9 +516,14 @@ div#commentsWrapper {display: none;}
 	left: -45%;
 	width: 45px;
 	height: 100%;
-	transform: skewX(-45deg); /* Наклон */
+	transform: skewX(-45deg); /* наклон */
 	filter: blur(5px);
 	background: -webkit-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	background: -moz-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	background: -o-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	background: linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffffe6",endColorstr="#ffffffe6",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffffe6, endColorstr = #ffffffe6);
 	box-shadow: 0px 0 6px 3px rgba(255,255,255,.9);
 	animation: msg-glow 5s linear infinite;
 	-webkit-animation: msg-glow 5s linear infinite;
@@ -522,42 +532,46 @@ div#commentsWrapper {display: none;}
 	-ms-animation: msg-glow 5s linear infinite;
 }
 .msg-show {
-	/* background: rgb(0,212,255); */
+	background: rgb(0,212,255);
 	background: -webkit-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	background: -o-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff",endColorstr="#020024",GradientType=1);
 	background: linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff",endColorstr="#020024",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #00d4ff, endColorstr = #020024);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgb(0,212,255);
 }
 .msg-show:hover {
-	/* background: rgb(255,146,146); */
+	background: rgb(255,146,146);
 	background: -webkit-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	background: -o-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff9292",endColorstr="#4b0000",GradientType=1);
 	background: linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff9292",endColorstr="#4b0000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ff9292, endColorstr = #4b0000);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgba(255,146,146,.9);
 }
 .msg-hide {
-	/* background: rgb(9,255,0); */
+	background: rgb(9,255,0);
 	background: -webkit-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	background: -o-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#09ff00",endColorstr="#002400",GradientType=1);
 	background: linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#09ff00",endColorstr="#002400",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #09ff00, endColorstr = #002400);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(9,255,0,.9);
 }
 .msg-hide:hover {
-	/* background: rgb(255,244,0); */
+	background: rgb(255,244,0);
 	background: -webkit-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	background: -moz-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	background: -o-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fff400",endColorstr="#606001",GradientType=1);
 	background: linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fff400",endColorstr="#606001",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #fff400, endColorstr = #606001);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(255,244,0,.9);
 }
@@ -1296,6 +1310,7 @@ li.unic-check-mark:before,
 	border-top: 1px solid silver;
 }
 .topic-footer {
+	background: rgb(0,0,0);
 	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 	background: -moz-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 	background: -o-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));

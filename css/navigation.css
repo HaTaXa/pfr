@@ -752,6 +752,7 @@ ul, li {
 	align-items: center;
 	justify-content: space-between;
 }
+
 .footer-btn span {cursor: default;}
 
 .footer-btn a,
@@ -772,7 +773,9 @@ ul, li {
 .super-job,
 .hh-ru {font-weight: bold;}
 .footer-btn a.hh-ru, /* повышаем приоритет, чтобы перебить св-ва правила.toc-footer a */
-.hh-ru {color: #d5001c;}
+.hh-ru {
+	color: #d5001c;
+}
 .hh-ru:hover {
 	box-shadow: 2px 2px 20px 2px rgba(213,0,28,.9),
 				-2px -2px 20px 2px rgba(213,0,28,.9);
@@ -784,6 +787,68 @@ ul, li {
 .super-job:hover {
 	box-shadow: 2px 2px 20px 2px rgba(0,170,135,.9),
 				-2px -2px 20px 2px rgba(0,170,135,.9);
+}
+
+.super-job:before,
+.hh-ru:before {
+	content: "";
+	position: absolute;
+	left: 0; top: 0;
+	width: 23px;
+	height: 100%;
+	border-radius: 5px;
+	z-index: -1;
+	animation: btn-line-gradient 2s ease infinite;
+	-webkit-animation: btn-line-gradient 10s ease infinite;
+	-moz-animation: btn-line-gradient 10s ease infinite;
+	-o-animation: btn-line-gradient 10s ease infinite;
+	-ms-animation: btn-line-gradient 10s ease infinite;
+}
+.hh-ru:before {
+	background: rgb(0,0,0);
+	background: -webkit-linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(136,136,136,1) 25%, rgba(136,136,136,1) 35%, rgba(0,0,0,1) 50%, rgba(136,136,136,1) 70%, rgba(0,0,0,1) 100%);
+	background: -moz-linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(136,136,136,1) 25%, rgba(136,136,136,1) 35%, rgba(0,0,0,1) 50%, rgba(136,136,136,1) 70%, rgba(0,0,0,1) 100%);
+	background: -o-linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(136,136,136,1) 25%, rgba(136,136,136,1) 35%, rgba(0,0,0,1) 50%, rgba(136,136,136,1) 70%, rgba(0,0,0,1) 100%);
+	background: linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(136,136,136,1) 25%, rgba(136,136,136,1) 35%, rgba(0,0,0,1) 50%, rgba(136,136,136,1) 70%, rgba(0,0,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#000000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #888888);
+	background-size: 1000%;
+}
+.super-job:before {
+	background: rgb(136,136,136);
+	background: -webkit-linear-gradient(45deg, rgba(136,136,136,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 35%, rgba(136,136,136,1) 50%, rgba(0,0,0,1) 70%, rgba(136,136,136,1) 100%);
+	background: -moz-linear-gradient(45deg, rgba(136,136,136,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 35%, rgba(136,136,136,1) 50%, rgba(0,0,0,1) 70%, rgba(136,136,136,1) 100%);
+	background: -o-linear-gradient(45deg, rgba(136,136,136,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 35%, rgba(136,136,136,1) 50%, rgba(0,0,0,1) 70%, rgba(136,136,136,1) 100%);
+	background: linear-gradient(45deg, rgba(136,136,136,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 35%, rgba(136,136,136,1) 50%, rgba(0,0,0,1) 70%, rgba(136,136,136,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#888888",endColorstr="#888888",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #888888, endColorstr = #000000);
+	background-size: 1000%;
+}
+
+@keyframes btn-line-gradient {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-webkit-keyframes btn-line-gradient {
+	0% { background-position: 0 0; }
+	50% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-moz-keyframes btn-line-gradient {
+	0% { background-position: 0 0; }
+	80% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-o-keyframes btn-line-gradient {
+	0% { background-position: 0 0; }
+	80% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+@-ms-keyframes btn-line-gradient {
+	0% { background-position: 0 0; }
+	80% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
 }
 /* (!).email-feedback
 *во всем проекте прописан в 2-х местах:
