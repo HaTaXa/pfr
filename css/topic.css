@@ -3,7 +3,11 @@
 (i) Символ «*» - универсальный селектор, совпадает с именем любого типа элемента. Соответствует любому отдельному элементу в дереве док.
 *Унивесальный селектор имеет нулевой приоритет (ниже только отсутствие приоритета вовсе).
 */
-* {margin: 0; padding: 0;} /* - перебить CSS свойства, которые браузеры устанавливают по умолчанию для некоторых тегов, например, тегу гиперссылки <a> синий цвет текста и подчёркивание, тегу body они задают поля (padding) и тд.и т.п. */
+/* - перебить CSS свойства, которые браузеры устанавливают по умолчанию для некоторых тегов, например, тегу гиперссылки <a> синий цвет текста и подчёркивание, тегу body они задают поля (padding) и тд.и т.п. */
+* {
+	margin: 0; padding: 0;
+	/* box-sizing: border-box; */ /* 'размеры будут учитываться браузером без padding и border */
+}
 /*
 (i) считается хорошей практикой, но в моем случае придется много чего переписывать
 */
@@ -11,15 +15,24 @@
 /*
 // *, *:after, *:before {box-sizing: inherit;}
 */
-body, html {
-	background-color: #fff;
-	text-indent: 1.5em; /* - отступ первой строки */
-	overflow: hidden;
-}
+body, html {overflow: hidden hidden;}
 body {
 	position: absolute;
 	left: 0; right: 0;
 	top: 0; bottom: 0;
+	width: 100%;
+	height: 100%;
+	font-family: 'Times New Roman', Times, Georgia, serif;
+	font-style: normal;
+	font-weight: normal;
+	/* font-size: 16px; */
+	font-size: 1em;
+	text-indent: 1.5em;
+	color: #000;
+	background-color: #fff;
+
+	box-shadow: 35px 0 30px -20px #000 inset,
+				-35px 0 30px -20px #000 inset;
 }
 /* (!) Scrollbars */
 *, html * /* - если нужен общий стиль, его следует применять к тегу html, а не к body */
@@ -83,14 +96,22 @@ html *::-webkit-scrollbar-thumb {
 	border: 4px solid #fff;
 	border-radius: 100px;
 } */
-.topic-title::-webkit-scrollbar {width: 2px;}
-.topic-title::-webkit-scrollbar-track {
+/* (!).toc-list/.topic-title/.msg-text */
+.msg-text::-webkit-scrollbar,
+.topic-title::-webkit-scrollbar,
+.toc-list::-webkit-scrollbar {width: 2px;}
+.msg-text::-webkit-scrollbar-track
+.topic-title::-webkit-scrollbar-track,
+.toc-list::-webkit-scrollbar-track {
 	border: 1px solid gray;
 }
-.topic-title::-webkit-scrollbar-thumb {
+.msg-text::-webkit-scrollbar-thumb,
+.topic-title::-webkit-scrollbar-thumb,
+.toc-list::-webkit-scrollbar-thumb{
 	background-color: gray;
 	border: 4px solid maroon;
 }
+/* (!).slider-track */
 .slider-track::-webkit-scrollbar {
 	height: 3px;
 	/* display: none; */
@@ -104,49 +125,72 @@ html *::-webkit-scrollbar-thumb {
 	border: 1px solid red;
 }
 /* Scrollbars the end */
-/**отражаем противоположно самый верхний div, чтобы scrollbar был слевой стороны */
+/*
+*отражаем противоположно самый верхний div, чтобы scrollbar был слевой стороны
+(i) обуславливает то в какую сторону будет изменяться размер при применении правила reflect
+'применяется непосредственно к текущему элементу, применение к псевдоэлементу работать не будет
+(???) влияет на разные символы такие, как кавычки елочки.., для текстовых элементов типа textarea, label, a, p, span, поэтому данное св-во необходимо отражать обратно для возврата правильного отображения символов и направления чтения по умолчанию (с лева на право).
+*/
+.reflect *.reflect,
 .reflect {
-	direction: rtl; /* ? влияет на кавычки елочки для текстовых элементов, поэтому данное св-во необходимо так же применить к элементам типа "р"/span.., чтобы вернуть обратно направление чтения по умолчанию (с лева на право). Применяется непосредственно к текущему элементу, применение к псевдоэлементу работать не будет. */
+	direction: rtl;
 }
-/* a, p, span, img, */
 .reflect * {
-	direction: ltr; /* ? влияет на кавычки елочки для текстовых элементов, поэтому данное св-во необходимо так же применить к элементам типа "р"/span.., чтобы вернуть обратно направление чтения по умолчанию (с лева на право). Применяется непосредственно к текущему элементу, применение к псевдоэлементу работать не будет. */
+	direction: ltr;
 }
-/* (i).topic-box-имя класса так же присутствует в стилях styles.css, но правила разные */
+.not-select {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+}
+/* (i).topic-box - имя класса так же присутствует в стилях styles.css, но правила разные */
 .topic-box {
 	position: absolute;
 	left: 0; right: 0;
 	top: 0; bottom: 0;
+	width: 100%;
+	height: 100%;
 	display: flex;
 	flex-flow: column nowrap;
-	align-items: center;
-	align-content: space-between;
-	justify-content: space-between;
-	overflow: hidden;
+	/* align-items: center; */
+	/* justify-content: space-between; */
+	overflow: hidden hidden;
 }
 .topic-header {
 	position: relative;
+	left: 0;
+	top: 0;
 	width: 100%;
 	height: auto;
 	display: flex;
 	flex: 1 1 auto;
-	flex-flow: column nowrap;
+	/* flex-flow: column nowrap; */
+	flex-flow: row wrap;
 	align-items: center;
-	align-content: center; /* - nowrap препятствует */
+	align-content: center; /* nowrap препятствует */
 	justify-content: space-between;
 	border-bottom: 1px solid silver;
 }
+.topic-header {
+	/* font-size: 10px; */
+	/* font-size: .6rem; */
+	font-size: 0.6em;
+	text-indent: 0.5em;
+}
+
 .nav-links a, /* - чтобы перебить ссылкам назначенный браузером стиль по умолчанию */
 .topic-header {color: #737373;}
 .topic-header {
-	background: rgb(0,0,0);
+	background-color: rgb(0,0,0);
+	background: linear-gradient(rgba(255,255,255), rgba(0,0,0, 0.86) 15%);
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 	background: -webkit-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -moz-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -o-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
 	background: -ms-linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	background: linear-gradient(bottom, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
 }
 .topic-header:hover {cursor: default;}
 /* (!) Breadcrumb trail - навигационные ссылки
@@ -154,14 +198,15 @@ html *::-webkit-scrollbar-thumb {
 */
 .nav-links {
 	position: relative;
-	top: 6px;
+	top: 4px;
 	width: 100%;
 	height: auto;
-	padding: 0 0 2px 0;
+	padding: 2px;
+}
+.content-footer,
+.nav-links {
+	/* font-family: Verdana, sans-serif; */
 	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-	/* font-size: 10px; */
-	font-size: 0.6em;
-	text-indent: 0.5em;
 }
 /* (i) делаем оптикаемым контент вокруг.toc-page */
 .nav-links p {
@@ -194,9 +239,14 @@ html *::-webkit-scrollbar-thumb {
 	height: auto;
 	margin: 1px;
 	padding: 2px;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
 	float: right; /* (i) для оптикания контента */
 	font-family: Tahoma, Verdana;
-	font-size: 9px;
+	/* font-size: 9px; */
+	font-size: .9em;
 	font-weight: normal;
 	text-align: center;
 	text-indent: 0;
@@ -207,69 +257,158 @@ html *::-webkit-scrollbar-thumb {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 }
+.toc-menu:hover,
 .toc-page:hover {border-color: #fff;}
-/* (i).btn-icon-имя класса так же присутствует в стилях styles.css и navigation.css, но правила разные */
-.btn-icon {padding: 1px 1px 0 2px;}
-.btn-icon:hover {
+.toc-btn_icon {padding: 1px 1px 0 2px;}
+.toc-btn_icon:hover {
 	border-color: #777;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	/* background-color: #abdef7; */
-	background-color: #999;
-	background: -webkit-linear-gradient(linear, left top, left bottom, from(#ffffff), to(#999));
-	background: -moz-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
-	background: -o-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
-	background: linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
+	/* background-color: #999; */
+	background: linear-gradient(rgb(255, 255, 255), rgb(153, 153, 153));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#999);
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff, endColorstr=#999);
+	background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
+	background: -moz-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
+	background: -o-linear-gradient(top, rgb(255, 255, 255), rgb(153, 153, 153));
 	cursor: pointer;
 }
-.btn-text {user-select: none;}
-.btn-text:hover {color: #fff;}
+.toc-btn_text {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+}
+.toc-btn_text:hover {color: #fff;}
 
 .toc-menu {
 	position: absolute;
-	top: 36px; right: 0;
-	max-width: 410px;
+	top: 50px; right: 0;
+	width: max-content;
+	max-width: 40vw;
+	min-width: fit-content;
 	height: auto;
 	padding: 4px;
-	display: flex;
-	flex: 1 1 auto;
-	flex-flow: row wrap;
-	align-items: center;
-	align-content: space-between;
-	justify-content: center;
-	white-space: nowrap;
-	border: 1px solid silver;
-	border-radius: 0px 0px 5px 5px;
-	-webkit-border-radius: 0px 0px 5px 5px;
-	-moz-border-radius: 0px 0px 5px 5px;
-	background-color: #3f3f3f;
-	box-shadow: 2px 2px 10px silver;
-	-webkit-box-shadow: 2px 2px 10px silver;
-	-moz-box-shadow: 2px 2px 10px silver;
-	z-index: 2; /* 1 не перекрывает lightbox */
+	z-index: 2; /* 1 не перекрывает контент и lightbox */
 }
-.toc-menu p {margin: 1px;}
+/* .toc-list li:before,
+.toc-menu p, */
 .toc-menu a,
+.toc-menu {
+	color: silver;
+	/* font-size: 1.2em; */
+	font-size: .8rem;
+	font-weight: bold;
+	text-decoration: none;
+}
+.toc-menu {
+	border: 1px solid silver;
+	border-radius: 5px;
+	-webkit-border-radius: 5px 5px;
+	-moz-border-radius: 5px;
+	background-color: rgba(63,63,63,.9);
+	box-shadow: 2px 2px 10px 2px silver;
+	-webkit-box-shadow: 2px 2px 10px 2px silver;
+	-moz-box-shadow: 2px 2px 10px 2px silver;
+	filter: progid: DXImageTransform.Microsoft.Shadow(color = #c0c0c0, direction = 120, trength = 3);
+}
+/**triangle */
+.toc-menu:hover:before,
+.toc-menu:before {
+	content: "";
+	position: absolute;
+	right: 40px;
+	top: -16px;
+	border-left: 50px solid transparent;
+	border-bottom: 16px solid silver;
+}
+.toc-menu:hover:before {
+	border-bottom: 16px solid #fff;
+}
+/**при отсутствии содержания на стр.по умолчанию будет всплывать подсказка */
+.toc-menu-title {border-color: rgba(171,222,247,.9);}
+.toc-menu-title:before {border-bottom: 16px solid rgba(171,222,247,.9);}
+/**icon info */
+.toc-menu-title:after {
+	content: "";
+	position: absolute;
+	left: -30px; top: 70%;
+	width: 40px;
+	height: 40px;
+}
+.tooltip-finger_toggle:after,
+.tooltip-lightswitch:after,
+.toc-menu-title:after {
+	background: url(../icon/info.png) no-repeat;
+	background-size: 100% 100%;
+	border-radius: 100px;
+}
+/**плавное появление/исчезновение */
+.toc-menu {
+	opacity: 0;
+	transform-origin: right top;
+	-webkit-transform-origin: right top;
+	-moz-transform-origin: right top;
+	-o-transform-origin: right top;
+	-ms-transform-origin: right top;
+	transform: translate(-28px, -28px) scale(0);
+	-webkit-transform: translate(-28px, -28px) scale(0);
+	-moz-transform: translate(-28px, -28px) scale(0);
+	-o-transform: translate(-28px, -28px) scale(0);
+	-ms-transform: translate(-28px, -28px) scale(0);
+	transition: all ease 1s;
+	-webkit-transition: all ease 1s;
+	-moz-transition: all ease 1s;
+	-o-transition: all ease 1s;
+}
+.toc-menu-popup {
+	transform: translate(0, 0) scale(1);
+	-webkit-transform: translate(0, 0) scale(1);
+	-moz-transform: translate(0, 0) scale(1);
+	-o-transform: translate(0, 0) scale(1);
+	-ms-transform: translate(0, 0) scale(1);
+	opacity: 1;
+}
+
 .toc-menu p {
 	width: 100%;
-	display: block;
-	color: silver;
-	font-size: 11px;
-	font-weight: bold;
-	/* line-height: 100%; */
+	margin: 1px;
+	line-height: 100%;
 }
-.toc-menu ul {
+.toc-menu:hover p,
+.toc-menu p:hover {color: #fff;}
+.toc-menu ul,
+ul.toc-list,
+.toc-list {
+	width: 100%;
+	/* padding: 0 2px 0 0; */
+	padding-right: 2px;
 	list-style: none;
-	text-indent: 0;
+	list-style-type: none;
 }
-.toc-menu ul li {
-	padding: 3px;
-	border-bottom: 1px solid silver;
-	background-color: #f6f6f6;
-	cursor: pointer;
+/**для scrollbar */
+.toc-list {
+	max-height: 250px;
+	overflow: hidden auto;
+}
+.toc-menu ul li,
+li.toc-list,
+.toc-list li {padding: 3px;}
+
+.toc-list li:before {
+	content: "§";
+	/* padding: 0 0 0 14px; */
+}
+.toc-menu ul li:not(:last-child),
+.toc-list li:not(:last-child) {border-bottom: 1px solid silver;}
+.toc-list li:hover:before,
+.toc-list li:hover a,
+.toc-list li a:hover {
+	color: #fff;
+	text-decoration: underline;
 }
 /* (!) Link to display entire user interface when topic is opened on its own
 - Ссылка для отображения всего пользовательского интерфейса при самостоятельном открытии темы
@@ -301,11 +440,12 @@ html *::-webkit-scrollbar-thumb {
 	display: flex;
 	flex: 1 1 100%;
 	flex-flow: row wrap;
-	align-items: center;
-	align-content: center;
+	align-items: center; /* выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении */
+	align-content: center; /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 	justify-content: flex-end;
 	/* font-size: 18px; */
-	font-size: 1.1em;
+	/* font-size: 1.2rem; */
+	font-size: 1.9em;
 	font-weight: bold;
 	text-indent: 0.5em;
 	overflow: hidden auto;
@@ -323,7 +463,7 @@ div#commentsWrapper {display: none;}
 	margin: auto 0 auto auto;
 	padding: 4px;
 }
-/* (!).msg-box - всплывающее окно сообщения */
+/* (!) idMsgBox - всплывающее окно сообщения */
 .msg-box {
 	position: relative;
 	left: 0; top: 0;
@@ -339,134 +479,9 @@ div#commentsWrapper {display: none;}
 	text-indent: 0;
 	text-align: center;
 	font-weight: bold;
-	/* overflow: hidden; */ /**влияет на отображение контента в.msg-btn */
-	z-index: 0; /* чтобы msg-box:before/:after распологались под элементом */
+	/* overflow: hidden hidden; */ /**влияет на отображение контента в.msg-btn */
+	z-index: 1; /* чтобы.msg-effect:before/:after распологались под элементом, но для.light-switch была возможность нависать над контентом в.topic-body */
 }
-.msg-box:before,
-.msg-box:after {
-	content: "";
-	position: absolute;
-	left: -2px;
-	right: -2px;
-	top: -2px;
-	bottom: 0; /* чтобы кн.работала делаем bottom: 6px */
-	background: rgb(255, 255, 255);
-	background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
-	background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
-	background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
-	background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffff00",GradientType=1);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #ffff00);
-	background-size: 600%;
-	z-index: -1; /* под элементом */
-	animation: msg-show 30s ease infinite;
-	-webkit-animation: msg-show 5s linear infinite;
-	-moz-animation: msg-show 5s linear infinite;
-	-o-animation: msg-show 5s linear infinite;
-	-ms-animation: msg-show 5s linear infinite;
-}
-.msg-box:after {
-	filter: blur(25px);
-}
-
-@keyframes msg-show {
-	0% { background-position: 0 0; }
-	50% { background-position: 100% 0; }
-	100% { background-position: 0 0; }
-}
-@-webkit-keyframes msg-show {
-	0% { background-position: 0 0; }
-	50% { background-position: 100% 0; }
-	100% { background-position: 0 0; }
-}
-@-moz-keyframes msg-show {
-	0% { background-position: 0 0; }
-	50% { background-position: 100% 0; }
-	100% { background-position: 0 0; }
-}
-@-o-keyframes msg-show {
-	0% { background-position: 0 0; }
-	50% { background-position: 100% 0; }
-	100% { background-position: 0 0; }
-}
-@-ms-keyframes msg-show {
-	0% { background-position: 0 0; }
-	50% { background-position: 100% 0; }
-	100% { background-position: 0 0; }
-}
-
-.msg-content {
-	position: relative;
-	left: 0; top: 0;
-	width: auto;
-	height: auto;
-	display: flex;
-	flex: 1 1 100%;
-	flex-flow: row nowrap;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
-	cursor: default;
-}
-.msg-content {
-	background: rgb(0,0,0);
-	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	background: -moz-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	background: -o-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	background: -ms-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	background: linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
-	/* background-color: lightyellow; */
-	/* border: 1px solid silver; */
-	border: 1px solid #3f3f3f;
-}
-
-.msg-icon {
-	position: relative;
-	left: 0; top: 0;
-	width: 30px;
-	height: 30px;
-	margin: 1px;
-	display: flex;
-	flex: 0 0 auto;
-	flex-flow: row nowrap;
-	user-select: none;
-}
-.msg-info {
-	background: url(../icon/info.png) no-repeat;
-	background-size: 100% 100%;
-	border-radius: 100px;
-	box-shadow: 0 0 20px 20px #fff;
-}
-
-.msg-close {
-	background: url(../icon/finger-up.png) no-repeat;
-	background-size: 100% 100%;
-}
-.msg-close:hover {
-	background: url(../icon/finger-down.png) no-repeat;
-	background-size: 100% 100%;
-}
-
-.msg-text {
-	position: relative;
-	left: 0; top: 0;
-	width: auto;
-	height: auto;
-	max-height: 150px;
-	margin: 1px;
-	padding: 2px;
-	display: flex;
-	flex: 1 1 auto; /* - auto - при малой ширине окна браузера .msg-info будет переноситься отдельной строкой */
-	flex-flow: row wrap;
-	align-items: center;
-	justify-content: center;
-	color: #fff; /* color: #f00; */
-	overflow: hidden auto;
-}
-.msg-text p {width: 100%;}
-
 .msg-btn {
 	position: relative;
 	left: 0; top: 0;
@@ -480,27 +495,29 @@ div#commentsWrapper {display: none;}
 	justify-content: center;
 	border: 1px solid #fff;
 	cursor: pointer;
-	animation: msg-line-gradient 5s linear infinite;
-	-webkit-animation: msg-line-gradient 5s linear infinite;
-	-moz-animation: msg-line-gradient 5s linear infinite;
-	-o-animation: msg-line-gradient 5s linear infinite;
-	-ms-animation: msg-line-gradient 5s linear infinite;
+	animation: bgr-line-gradient 5s linear infinite;
+	-webkit-animation: bgr-line-gradient 5s linear infinite;
+	-moz-animation: bgr-line-gradient 5s linear infinite;
+	-o-animation: bgr-line-gradient 5s linear infinite;
 }
 /* .msg-btn:before {
 	content: "«";
 	width: 8px;
 	height: 8px;
 	margin: auto;
-} */
-/* .msg-show:before {
+}
+.msg-show:before {
 	color: blue;
 	transform: rotate(90deg) scale(1, 1);
 	-webkit-transform: rotate(90deg) scale(1, 1);
 	-moz-transform: rotate(90deg) scale(1, 1);
 	-o-transform: rotate(90deg) scale(1, 1);
 	-ms-transform: rotate(90deg) scale(1, 1); */
-	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
-/* }
+/*
+(i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
+*/
+	/* will-change: transform;
+}
 .msg-hide:before {
 	color: green;
 	transform: rotate(90deg) scale(-1, 1);
@@ -508,8 +525,11 @@ div#commentsWrapper {display: none;}
 	-moz-transform: rotate(90deg) scale(-1, 1);
 	-o-transform: rotate(90deg) scale(-1, 1);
 	-ms-transform: rotate(90deg) scale(-1, 1); */
-	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
-/* } */
+/*
+(i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
+*/
+	/* will-change: transform;
+} */
 .msg-btn:before {
 	content: "";
 	position: absolute;
@@ -517,121 +537,557 @@ div#commentsWrapper {display: none;}
 	width: 45px;
 	height: 100%;
 	transform: skewX(-45deg); /* наклон */
-	filter: blur(5px);
-	background: -webkit-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
-	background: -moz-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
-	background: -o-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	filter: blur(5px); /* размытие */
 	background: linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffffe6",endColorstr="#ffffffe6",GradientType=1);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffffe6, endColorstr = #ffffffe6);
+	background: -webkit-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	background: -moz-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
+	background: -o-linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.9));
 	box-shadow: 0px 0 6px 3px rgba(255,255,255,.9);
-	animation: msg-glow 5s linear infinite;
-	-webkit-animation: msg-glow 5s linear infinite;
-	-moz-animation: msg-glow 5s linear infinite;
-	-o-animation: msg-glow 5s linear infinite;
-	-ms-animation: msg-glow 5s linear infinite;
+	animation: runner-glow 5s linear infinite;
+	-webkit-animation: runner-glow 5s linear infinite;
+	-moz-animation: runner-glow 5s linear infinite;
+	-o-animation: runner-glow 5s linear infinite;
 }
+.msg-content {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row nowrap;
+	justify-content: center;
+	/* border: 1px solid silver; */
+	/* border: 1px solid #3f3f3f; */
+	/* overflow: hidden hidden; */ /* не дает нависать переключателю.light-switch */
+	cursor: default;
+}
+.msg-hide~* .msg-text,
+.msg-hide~* .msg-icon,
+.msg-hide~.msg-content {
+	height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	overflow: hidden hidden;
+}
+.msg-hide~.lightswitch-wrapper {top: 0;}
+.msg-bgr-content { /* (?) не пойму как сделать светлым сверху и снизу сразу */
+	/* background-color: lightyellow; */
+	background: linear-gradient(rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #000000);
+	/* background: -webkit-linear-gradient(top, rgba(255,255,255,0.3) 3%, rgba(0,0,0, 0.86) 15%, rgba(0,0,0, 0.86) 90%,rgba(255,255,255,.3)); */
+	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -moz-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -o-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+	background: -ms-linear-gradient(top, rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
+}
+.msg-text {
+	order: 2;
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	padding: 3px;
+	display: flex;
+	flex: 1 1 100%; /* - auto - при малой ширине окна браузера .msg-info будет переноситься отдельной строкой */
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+}
+/* плавное изменение высоты */
+/* .msg-content {
+	max-height: 100%;
+	overflow: hidden hidden;
+} */ /* hidden влияет на вывод и отображение вслывающеей подсказки указательный палец */
+.msg-text {
+	max-height: 100%;
+	overflow: hidden auto;
+}
+.msg-text p {
+	max-height: 100%;
+	/* overflow: hidden hidden; */ /* будет мешать плавности */
+}
+/* .msg-content, */ /* замедляет перестраиваивание иконок и висюльку */
+.msg-text p,
+.msg-text {
+	transition: max-height .9s ease;
+	-webkit-transition: max-height .9s ease;
+	-moz-transition: max-height .9s ease;
+	-o-transition: max-height .9s ease;
+} /* плавное изменение высоты */
+/*
+'idIconLightSwitch
+''idIconFingerToggle */
+.msg-icon {
+	position: relative;
+	left: 0; top: 0;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row nowrap;
+}
+/**idIconLightSwitch */
+.msg_icon-lightswitch {
+	order: 1;
+	width: 73px;
+	height: 70px;
+	max-height: 70px;
+	/* &:hover>.light-switch:not(:has(*:hover)) {
+		animation: shake 2.5s ease-in-out infinite;
+		transform-origin: 50% 0;
+	} */
+}
+.msg-info {
+	width: 30px;
+	height: 30px;
+	background: url(../icon/info.png) no-repeat;
+	background-size: 100% 100%;
+	border-radius: 100px;
+	box-shadow: 0 0 20px 20px #fff;
+}
+/* 1) на переднем плане */
+.msg_icon-eff_on {
+	background: url(../icon/flashlights-on.gif) no-repeat;
+}
+/* 2) на заднем плане */
+.msg_icon-eff_bgr {
+	background: url(../icon/flashlights-bgr.png) no-repeat;
+}
+/* 3) отключено (прозрачное) */
+.msg_icon-eff_off {
+	background: url(../icon/flashlights-off.png) no-repeat;
+}
+/**idIconFingerToggle */
+.msg_icon-finger_toggle {
+	order: 3;
+	top: 10px;
+	width: 60px;
+	height: 44px;
+	max-height: 44px;
+	margin: 2px;
+}
+.msg_icon-finger_toggle {
+	background: url(../icon/finger-left.png) no-repeat;
+}
+/* .msg_icon-eff_off,
+.msg_icon-eff_bgr,
+.msg_icon-eff_on,
+.msg_icon-finger_toggle, */
+.msg-icon {
+	background-size: cover;
+	background-position-y: 0;
+}
+/* .msg-hide~* .msg_icon-eff_off,
+.msg-hide~* .msg_icon-eff_bgr,
+.msg-hide~* .msg_icon-eff_on,
+.msg-hide~* .msg_icon-finger_toggle, */
+.msg-hide~* .msg-icon {background-position-y: -70px;}
+/**анимация */
+.msg_icon-finger_toggle {
+	transform: rotate(0deg) translate(0, 0);
+	-webkit-transform: rotate(0deg) translate(0, 0);
+	-moz-transform: rotate(0deg) translate(0, 0);
+	-o-transform: rotate(0deg) translate(0, 0);
+	-ms-transform: rotate(0deg) translate(0, 0);
+
+	transition: transform ease 1s;
+	-webkit-transition: transform ease 1s;
+	-moz-transition: transform ease 1s;
+	-o-transition: transform ease 1s;
+	/* will-change: transform, transition; */ /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+.msg_icon-finger_toggle-popup, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconFingerToggle */
+.msg_icon-finger_toggle:hover {
+	transform: rotate(50deg) translate(-6px, 12px);
+	-webkit-transform: rotate(50deg) translate(-6px, 12px);
+	-moz-transform: rotate(50deg) translate(-6px, 12px);
+	-o-transform: rotate(50deg) translate(-6px, 12px);
+	-ms-transform: rotate(50deg) translate(-6px, 12px);
+}
+/*
+'idIconFingerToggle
+''idBtnLightSwitch/.lightswitch-ball
+*/
+.msg-tooltip {
+	position: absolute;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 1rem;
+	font-weight: normal;
+	color: #fff;
+	border: 1px solid rgba(171,222,247,.9);
+	border-radius: 10px;
+	background: linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #4949494d, endColorstr = #00000099);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #4949494d, endColorstr = #00000099);
+	background: -webkit-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
+	background: -moz-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
+	background: -o-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
+	background: -ms-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
+}
+.msg-tooltip {
+	transition: 1.5s;
+	-webkit-transition: 1.5s;
+	-moz-transition: 1.5s;
+	-o-transition: 1.5s;
+}
+
+.tooltip-finger_toggle {
+	flex-flow: row wrap;
+	box-shadow: -10px 8px 14px 8px rgba(0,0,0,.9);
+}
+.tooltip-finger_toggle hr {
+	width: 100%;
+	margin: auto;
+}
+.tooltip-finger_toggle {
+	opacity: 0;
+	transform-origin: left top;
+	-webkit-transform-origin: left top;
+	-moz-transform-origin: left top;
+	-o-transform-origin: left top;
+	-ms-transform-origin: left top;
+
+	transform: rotate(-180deg) translate(0, 0) scale(0);
+	-webkit-transform: rotate(-180deg) translate(0, 0) scale(0);
+	-moz-transform: rotate(-180deg) translate(0, 0) scale(0);
+	-o-transform: rotate(-180deg) translate(0, 0) scale(0);
+	-ms-transform: rotate(-180deg) translate(0, 0) scale(0);
+}
+.tooltip_finger_toggle-popup, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconFingerToggle */
+.msg-icon:hover .tooltip-finger_toggle {
+	transform: rotate(-50deg) translate(-140px, 80px) scale(1);
+	-webkit-transform: rotate(-50deg) translate(-140px, 80px) scale(1);
+	-moz-transform: rotate(-50deg) translate(-140px, 80px) scale(1);
+	-o-transform: rotate(-50deg) translate(-140px, 80px) scale(1);
+	-ms-transform: rotate(-50deg) translate(-140px, 80px) scale(1);
+	opacity: 1;
+}
+/**idBtnLightSwitch */
+.lightswitch-wrapper {
+	position: absolute;
+	left: 38px;
+	/* top: 76px; */
+	top: 70px;
+	margin-top: 6px;
+}
+.lightswitch-wrapper {
+	transform-origin: center top;
+	-webkit-transform-origin: center top;
+	-moz-transform-origin: center top;
+	-o-transform-origin: center top;
+	-ms-transform-origin: center top;
+}
+.msg-tooltip-wrapper, /* (i) для расположения подсказки относительно шарика при изменении размеров и положения висюльки */
+.light-switch,
+.lightswitch-wrapper {
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: column nowrap;
+}
+.msg-tooltip-wrapper, /* (i) для расположения подсказки относительно шарика при изменении размеров и положения висюльки */
+.light-switch {
+	position: relative;
+	left: 0; top: 0;
+}
+.lightswitch-ball,
+.lightswitch-chain {
+	position: relative;
+	left: 0; top: 0;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row nowrap;
+	justify-content: center;
+}
+.lightswitch-chain {
+	width: 6px;
+	height: 50px;
+	margin: 0 auto;
+}
+.lightswitch-chain {
+	background: url(../icon/chain_9x109.png) repeat-y;
+	background-size: 100%;
+}
+.msg-hide~* .lightswitch-chain {height: 16px;}
+.lightswitch-ball {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	/* для сэнсорных экранов предотвращаем запуск и перехват браузером встроенного события pointercancel для процесса перетаскивания drag’n’drop для изображений, а для событий мыши делаем через js */
+	touch-action: none;
+	-ms-touch-action: none;
+}
+.lightswitch-ball {
+	background: url(../icon/ball_50x50.png) no-repeat;
+	background-size: 100%;
+}
+.lightswitch-ball:hover {
+	animation: cursor-transform 2s ease infinite;
+	-webkit-animation: cursor-transform 2s ease infinite;
+	-moz-animation: cursor-transform 2s ease infinite;
+	-o-animation: cursor-transform 2s ease infinite;
+}
+.lightswitch-ball:hover .cursor-grab {
+	cursor: grab;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+}
+.lightswitch-ball:hover .cursor-grabbing {
+	cursor: grabbing;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+}
+
+.msg-tooltip-wrapper {margin: auto;}
+
+.tooltip-lightswitch {
+	transform-origin: left top;
+	-webkit-transform-origin: left top;
+	-moz-transform-origin: left top;
+	-o-transform-origin: left top;
+	-ms-transform-origin: left top;
+}
+.tooltip-lightswitch {
+	flex-flow: row wrap;
+	box-shadow: 10px 8px 14px 8px rgba(0,0,0,.9);
+}
+/**треугольник */
+.tooltip-finger_toggle:after,
+.tooltip-lightswitch:after,
+.tooltip-finger_toggle:before,
+.tooltip-lightswitch:before {
+	content: "";
+	position: absolute;
+}
+.msg-hide~* .tooltip-lightswitch:before,
+.tooltip-lightswitch:before {
+	left: -20px; top: 5px;
+	border-top: 30px solid transparent;
+	border-right: 20px solid rgba(171, 222, 247, .9);
+}
+.tooltip-finger_toggle:before {
+	left: 10px; top: -30px;
+	border-left: 90px solid transparent;
+	border-bottom: 30px solid rgba(171,222,247,.9);
+}
+/**иконка */
+.tooltip-lightswitch:after {left: 95%; top: 85%;}
+/* (i) для firefox спец.вставлен (&ensp;) узкий пробел после слеша */
+.tooltip-finger_toggle:after {left: -40%; top: 92%;}
+
+.tooltip-finger_toggle:after,
+.tooltip-lightswitch:after {
+	width: 50px;
+	height: 50px;
+}
+.tooltip-lightswitch-info2,
+.tooltip-lightswitch-info1 {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 1 1 100%;
+	align-items: center;
+	justify-content: space-between;
+}
+.tooltip-lightswitch-info1 {flex-flow: row wrap;}
+.tooltip-finger_toggle p:first-child,
+.tooltip-lightswitch-info1 {border-bottom: 1px solid #fff;}
+.tooltip-lightswitch-info2 {flex-flow: row nowrap;}
+.tooltip-lightswitch-info2 p {margin: 4px 0 0 0;}
+.tooltip-lightswitch-info2 p:first-child {
+	padding-right: 4px;
+	border-right: 1px solid #fff;
+}
+.tooltip-lightswitch-info2 p:not(:first-child) {padding: 0 4px;}
+/*
+*анимация
+'анимационное появление/исчезновение подсказки
+''покачивание висюльки
+*/
+.lightswitch-wrapper .tooltip_lightswitch-show, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+.lightswitch-wrapper:hover .tooltip-lightswitch {
+	opacity: 1;
+	transform: rotate(0deg) translate(40px, -60px) scale(1);
+	-webkit-transform: rotate(0deg) translate(40px, -60px) scale(1);
+	-moz-transform: rotate(0deg) translate(40px, -60px) scale(1);
+	-o-transform: rotate(0deg) translate(40px, -60px) scale(1);
+	-ms-transform: rotate(0deg) translate(40px, -60px) scale(1);
+}
+.lightswitch-wrapper .tooltip_lightswitch-show.tooltip_lightswitch-hide,
+.lightswitch-wrapper .msg-tooltip-wrapper .tooltip_lightswitch-hide,
+.tooltip-lightswitch {
+	opacity: 0;
+	transform: rotate(180deg) translate(0, 10px) scale(0);
+	-webkit-transform: rotate(180deg) translate(0, 10px) scale(0);
+	-moz-transform: rotate(180deg) translate(0, 10px) scale(0);
+	-o-transform: rotate(180deg) translate(0, 10px) scale(0);
+	-ms-transform: rotate(180deg) translate(0, 10px) scale(0);
+}
+/* ~ все равно дрыгается по высоте */
+/* .lightswitch-wrapper .msg-tooltip-wrapper .tooltip_lightswitch-show, */ /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+/* .lightswitch-ball:hover .tooltip-lightswitch {
+	opacity: 1;
+	transform: rotate(0deg) translate(40px, -50px) scale(1);
+	-webkit-transform: rotate(0deg) translate(40px, -50px) scale(1);
+	-moz-transform: rotate(0deg) translate(40px, -50px) scale(1);
+	-o-transform: rotate(0deg) translate(40px, -50px) scale(1);
+	-ms-transform: rotate(0deg) translate(40px, -50px) scale(1);
+}
+.lightswitch-wrapper:hover .tooltip_lightswitch-hide,
+.tooltip-lightswitch {
+	opacity: 0;
+	transform: rotate(180deg) translate(0, 0) scale(0);
+	-webkit-transform: rotate(180deg) translate(0, 0) scale(0);
+	-moz-transform: rotate(180deg) translate(0, 0) scale(0);
+	-o-transform: rotate(180deg) translate(0, 0) scale(0);
+	-ms-transform: rotate(180deg) translate(0, 0) scale(0);
+} */ /* ~ все равно дрыгается по высоте */
+/**покачивание кн.idBtnLightSwitch */
+.lightswitch-shake-reverse,
+.lightswitch-shake {
+	transform-origin: center top;
+	-webkit-transform-origin: center top;
+	-moz-transform-origin: center top;
+	-o-transform-origin: center top;
+	-ms-transform-origin: center top;
+}
+.lightswitch-shake {
+	animation: shake 2.5s ease-in-out infinite;
+	-webkit-animation: shake 2.5s ease-in-out infinite;
+	-moz-animation: shake 2.5s ease-in-out infinite;
+	-o-animation: shake 2.5s ease-in-out infinite;
+}
+.lightswitch-shake-reverse {
+	animation: shake-reverse 2.5s ease-in-out infinite;
+	-webkit-animation: shake-reverse 2.5s ease-in-out infinite;
+	-moz-animation: shake-reverse 2.5s ease-in-out infinite;
+	-o-animation: shake-reverse 2.5s ease-in-out infinite;
+}
+/* ~ все равно дрыгается по высоте */
+.lightswitch-shake .tooltip-lightswitch {
+	animation: shake-anti-shake 2.5s ease-in-out infinite;
+	-webkit-animation: shake-anti-shake 2.5s ease-in-out infinite;
+	-moz-animation: shake-anti-shake 2.5s ease-in-out infinite;
+	-o-animation: shake-anti-shake 2.5s ease-in-out infinite;
+}
+.lightswitch-shake-reverse .tooltip-lightswitch {
+	animation: shake-anti-shake-reverse 2.5s ease-in-out infinite;
+	-webkit-animation: shake-anti-shake-reverse 2.5s ease-in-out infinite;
+	-moz-animation: shake-anti-shake-reverse 2.5s ease-in-out infinite;
+	-o-animation: shake-anti-shake-reverse 2.5s ease-in-out infinite;
+} /*'все равно дрыгается по высоте */
+/* тоже не помогает */
+/* .lightswitch-shake:hover {
+	animation-play-state: paused;
+	-webkit-animation-play-state: paused;
+	-moz-animation-play-state: paused;
+	-o-animation-play-state: paused;
+} */
+/**фон кн.idBtnToggleMsgBox, определяющий состояние окна инфо */
 .msg-show {
 	background: rgb(0,212,255);
-	background: -webkit-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
-	background: -moz-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
-	background: -o-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	background: linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff",endColorstr="#020024",GradientType=1);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #00d4ff, endColorstr = #020024);
+	background: -webkit-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
+	background: -moz-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 35%, rgba(2,0,36,1) 100%);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgb(0,212,255);
 }
 .msg-show:hover {
 	background: rgb(255,146,146);
-	background: -webkit-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
-	background: -moz-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
-	background: -o-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	background: linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff9292",endColorstr="#4b0000",GradientType=1);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ff9292, endColorstr = #4b0000);
+	background: -webkit-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
+	background: -moz-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(255,146,146,1) 0%, rgba(204,2,2,1) 35%, rgba(75,0,0,1) 100%);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0 6px 3px rgba(255,146,146,.9);
 }
 .msg-hide {
 	background: rgb(9,255,0);
-	background: -webkit-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
-	background: -moz-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
-	background: -o-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	background: linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#09ff00",endColorstr="#002400",GradientType=1);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #09ff00, endColorstr = #002400);
+	background: -webkit-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
+	background: -moz-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(9,255,0,1) 0%, rgba(15,110,23,1) 35%, rgba(0,36,0,1) 100%);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(9,255,0,.9);
 }
 .msg-hide:hover {
 	background: rgb(255,244,0);
-	background: -webkit-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
-	background: -moz-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
-	background: -o-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	background: linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fff400",endColorstr="#606001",GradientType=1);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #fff400, endColorstr = #606001);
+	background: -webkit-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
+	background: -moz-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
+	background: -o-linear-gradient(90deg, rgba(255,244,0,1) 0%, rgba(176,165,0,1) 35%, rgba(96,96,1,1) 100%);
 	background-size: 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 	box-shadow: 0px 0px 6px 3px rgba(255,244,0,.9);
 }
-@keyframes msg-glow {
-	0% { left: -100%; }
-	80% { left: -100%; }
-	100% { left: 100%; }
+/**спецэфф.фона для idMsgBox */
+.msg-effect {color: #fff;}
+.msg-effect:after {
+	background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffff00",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #ffff00);
+	background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(0,0,255,1) 25%, rgba(255,0,0,1) 50%, rgba(0,128,0,1) 75%, rgba(255,255,0,1) 100%);
+	background-size: 600% 600%; /* намеренно задаем больший размер, чтобы background позиционировался в анимации */
 }
-@-webkit-keyframes msg-glow {
-	0% { left: -100%; }
-	80% { left: -100%; }
-	100% { left: 100%; }
+.msg-effect:after {
+	animation: eff-line-gradient 5s ease infinite;
+	-webkit-animation: eff-line-gradient 5s linear infinite;
+	-moz-animation: eff-line-gradient 5s linear infinite;
+	-o-animation: eff-line-gradient 5s linear infinite;
 }
-@-moz-keyframes msg-glow {
-	0% { left: -100%; }
-	80% { left: -100%; }
-	100% { left: 100%; }
+.msg-effect:after {
+	content: "";
+	position: absolute;
+	/* left: -2px; right: -2px;
+	top: -2px; bottom: 0; */
+	width: 100%;
+	height: 100%;
+	filter: blur(25px); /* размытие */
+	z-index: -1; /* под.msg-box {z-index: 1;} */
 }
-@-o-keyframes msg-glow {
-	0% { left: -100%; }
-	80% { left: -100%; }
-	100% { left: 100%; }
+/* x .msg-eff-on {
+	animation-play-state: running;
+	-webkit-animation-play-state: running;
+	-moz-animation-play-state: running;
+	-o-animation-play-state: running;
 }
-@-ms-keyframes msg-glow {
-	0% { left: -100%; }
-	80% { left: -100%; }
-	100% { left: 100%; }
-}
-@keyframes msg-line-gradient {
-	0% { background-position: 0 0; }
-	50% { background-position: 50% 0; }
-	100% { background-position: 0 0; }
-}
-@-webkit-keyframes msg-line-gradient {
-	0% { background-position: 0 0; }
-	50% { background-position: 50% 0; }
-	100% { background-position: 0 0; }
-}
-@-moz-keyframes msg-line-gradient {
-	0% { background-position: 0 0; }
-	50% { background-position: 50% 0; }
-	100% { background-position: 0 0; }
-}
-@-o-keyframes msg-line-gradient {
-	0% { background-position: 0 0; }
-	50% { background-position: 50% 0; }
-	100% { background-position: 0 0; }
-}
-@-ms-keyframes msg-line-gradient {
-	0% { background-position: 0 0; }
-	50% { background-position: 50% 0; }
-	100% { background-position: 0 0; }
-}
+.msg-eff-off {
+	animation-play-state: paused;
+	-webkit-animation-play-state: paused;
+	-moz-animation-play-state: paused;
+	-o-animation-play-state: paused;
+} */
 /* (!).topic-body */
 .topic-body {
 	position: relative;
 	left: 0; top: 0;
-	width: 100%;
-	height: 100%;
-	overflow: hidden auto;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 1 1 100%;
+	overflow: hidden hidden;
 }
 /* (!) Search hightlight color
 - Цвет выделения при поиске */
@@ -641,9 +1097,12 @@ span.highlight {background-color: #ffff40;}
 */
 .content-text {
 	position: absolute;
-	left: 0; right: 0; top: 0;
-	margin: 2px;
-	padding: 1px;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+	/* margin: 2px; */
+	padding: 0 4px 0 6px;
+	overflow: hidden auto;
+	scroll-behavior: smooth; /* плавная прокрутка */
 }
 .content-text ul,
 .content-text p {margin: 5px 0;}
@@ -755,6 +1214,7 @@ li img.toggle-icon {
 li.list-style-none {
 	background-image: none;
 }
+.toggle-content,
 p.text-offset,
 .unic-check-mark li,
 .unic-star2 li,
@@ -846,13 +1306,6 @@ li.unic-check-mark:before,
 .toggle-content {
 	position: relative;
 	margin: 2px;
-	/* font-size: 16px; */
-	font-size: 1em;
-	font-family: 'Times New Roman', Times, Georgia, serif;
-	font-style: normal;
-	font-weight: normal;
-	text-indent: 0;
-	color: #000;
 }
 .slider-list,
 .img-slider,
@@ -860,7 +1313,7 @@ li.unic-check-mark:before,
 .lightbox-video,
 .lightbox-img,
 .lightbox,
-.toggle-content {overflow: hidden;}
+.toggle-content {overflow: hidden hidden;} /** без overflow происходит переполнение и контент вылезает за пределы видимости по бокам */
 
 .toggle-bg-light {
 	background-color: rgba(73, 73, 73, 0.5);
@@ -891,13 +1344,18 @@ li.unic-check-mark:before,
 	/* left: 50%; *//* top: 50%; */
 	/* transform: translate(-50%, -50%); */
 }
-
-.toggle-collapse {display: none;} /* скрыть/отобразить lightbox */
+.lightbox {
+	font-weight: bold;
+	text-align: center;
+}
+.toggle-collapse {display: none;} /* скрыть/отобразить .toggle-content/.lightbox */
+.toggle-inline:hover+.toggle-collapse {display: initial;}
 
 .img-title,
 .slider-track,
 .slider-list,
 .img-slider,
+.lightbox-video,
 .lightbox-img {
 	position: relative;
 	left: 0; top: 0;
@@ -940,6 +1398,17 @@ li.unic-check-mark:before,
 .btn-box a:hover,
 .zoom-out:hover,
 .zoom-in:hover {transform: scale(1.3);}
+.btn-slider a,
+.slider-item,
+.btn-box a, /* .img-btn-next, .img-btn-prev, */
+.zoom-out,
+.zoom-in {
+	transition: 0.6s ease; /**плавное появление/исчезновение при наведении курсора */
+	-webkit-transition: .6s ease; /* Chrome, Safari, iOS */
+	-moz-transition: .6s ease; /* Firefox */
+	-o-transition: .6s ease; /* Opera */
+	/* will-change: transition; *//* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
 
 .img-viewer {
 	position: relative;
@@ -960,23 +1429,28 @@ li.unic-check-mark:before,
 }
 
 .img-item {
-	max-width: 300px;
+	/* max-width: 300px; */
+	max-width: 100%;
+	max-height: 100%;
 	margin: auto;
 	display: block;
 	cursor: zoom-in;
 	cursor: -webkit-zoom-in;
 	cursor: -moz-zoom-in;
-	animation: 2s forwards;
-/*
-(i)*св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
-*/
-	will-change: animation;
+
+	animation: 2s;
+	-webkit-animation: 2s;
+	-moz-animation: 2s;
+	-o-animation: 2s;
+	will-change: animation; /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
 /*
 (!) css правило img-zoom100 для lightbox в гл.окне работает противоположно правилу img-zoom100 для lightbox в теме топика
 */
 .img-zoom100 {
-	max-width: 100%;
+	/* max-width: 100%; */
+	max-width: fit-content;
+	max-height: fit-content;
 	cursor: zoom-out;
 	cursor: -webkit-zoom-out;
 	cursor: -moz-zoom-out;
@@ -984,44 +1458,30 @@ li.unic-check-mark:before,
 
 .btn-box {
 	position: absolute;
-	top: 50%;
 	width: 50px;
 	height: 50px;
 	display: flex;
 }
 .btn-slider,
 .btn-box {
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
 	font-size: 2em;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
 }
-
-.btn-slider a:hover,
-.btn-slider a,
 .slider-item:hover,
 .slider-item,
+.btn-slider:hover,
+.btn-slider,
 .zoom-out,
 .zoom-in,
-.btn-box a:hover,
-.btn-box a, /* .lightbox-btn-close, .img-btn-next, .img-btn-prev, */
 .btn-box:hover,
-.btn-box {
-	cursor: pointer;
-	transition: 0.6s ease; /**плавное появление/исчезновение при наведении курсора */
-	-webkit-transition: .6s ease; /* Chrome, Safari, iOS */
-	-moz-transition: .6s ease; /* Firefox */
-	-o-transition: .6s ease; /* Opera */
-	/* will-change: transition; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
-}
+.btn-box {cursor: pointer;}
 
 .btn-slider a,
 .btn-box a {
 	width: 100%;
 	border-radius: 100px;
 	border-color: transparent;
-	line-height: 50px; /* - выравниваем "стрелки" (кнопки перехода) по высоте */
+	line-height: 50px; /* выравниваем "стрелки" по высоте (кнопки перехода) */
 	text-decoration: none;
 }
 .lightbox-btn-close,
@@ -1045,15 +1505,14 @@ li.unic-check-mark:before,
 	border: none;
 	outline: none;
 	background: transparent;
-	text-shadow: 4px 0 #000, 0.4px 0 #000, -0.4px 0 #000, -0.4px 0 #000; /* - буквенная обводка */
+	text-shadow: 4px 0 #000, 0.4px 0 #000, -0.4px 0 #000, -0.4px 0 #000; /* буквенная обводка */
 }
-.lightbox-btn-close:hover,
 .lightbox-btn-close {
 	transition: 0.3s ease; /**плавное появление/исчезновение при наведении курсора */
 	-webkit-transition: .3s ease; /* Chrome, Safari, iOS */
 	-moz-transition: .3s ease; /* Firefox */
 	-o-transition: .3s ease; /* Opera */
-	/* will-change: transition; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	/* will-change: transition; *//* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
 .lightbox-btn-close:hover {
 	transform: rotate(180deg) scale(1.6, 1.6);
@@ -1061,8 +1520,8 @@ li.unic-check-mark:before,
 	-moz-transform: rotate(180deg) scale(1.6, 1.6); /* Firefox */
 	-o-transform: rotate(180deg) scale(1.6, 1.6); /* Opera */
 	-ms-transform: rotate(180deg) scale(1.6, 1.6); /* IE */
-	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
-	text-shadow: -4px 0 #000, .4px 0 #000, 0 .4px #000, 0 -.4px #000; /* - буквенная обводка */
+	text-shadow: -4px 0 #000, 0.4px 0 #000, 0 0.4px #000, 0 -0.4px #000; /* буквенная обводка */
+	/* will-change: transform; *//* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
 
 .img-btn-prev {
@@ -1070,15 +1529,21 @@ li.unic-check-mark:before,
 	margin: 0 0 0 10px;
 	padding: 0 0 0 10px;
 }
+.img-btn-next,
+.img-btn-prev {
+	top: 40%;
+}
+
 .slider-btn-prev a,
 .img-btn-prev a {
-	/* padding: 0 6px 0 0; */ /* x */
-	text-shadow: -2px 0px #000,
+	/* буквенная обводка */
+	text-shadow: -4px 0px #000,
 				1px 2px #000,
 				-1px 2px #000,
 				-1px -2px #000,
 				4px 2px #000,
-				4px -2px #000; /* - буквенная обводка */
+				0px -2px #000,
+				4px -2px #000;
 }
 
 .img-btn-next {
@@ -1089,30 +1554,37 @@ li.unic-check-mark:before,
 
 .slider-btn-next a,
 .img-btn-next a {
-	/* padding: 0 0 0 6px; */ /* x */
-	text-shadow: 2px 0px #000,
+	/* буквенная обводка */
+	text-shadow: 4px 0px #000,
 				1px 2px #000,
 				-1px 2px #000,
 				1px -2px #000,
 				-4px 2px #000,
-				-4px -2px #000; /* - буквенная обводка */
+				0px -2px #000,
+				-4px -2px #000;
 }
 
 .btn-top {
 	position: absolute;
-	right: 10px;
-	bottom: 10px;
+	right: 20px; /* при появлении скроллбара */
+	bottom: 14px;
 	width: 100px;
 	height: 100px;
 	text-align: center;
 	border: 1px solid #3f3f3f;
 	border-radius: 100px;
 	background: url(../icon/streetlight-signboard-white.png) no-repeat center;
-	background-size: 100px;
+	/* background-size: 100px; */
+	background-size: contain;
+	transition: all 2s ease;
+	-webkit-transition: all 2s ease;
+	-moz-transition: all 2s ease;
+	-o-transition: all 2s ease;
 }
 .btn-top:hover {
 	background: url(../icon/streetlight-signboard-whitelight.png) no-repeat center;
-	background-size: 100px;
+	/* background-size: 100px; */
+	background-size: contain;
 	box-shadow: 0 0 20px 20px rgba(241, 217, 3, .4); /* #f1d903 */
 }
 .btn-top a {
@@ -1137,9 +1609,11 @@ li.unic-check-mark:before,
 	cursor: default;
 }
 
+.img-slider {margin: 6px;}
+.slider-list,
 .img-slider {
-	margin: 6px;
-	flex: 1 1 100%;
+	/* flex: 1 1 100%; */
+	flex: 1 1 auto;
 }
 
 .slider-list,
@@ -1154,10 +1628,7 @@ li.unic-check-mark:before,
 				-35px 0 30px -20px #000 inset;
 }
 
-.slider-list {
-	margin: auto;
-	flex: 1 1 90%;
-}
+.slider-list {margin: auto;}
 .img-slider,
 .slider-item,
 .btn-slider,
@@ -1179,24 +1650,17 @@ li.unic-check-mark:before,
 .btn-slider {
 	position: relative;
 	height: 50px;
+	margin: 5px;
 	padding: 4px;
 	display: flex;
 	flex: 0 0 auto;
 	align-items: center;
 }
 
-.slider-btn-prev {
-	margin: auto auto auto 5px;
-	justify-content: flex-start;
-}
-
-.slider-btn-next {
-	margin: auto 5px auto auto;
-	justify-content: flex-end;
-}
+.slider-btn-prev {justify-content: flex-start;}
+.slider-btn-next {justify-content: flex-end;}
 
 .slider-item {
-	margin: 5px;
 	min-width: fit-content;
 	justify-content: center;
 	/* outline: 1px dotted #000; */ /* без влияния на размерность */
@@ -1240,7 +1704,7 @@ li.unic-check-mark:before,
 	aspect-ratio: 16 / 9; /* padding: 0 0 50% 0; *//* - формат изображения */
 	text-align: center;
 	border: 1px solid #3f3f3f;
-	overflow: hidden;
+	overflow: hidden hidden;
 }
 .lightbox-video video,
 .lightbox-video iframe {
@@ -1259,50 +1723,42 @@ li.unic-check-mark:before,
 - Нижний колонтитул, определенный в контенте топика
 */
 .content-footer {
-	left: 0; right: 0;
-	/* bottom: 0; */
-	margin: 20px auto;
-	padding: 5px 0 5px 0;
-	border-style: solid;
-	border-width: 1px 0 0 0;
-	border-color: silver;
+	position: relative;
+	left: 0; top: 0;
+	margin: 4px auto;
+	padding: 4px 0;
+	border-top: 1px solid silver;
 }
-.content-footer p {
-	padding: 0 0 5px 0;
-	/* font-family: Verdana, sans-serif; */
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+.content-footer {
 	/* font-size: 9pt; */
 	font-size: 0.7em;
 	text-indent: 0px; /* отступ первой строки */
 	text-align: center;
-	/* color: #737373; */
 }
+.content-footer a:visited,
+.content-footer a {color: #737373;}
 .content-footer a {
-	color: #737373;
-	border-bottom: 1px dotted #666;
-	text-decoration: none;
+	text-decoration-color: #666;
+	text-decoration-style: dotted;
 }
-.content-footer a:visited {color: #737373;}
 .content-footer a:hover {
-	text-decoration: underline;
 	color: blue;
-	border-color: #262626;
-	text-decoration: none;
+	text-decoration-color: #262626;
 }
 /* (!) Topic Footer. Not to be confused with the footer in the topic content
 - Нижний колонтитул топика. Не путать с нижним колонтитулом в контенте топика
 */
 .topic-footer {
 	position: relative;
-	left: 0; top: 0;
-	width: 100%;
+	left: 0; bottom: 0;
+	width: auto;
 	height: auto;
-	padding: 2px 0 10px 0;
+	padding: 4px 2px;
 	display: flex;
 	flex: 1 1 auto;
-	flex-flow: row nowrap; /* - сокращенная запись свойств flex-direction и flex-wrap, которые вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
+	flex-flow: row nowrap; /* применяется к родительскому элементу flex-контейнера. */
 	align-items: center;
-	align-content: space-between;
+	/* align-content: space-between; */ /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 	justify-content: center;
 	font-family: Verdana, Tahoma, Helvetica, sans-serif;
 	font-size: 0.7em;
@@ -1310,48 +1766,52 @@ li.unic-check-mark:before,
 	border-top: 1px solid silver;
 }
 .topic-footer {
-	background: rgb(0,0,0);
+	background-color: rgb(0,0,0);
+	background: linear-gradient(rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
 	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 	background: -moz-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 	background: -o-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 	background: -ms-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
 }
 
 .topic-footer-left,
 .topic-footer-center,
 .topic-footer-right {
 	position: relative;
-	top: 4px; bottom: 4px;
+	top: 0;
 	width: auto;
-	height: auto;
-	margin: 1px;
-	flex: 1 1 auto;
+	min-width: 10px;
+	height: 100%;
+	margin: auto;
+	padding: 1px;
 	display: flex;
 	flex-flow: row wrap;
-	align-items: center; /* - Выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении. */
-	align-content: center; /**либо align-items: center. Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов. */
+	align-items: center; /* выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении */
+	/* align-content: center; */ /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 }
-
 .topic-footer-left {
-	padding: 1px 1px 1px 6px;
+	order: 3;
+	flex: 3 3 auto;
+	justify-content: flex-end; /* после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */ /**вместо flex-start, т.к.применено правило reflect */
 	text-align: left;
-	justify-content: flex-start; /* - после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
 }
 
 .topic-footer-center {
-	padding: 1px;
+	order: 2;
+	flex: 1 1 auto;
+	justify-content: center; /* после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
 	text-align: center;
-	justify-content: center; /* - после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
 }
 
 .topic-footer-right {
-	padding: 1px 6px 1px 1px;
+	order: 1;
+	flex: 2 2 auto;
+	justify-content: flex-end; /* после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
 	text-align: right;
-	justify-content: flex-end; /* - после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
 }
-
+/* (i) (тильда ~ «Общий родственный комбинатор») между селекторами - обобщённый смежный селектор действует точно также как и обычные смежные селекторы (обозначение: + «Соседний родственный комбинатор», > «Дочерний комбинатор»), за исключением того, что свойства применяются не только к первому соседу ниже, а ко всем заданным соседям ниже. */
 .topic-footer p>a,
 .topic-footer a,
 .topic-footer p {
@@ -1366,10 +1826,10 @@ li.unic-check-mark:before,
 .topic-footer a {text-decoration: none;}
 .topic-footer p>a:hover,
 .topic-footer a:hover {text-decoration: underline dotted;}
-/* (!) root element for tab-slider-track
+/* (!) root element for tab_slider-track
 - Корневой элемент для вкладок
-(i) ul.tab-slider-track - это дубликат текущей вкладки, единственная и она же текущая вкладка тема топика, по умолчанию скрытая, но отображается, когда вкладка запускается в отдельном окне браузера по кнопке Открепить на пан.инструментов */
-ul.tab-slider-track {display: none;}
+(i) ul.tab_slider-track - это дубликат текущей вкладки, единственная и она же текущая вкладка тема топика, по умолчанию скрытая, но отображается, когда вкладка запускается в отдельном окне браузера по кнопке Открепить на пан.инструментов */
+ul.tab_slider-track {display: none;}
 /* (!) Sortable Tables
 - Сортируемые Таблицы
 x (?) скорее всего это не понадобится
@@ -1561,9 +2021,11 @@ span#sbuttontext {
 	font-weight: bold;
 	font-size: 11px;
 }
-/* (!) Styles for what goes to the printer
+/* (!) МЕДИА ЗАПРОСЫ */
+/*
+*Styles for what goes to the printer
 - Стили для того, что отправляется на принтер
-(!) @media print */
+*/
 @media print {
 	.nav-links,
 	.toc-page,
@@ -1584,8 +2046,187 @@ span#sbuttontext {
 
 	button#livePrintButton {display: none; /* !important; */}
 }
-/* (!) МЕДИА ЗАПРОСЫ */
-/**диапазон < 200 */
+/*
+'Portrait tablets and medium desktops
+- Портретные планшеты и средние настольные компьютеры
+*/
+/**диапазон от 992px до 1199px */
+/* @media (min-width: 992px) and (max-width: 1199px) {} */
+/**диапазон < 960px */
+/* @media screen and (max-width: 960px) {} */
+/*
+'Portrait tablets and small desktops
+- Портретные планшеты и небольшие настольные компьютеры
+*/
+/**диапазон от 768px до 991px */
+/* @media (min-width: 768px) and (max-width: 991px) {} */
+/*
+'Landscape phones and portrait tablets
+- Альбомные телефоны и планшеты с портретом
+*/
+/**диапазон <= 757px */
+/* @media screen and (max-width: 757px) {} */
+
+/**диапазон <= 500px по ширине */
+@media screen and (max-width: 500px) {
+	/* .topic-footer, .topic-body {flex: 1 1 70%;} */
+	.topic-footer {
+		max-height: 10vh;
+		padding: 2px;
+		flex: 1 1 70%; /* (?)~transition работает хорошо, overflow: hidden hidden в замене не нуждается и косяка при переполнении не возникает */
+		overflow: hidden hidden; /* ~при увеличении выс.предотвратит задирание вверх из-за большого объема текта */
+	}
+	.footer-max,
+	.topic-footer {
+		transition: all 3s 3s ease, max-height 3s 0s ease;
+		-webkit-transition: all 3s 3s ease, max-height 3s 0s ease;
+		-moz-transition: all 3s 3s ease, max-height 3s 0s ease;
+		-o-transition: all 3s 3s ease, max-height 3s 0s ease;
+	}
+	.footer-max,
+	.topic-footer:hover {
+		/* position: absolute; */
+		right: 0;
+		max-height: 100%;
+		/* padding: 2px 2px 6px 2px; */
+		/* flex: 1 1 100%; */
+		z-index: 1;
+		/* overflow: initial; */ /* ~косяк при переполнении-задирает футтер на выс.максимально заполненного текстом блока в футтере */
+	}
+
+	.topic-footer-left {padding: 1px 1px 1px 4px;}
+	.topic-footer-center {padding: 1px 4px;}
+	.topic-footer-right {padding: 1px 4px 1px 1px;}
+
+	.topic-footer-left, .topic-footer-right {
+		flex: 2 2 30%;
+		/* flex: 2 2; */
+	}
+	.footer-max .topic-footer-left,
+	.footer-max .topic-footer-right,
+	.topic-footer:hover .topic-footer-left,
+	.topic-footer:hover .topic-footer-right {overflow: hidden auto;}
+	/* truncate - усечение длинного текста */
+	.topic-footer p {
+		/* max-width: 102px; */
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		-ms-text-overflow: ellipsis;
+		overflow: hidden auto;
+	}
+	.topic-footer a,
+	.footer-max p,
+	.topic-footer:hover p {
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	} /* усечение длинного текста */
+}
+/**диапазон <= 648px по высоте или <= 330px по ширине */
+@media screen and (max-height: 648px), (max-width: 330px) {
+	/**lightbox */
+	.btn-slider,
+	.lightbox-btn-close,
+	.btn-box {font-size: 1.5em;}
+	.zoom-out, .zoom-in {
+		width: 25px;
+		height: 25px;
+	}
+	.btn-top {
+		width: 50px;
+		height: 50px;
+	}
+	.slider-item, .btn-slider {height: 25px;}
+}
+/**диапазон <= 318px по высоте */
+@media screen and (max-height: 318px), (max-width: 250px) {
+	.msg-hide~* .tooltip-lightswitch {top: 0;}
+	.tooltip-lightswitch {
+		left: -14px;
+		top: -110px;
+	}
+	.tooltip-lightswitch:before {top: 116px;}
+
+	.tooltip_finger_toggle-popup,
+	.msg-icon:hover .tooltip-finger_toggle {
+		transform: rotate(-50deg) translate(-140px, -60px) scale(1);
+		-webkit-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
+		-moz-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
+		-o-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
+		-ms-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
+		opacity: 1;
+	}
+
+	.tooltip-finger_toggle:before {
+		left: 110px; top: 5px;
+		border-left: 20px solid rgba(171,222,247,.9);
+		border-top: 30px solid transparent;
+		border-bottom: none;
+	}
+}
+/**диапазон <= 300px по высоте и <= 300px ширине ИЛИ только <= 300px ширине */
+@media screen and (((max-height: 300px) and (max-width: 300px)) or (max-width: 300px)) {
+	/* .msg-content, */
+	.msg-text {max-height: 70px;}
+	.msg-text p {
+		width: 100%;
+		max-height: 64px; /* минус padding: 6px; иначе переполнение */
+		overflow-wrap: break-word;
+		word-break: break-word;
+	}
+}
+/**диапазон <= 300px по высоте и <= 200px по ширине */
+@media screen and (max-height: 300px) and (max-width: 200px) {
+	.topic-footer {overflow: hidden auto;}
+}
+/**диапазон <= 268px по высоте */
+@media screen and (max-height: 268px) {
+	.tooltip-finger_toggle p {
+		max-height: 150px;
+		overflow: hidden auto;
+		line-height: 1;
+	}
+}
+/**диапазон <= 330px по ширине */
+@media screen and (max-width: 330px) {
+	.tooltip-lightswitch {width: 50vw;}
+	/* (i) перенос текста, пробелы, дефисы, тире */
+	.tooltip-lightswitch p {
+		white-space: normal; /* текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
+		word-spacing: normal; /* нормальный интервал между словами, определенный текущим шрифтом и/или браузером */
+		overflow-wrap: anywhere; /* св-во отменяет word-wrap */
+		word-wrap: normal; /* св-во отменяет overflow-wrap */
+		word-break: break-word; /* normal, чтобы игнорировался разного вида перенос текста */
+		/* line-break: anywhere; */
+		/* text-wrap-style: pretty; */
+		/* hyphens: auto; */ /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
+		/* -webkit-hyphens: auto; */ /* - все равно не работает */
+		/* -ms-hyphens: auto; */
+	}
+}
+/**диапазон <= 320px по ширине */
+@media screen and (max-width: 320px) {
+	/* .tooltip-finger_toggle p:last-child, */
+	.tooltip-lightswitch-info2 p {
+		max-height: 100px;
+		overflow: hidden auto;
+	}
+}
+/**диапазон <= 250px по ширине */
+@media screen and (max-width: 250px) {
+	.msg_icon-finger_toggle-popup,
+	.msg_icon-finger_toggle:hover {z-index: 1;}
+}
+/**диапазон <= 200px по ширине */
 @media screen and (max-width: 200px) {
-	.msg-content {flex-wrap: wrap;}
+	.msg-content {
+		max-height: 100%;
+		flex-flow: row wrap;
+		justify-content: space-between;
+	}
+	.msg_icon-lightswitch {justify-content: flex-start;}
+	.msg_icon-finger_toggle {
+		order: 2;
+		justify-content: flex-end;
+	}
+	.msg-text {order: 3;}
 }

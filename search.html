@@ -8,37 +8,40 @@
 	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
 	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
 	<title>Поиск</title>
-	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="icon/x-icon">
+	<link rel="icon" href="icon/favicons/fgis-fri.png" type="image/png">
+
+	<!-- <link rel="manifest" href="icons_manifest.webmanifest"> --> <!-- (?) -->
+
 	<meta name="author" content="HaTaXa">
 	<meta name="copyright" content="HaTaXa">
 	<meta name="robots" content="index,follow"> <!-- 'для поисковиков -->
 	<meta name ="revisit-after" content="15 days"> <!-- 'посещение программой роботом сайта и индексирование его содержания -->
-	<!-- ! подключение стилей -->
-	<link rel="stylesheet" href="css/topic.css"> <!-- 'вместо файла hm_topic.css -->
-	<link rel="stylesheet" href="css/search.css"> <!-- 'было прописано внутри тега хед файла hmftsearch.htm -->
+	<!-- (!) подключение стилей -->
+	<link rel="stylesheet" href="css/topic.css">
+	<link rel="stylesheet" href="css/search.css">
 	<link rel="stylesheet" href="css/linkstyles.css"> <!-- 'стилизация ссылок -->
-	<!-- ! подключение скриптов + см.внизу -->
-	<!-- <script src="js/search.js"></script> --> <!-- 'было прописано внутри тега хед файла hmftsearch.htm -->
+	<link rel="stylesheet" href="css/animation.css">
+	<!-- (!) подключение скриптов + см.внизу -->
+	<!-- <script src="js/search.js"></script> -->
 
 	<!--[if IE 9]>
 		<link id="iesvgcss" rel="stylesheet" type="text/css" href="js/hm_webhelp_svg.css" />
 	<![endif]-->
 </head>
 <body>
-
-	<ul id="idTabSliderTrack" class="tab-slider-track"> <!-- (?) не понятно для чего -->
+	<ul id="idTabSliderTrack" class="tab_slider-track">
 		<li id="idSearchTab" class="tabs tab-current">
-			<a id="idSearchTabLink" href="#"><span>Поиск</span></a>
+			<a id="searchtablink" href="#"><span>Поиск</span></a>
 		</li>
 	</ul>
 	<div id="idTopicBox" class="topic-box">
-		<div id="idInnerBox">
+		<div id="idInnerBox" class="inner-box">
 			<p class="submit">Введите одно или несколько ключевых слов для поиска ('*' и '?' подстановочные символы поддерживаются):</p>
 			<!-- This is where the search form and results will appear -->
 			<div id="idLoadingMsg" align="center" style="display: none;">
 				<img src="icon/loader.gif" style="border: none" alt="Loading..." />
 			</div>
-
 			<!-- <script type="text/javascript" src="js/settings.js" charset="UTF-8"></script> -->
 			<!-- <script type="text/javascript" src="js/zoom_search.js"></script> -->
 			<!-- скрипт zoom_search.js прописывает следующие скрипты в текст страницы -->
@@ -46,10 +49,9 @@
 			<!-- <script language="JavaScript" src="js/zoom_pageinfo.js" charset="UTF-8"></script> -->
 			<!-- <meta http-equiv="content-type" content="text/html; charset=UTF-8"> -->
 			<!-- <script type="text/javascript">ZoomSearch();</script> --> <!-- (?) скрипт создает форму поиска -->
-
 			<form id="idFormSearch" class="zoom_searchform" action="search.html" method="get">
-				<input id="zoom_searchbox" class="zoom_searchbox" type="text" name="zoom_query" value="" autocorrect="off" autocapitalize="off" placeholder="Введите текст поиска" title="Введите одно или несколько ключевых слов для поиска ('*' и '?' подстановочные символы поддерживаются)" autocomplete="on"> <!-- size="70" -->
-				<input class="zoom_button" type="submit" value="Поиск" title="Горячая клавиша «Enter»">
+				<input type="text" name="zoom_query" id="zoom_field" class="zoom_field" value="" autocorrect="off" autocapitalize="off" placeholder="Введите текст поиска" autocomplete="on">
+				<input class="zoom_button" type="submit" value="Найти" title="Горячая клавиша «Enter»">
 				<p class="zoom_results_per_page">Результаты на странице:
 					<select name="zoom_per_page">
 						<option selected="selected">10</option>
@@ -59,21 +61,21 @@
 					</select>
 				</p>
 				<p class="zoom_match">Соответствовать:
-					<input type="radio" name="zoom_and" value="0">любому из слов поиска
-					<input type="radio" name="zoom_and" value="1" checked="checked">всем словам поиска
+					<label><input id="anywordsearch" type="radio" name="zoom_and" value="0">любому из слов поиска</label>
+					<label><input id="allwordsearch" type="radio" name="zoom_and" value="1" checked="checked">всем словам поиска</label>
 				</p>
 				<input type="hidden" name="zoom_sort" value="0">
 			</form>
 			<p id="dummy">&nbsp;&nbsp;&nbsp;</p>
 			<noscript><p>У Вас должен быть включен JavaScript для использования WebHelp поиск</p></noscript>
 		</div><!-- idInnerBox -->
-	</div><!-- idBox -->
+		<p style="color: blue;">(i) Вкладка «Поиск» находится разработке</p>
+	</div><!-- idTopicBox -->
 
 	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
 	<!-- локальное подключение библиотеки jquery: несжатый -->
-	<script src="js/jquery-3.6.0.js"></script>
-	<!-- локальное подключение библиотеки jquery: минимизированный -->
-	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<script src="js/jquery-3.7.1.js"></script>
+	<!-- <script src="js/jquery-3.7.1.min.js"></script> -->
 	<!-- ************************************************************ -->
 	<!-- ссылка на jquery CDN: несжатый -->
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->

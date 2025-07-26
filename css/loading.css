@@ -1,10 +1,11 @@
+.user-interaction,
 .loader,
 .preloader {
 	position: fixed;
 	left: 0; top: 0;
 	right: 0; bottom: 0;
-	overflow: hidden;
 	background: rgba(0, 0, 0, 0.9);
+	overflow: hidden hidden;
 	z-index: 1001;
 }
 
@@ -34,5 +35,192 @@ https://itchief.ru/javascript/preloader
 	-moz-transition: .9s opacity; /* Firefox */
 	-o-transition: .9s opacity; /* Opera */
 	opacity: 0;
-	will-change: transition; /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	will-change: transition; /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+}
+.user-interaction div,
+.user-interaction {
+	display: flex;
+	align-items: center;
+}
+.user-interaction {
+	flex-flow: column nowrap;
+	justify-content: center; /* после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
+	color: #fff;
+	text-indent: 0;
+	text-align: center;
+}
+.user-interaction div {
+	position: relative;
+	max-width: 200px;
+	min-width: min-content;
+	margin: 4px;
+	padding: 4px;
+	flex-flow: row wrap;
+	justify-content: space-around; /* после применения размеров и отступов пространство вокруг флекс-элементов вдоль главной оси контейнера */
+	/* box-sizing: border-box; */ /* 'размеры будут учитываться браузером без padding и border */
+}
+.user-interaction div {
+	border: 1px solid #fff;
+	border-radius: 5px;
+}
+/* .user-interaction p, */
+.box-user-inter p {
+	width: 100%;
+	height: auto;
+	margin: 2px;
+	padding: 4px;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	/* hyphens: auto;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto; *//* плохо */
+}
+.btns-user-inter,
+.box-user-inter span,
+/* .user-interaction p, */
+.box-user-inter p {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+.user-interaction * div {
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	margin: 2px;
+	padding: 2px 6px;
+	flex: 0 0 auto;
+	text-align: center;
+	cursor: pointer;
+}
+/* .user-interaction div:not(.user-interaction div *), */
+/* .box-user-inter {
+	box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .6);
+} */
+.box-user-inter {overflow: hidden hidden;}
+.box-user-inter span {
+	position: absolute;
+	display: block;
+}
+.box-user-inter span:nth-child(1) {
+	left: 0; top: 0;
+}
+.box-user-inter span:nth-child(3),
+.box-user-inter span:nth-child(1) {
+	width: 100%;
+	height: 2px;
+}
+.box-user-inter span:nth-child(1) {
+	background: linear-gradient(90deg,transparent,#fff);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff00, endColorstr = #ffffff);
+	/* background: -webkit-linear-gradient(90deg,transparent,#fff);
+	background: -moz-linear-gradient(90deg,transparent,#fff);
+	background: -o-linear-gradient(90deg,transparent,#fff); *//* обычный background дает эфф.светового шлейфа */
+}
+.box-user-inter span:nth-child(1) {
+	animation: brdr-top-glow 1s linear infinite;
+	-webkit-animation: brdr-top-glow 1s linear infinite;
+	-moz-animation: brdr-top-glow 1s linear infinite;
+	-o-animation: brdr-top-glow 1s linear infinite;
+}
+.box-user-inter span:nth-child(2) {
+	top: 0; right: 0;
+}
+.box-user-inter span:nth-child(4),
+.box-user-inter span:nth-child(2) {
+	width: 2px;
+	height: 100%;
+}
+.box-user-inter span:nth-child(2) {
+	background: linear-gradient(180deg,transparent,#fff);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff00, endColorstr = #ffffff);
+	/* background: -webkit-linear-gradient(180deg,transparent,#fff);
+	background: -moz-linear-gradient(180deg,transparent,#fff);
+	background: -o-linear-gradient(180deg,transparent,#fff); *//* обычный background дает эфф.светового шлейфа */
+}
+.box-user-inter span:nth-child(2) {
+	animation: brdr-right-glow 1s linear infinite;
+	-webkit-animation: brdr-right-glow 1s linear infinite;
+	-moz-animation: brdr-right-glow 1s linear infinite;
+	-o-animation: brdr-right-glow 1s linear infinite;
+	animation-delay: 0.25s;
+	-webkit-animation-delay: 0.25s;
+	-moz-animation-delay: 0.25s;
+	-o-animation-delay: 0.25s;
+}
+.box-user-inter span:nth-child(3) {
+	right: 0; bottom: 0;
+}
+.box-user-inter span:nth-child(3) {
+	background: linear-gradient(270deg,transparent,#fff);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff00, endColorstr = #ffffff);
+	/* background: -webkit-linear-gradient(270deg,transparent,#fff);
+	background: -moz-linear-gradient(270deg,transparent,#fff);
+	background: -o-linear-gradient(270deg,transparent,#fff); *//* обычный background дает эфф.светового шлейфа */
+}
+.box-user-inter span:nth-child(3) {
+	animation: brdr-bottom-glow 1s linear infinite;
+	-webkit-animation: brdr-bottom-glow 1s linear infinite;
+	-moz-animation: brdr-bottom-glow 1s linear infinite;
+	-o-animation: brdr-bottom-glow 1s linear infinite;
+	animation-delay: 0.50s;
+	-webkit-animation-delay: 0.50s;
+	-moz-animation-delay: 0.50s;
+	-o-animation-delay: 0.50s;
+}
+.box-user-inter span:nth-child(4) {
+	left: 0; bottom: 0;
+}
+.box-user-inter span:nth-child(4) {
+	background: linear-gradient(360deg,transparent,#fff);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff00, endColorstr = #ffffff);
+	/* background: -webkit-linear-gradient(360deg,transparent,#fff);
+	background: -moz-linear-gradient(360deg,transparent,#fff);
+	background: -o-linear-gradient(360deg,transparent,#fff); *//* обычный background дает эфф.светового шлейфа */
+}
+.box-user-inter span:nth-child(4) {
+	animation: brdr-left-glow 1s linear infinite;
+	-webkit-animation: brdr-left-glow 1s linear infinite;
+	-moz-animation: brdr-left-glow 1s linear infinite;
+	-o-animation: brdr-left-glow 1s linear infinite;
+	animation-delay: 0.75s;
+	-webkit-animation-delay: 0.75s;
+	-moz-animation-delay: 0.75s;
+	-o-animation-delay: 0.75s;
+}
+.btns-user-inter:before {
+	content: "";
+	position: absolute;
+	left: 0; top: 0;
+	width: 100%;
+	height: 100%;
+}
+.btns-user-inter:before {
+	animation: shadow-glow 1.5s linear infinite;
+	-webkit-animation: shadow-glow 1.5s linear infinite;
+	-moz-animation: shadow-glow 1.5s linear infinite;
+	-o-animation: shadow-glow 1.5s linear infinite;
+}
+/* .btns-user-inter:hover:before, *//* отключится мигание */
+.btn-un-current:before {animation: none;}
+/* .box-user-inter div:nth-last-child(2):before, */ /* или так */
+.box-user-inter div:nth-child(2):before {
+	animation-delay: 1s;
+	-webkit-animation-delay: 1s;
+	-moz-animation-delay: 1s;
+	-o-animation-delay: 1s;
+}
+.btns-user-inter:hover {
+	box-shadow: inset 0px 0px 20px 0px rgba(255, 255, 255, .6);
+}
+@keyframes shadow-glow {
+	0% {box-shadow: inset 0px 0px 20px 20px transparent;}
+	50% {box-shadow: inset 0px 0px 20px 20px rgba(255, 255, 255, .6);}
+	100% {box-shadow: inset 0px 0px 20px 20px transparent;}
 }

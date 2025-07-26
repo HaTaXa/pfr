@@ -1,5 +1,5 @@
-// (!) setPermaLinkBookmark-кнопка в закладки
-function setPermaLinkBookmark (elem) { // TODO
+// (!) кн.в закладки
+function setPermaLinkBookmark(elem) { // доделать // (?)
 	let msg;
 	// let title = "Закладка";
 	// let UA = navigator.userAgent.toLowerCase();
@@ -26,8 +26,8 @@ function setPermaLinkBookmark (elem) { // TODO
 	// } else { msg = false; }
 	return msg;
 }
-// (!) setCopyToClipboard-кнопка скопировать в буфер обмена
-function setCopyToClipboard (elem) {
+// (!) кн.скопировать в буфер обмена
+function setCopyToClipboard(elem) { // доделать // (?)
 	let msg;
 	if (elem.value === "") {
 		msg = false;
@@ -55,9 +55,9 @@ function setCopyToClipboard (elem) {
 	}
 	return msg;
 }
-// (!) clearPermalink - очистить окно Постоянная ссылка
-function clearPermalink() {
-	let elem = window.top.document.getElementById('idTextArea');
+// (!) очистить окно Постоянная ссылка
+function setClearPermalink() {
+	let elem = window.top.document.getElementById('idPermaLinkTxT');
 	if (typeof(elem) !== "undefined" || elem !== null && (elem === Object(elem) || typeof(elem) === "object")) {
 		if (elem.labels[0].innerHTML !== "") {
 			elem.labels[0].innerHTML = "";
@@ -69,67 +69,79 @@ function clearPermalink() {
 // (!) permalink_onClick
 function permalink_onClick(eVent) {
 	if (eVent.target.tagName === "DIV") {
-		if (eVent.target.id === "idPermaLinkClose") { // - кнопка закрыть всплывающее окно Постоянная ссылка
+		if (eVent.target.id === "idPermaLinkClose") { // - esc - кн.закрыть всплывающее окно Постоянная ссылка
 			let plnk = eVent.target;
 			while (plnk.id !== "idPermalinkBox") {
 				plnk = plnk.parentElement;
 				if (plnk.tagName === "BODY") { break; }
 			}
 			if (plnk.id === "idPermalinkBox") {
-				// tmp: - переделать
-				clearPermalink(); // - очищение инфо-подсказок при закрытии окна Постоянная ссылка
-				setShowHideWindow(plnk, 'hide');
+				setClearPermalink(); // очистить окно Постоянная ссылка
+				// setShowOrHide(plnk, "", "", "", "permalink-popup");
+				plnk.classList.remove('permalink-popup');
 			}
-			setEventHandlersPermalink(eVent.target, 'remove'); // - создание/удаление обработчиков событий для узла permalink
+			setEventHandlersPermalink(plnk, 'remove'); // создание/удаление обработчиков событий для узла permalink
 		}
 	} else if (eVent.target.tagName === "INPUT") {
-		if (eVent.target.id === "idPermaLinkBookmark") { // - кнопка в закладки
-			let textArea = document.getElementById('idTextArea');
-			if (textArea !== null && typeof (textArea) === "object") {
-				if (textArea.value === "") {
-					eVent.target.value = "Bookmark failed";
-					textArea.labels[0].innerHTML = hmpermalink.bookmarkError;
-					textArea.labels[0].classList.remove('permalink-info');
-					textArea.labels[0].classList.add('permalink-error');
+		if (eVent.target.id === "idPermaLinkBookmark") { // - кн.в закладки
+			let txtArea = document.getElementById('idPermaLinkTxT');
+			if (txtArea !== null && typeof(txtArea) === "object") {
+				if (txtArea.value === "") {
+					// x // eVent.target.value = "Bookmark failed";
+					eVent.target.labels[0].setAttribute('data-before', 'Bookmark failed');
+					txtArea.labels[0].innerHTML = vrsPermalink.bookmarkError;
+					txtArea.labels[0].classList.remove('permalink-info');
+					txtArea.labels[0].classList.add('permalink-error');
 				} else {
-					if (setPermaLinkBookmark(textArea)) {
-						eVent.target.value = "Добавлено";
-						textArea.labels[0].innerHTML = hmpermalink.bookmarkInfo;
-						textArea.labels[0].classList.remove('permalink-error');
-						textArea.labels[0].classList.add('permalink-info');
+					if (setPermaLinkBookmark(txtArea)) {
+						// x // eVent.target.value = "Добавлено";
+						eVent.target.labels[0].setAttribute('data-before', 'Добавлено');
+						txtArea.labels[0].innerHTML = vrsPermalink.bookmarkInfo;
+						txtArea.labels[0].classList.remove('permalink-error');
+						txtArea.labels[0].classList.add('permalink-info');
 					} else {
-						eVent.target.value = "Bookmark failed";
-						textArea.labels[0].innerHTML = hmpermalink.bookmarkError;
-						textArea.labels[0].classList.remove('permalink-info');
-						textArea.labels[0].classList.add('permalink-error');
+						// x // eVent.target.value = "Bookmark failed";
+						eVent.target.labels[0].setAttribute('data-before', 'Bookmark failed');
+						txtArea.labels[0].innerHTML = vrsPermalink.bookmarkError;
+						txtArea.labels[0].classList.remove('permalink-info');
+						txtArea.labels[0].classList.add('permalink-error');
 					}
+					eVent.target.labels[0].classList.add('btn-flip'); // анимация кн.перевертыш
 					setTimeout(() => {
-						eVent.target.value = "В закладки";
+						// x // eVent.target.value = "В закладки";
+						eVent.target.labels[0].classList.remove('btn-flip');
+						// eVent.target.labels[0].setAttribute('data-before', '');
 					}, 2000);
 				}
 			}
-		} else if (eVent.target.id === "idPermaLinkCopy") { // - кнопка скопировать
-			let textArea = document.getElementById('idTextArea');
-			if (textArea !== null && typeof (textArea) === "object" || textArea === Object(textArea)) {
-				if (textArea.value === "") {
-					eVent.target.value = "Copy failed";
-					textArea.labels[0].innerHTML = hmpermalink.copyError;
-					textArea.labels[0].classList.remove('permalink-info');
-					textArea.labels[0].classList.add('permalink-error');
+		} else if (eVent.target.id === "idPermaLinkCopy") { // - кн.скопировать
+			let txtArea = document.getElementById('idPermaLinkTxT');
+			if (txtArea !== null && typeof(txtArea) === "object" || txtArea === Object(txtArea)) {
+				if (txtArea.value === "") {
+					// x // eVent.target.value = "Copy failed";
+					eVent.target.labels[0].setAttribute('data-before', 'Copy failed');
+					txtArea.labels[0].innerHTML = vrsPermalink.copyError;
+					txtArea.labels[0].classList.remove('permalink-info');
+					txtArea.labels[0].classList.add('permalink-error');
 				} else {
-					if (setCopyToClipboard(textArea)) {
-						eVent.target.value = "Скопировано";
-						textArea.labels[0].innerHTML = hmpermalink.copyInfo;
-						textArea.labels[0].classList.remove('permalink-error');
-						textArea.labels[0].classList.add('permalink-info');
+					if (setCopyToClipboard(txtArea)) {
+						// x // eVent.target.value = "Скопировано";
+						eVent.target.labels[0].setAttribute('data-before', 'Скопировано');
+						txtArea.labels[0].innerHTML = vrsPermalink.copyInfo;
+						txtArea.labels[0].classList.remove('permalink-error');
+						txtArea.labels[0].classList.add('permalink-info');
 					} else {
-						eVent.target.value = "Copy failed";
-						textArea.labels[0].innerHTML = hmpermalink.copyError;
-						textArea.labels[0].classList.remove('permalink-info');
-						textArea.labels[0].classList.add('permalink-error');
+						// x // eVent.target.value = "Copy failed";
+						eVent.target.labels[0].setAttribute('data-before', 'Copy failed');
+						txtArea.labels[0].innerHTML = vrsPermalink.copyError;
+						txtArea.labels[0].classList.remove('permalink-info');
+						txtArea.labels[0].classList.add('permalink-error');
 					}
+					eVent.target.labels[0].classList.add('btn-flip'); // анимация кн.перевертыш
 					setTimeout(() => {
-						eVent.target.value = "Копировать";
+						// x // eVent.target.value = "Копировать";
+						eVent.target.labels[0].classList.remove('btn-flip');
+						// eVent.target.labels[0].setAttribute('data-before', '');
 					}, 2000);
 				}
 			}
@@ -138,10 +150,11 @@ function permalink_onClick(eVent) {
 }
 // (!) setEventHandlersPermalink - создание/удаление обработчиков событий для узла permalink
 function setEventHandlersPermalink(elem, addOrRemove = "") {
+	let retVal = false;
 	if (addOrRemove !== "add" && addOrRemove !== "remove") {
 		console.error(`(!) Косяк: не удалось создать/удалить обработчик события - переменная аргумента не определена:\n function setEventHandlersPermalink(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, addOrRemove: "${addOrRemove}")`);
 		alert(`(!) Косяк: не удалось создать/удалить обработчик события - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
-		return false;
+		return retVal;
 	}
 	let plnk;
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -149,20 +162,16 @@ function setEventHandlersPermalink(elem, addOrRemove = "") {
 		if (plnk === null) {
 			console.error(`(!) Косяк: не удалось создать/удалить обработчик события - не найден элемент:\n function setEventHandlersPermalink(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, addOrRemove: "${addOrRemove}")`);
 			alert(`(!) Косяк: не удалось создать/удалить обработчик события - не найден элемент, см.консоль.`);
-			return false;
+			return retVal;
 		}
 	} else {plnk = elem;}
 	// '
 	if (addOrRemove === "add") { // - добавляем
-		// plnk.addEventListener("mouseover", permalink_onMouseover);
-		// plnk.addEventListener("mouseout", permalink_onMouseout);
-		// plnk.addEventListener("keydown", permalink_onKeydown); // tmp: ! доделать
-		plnk.addEventListener("click", permalink_onClick);
+		plnk.addEventListener('click', permalink_onClick, false);
+		retVal = true;
 	} else if (addOrRemove === "remove") { // - удаляем
-		// plnk.removeEventListener("mouseover", permalink_onMouseover);
-		// plnk.removeEventListener("mouseout", permalink_onMouseout);
-		// plnk.removeEventListener("keydown", permalink_onKeydown); // tmp: ! доделать
-		plnk.removeEventListener("click", permalink_onClick);
+		plnk.removeEventListener('click', permalink_onClick, false);
+		retVal = true;
 	}
-	return true;
+	return retVal;
 }

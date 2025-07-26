@@ -1,8 +1,5 @@
 /* (i) см.файл hmkwindex.htm */
-html, body {
-	overflow: hidden;
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-}
+body {text-indent: 1em;}
 div#hmidxheader {
 	position: absolute;
 	background: transparent;
@@ -18,32 +15,160 @@ div#idxheader {
 div#idxbody {
 	position: absolute;
 	top: 85px; bottom: 0; left: 9px; right: 0;
-	overflow-y: scroll;
 	margin-right: 2px;
 	padding-bottom: 5px;
 	border-top: 1px solid silver;
+	overflow: hidden auto;
 }
+.btn-search,
 label {cursor: pointer;}
+
+.idx-wrapper,
+.idx-index,
+.kwd-body,
+.ref-index,
+.kwd-header {
+	position: relative;
+	left: 0; top: 0;
+	margin: 4px;
+	display: flex;
+	flex-flow: row wrap;
+}
+.kwd-header {
+	width: auto;
+	height: auto;
+	flex: 1 1 auto; /* auto, потому что.topic-box flex-flow: column */
+	border-bottom: 1px solid silver;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	/* font-size: 12px; */
+	/* font-size: .7rem; */
+	font-size: .8em;
+}
+
+.kwd-body {
+	width: auto;
+	height: 100%;
+	flex: 2 2 100%;
+	align-content: flex-start;
+	overflow: hidden auto;
+}
+
+.ref-index {
+	width: auto;
+	height: auto;
+	flex: 1 1 100%;
+	font-size: 1.7em;
+}
+.form-search p,
+.ref-index p {width: 100%;}
+.btn-search,
+.field-search,
+.form-search {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.form-search {
+	margin: 6px 10px;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+}
+.form-search p {margin: 2px;}
+
+.field-search {
+	margin: auto 1px auto 2px;
+	flex: 1 1 auto;
+}
+.btn-search,
+.field-search {flex-wrap: nowrap;}
+.btn-search {
+	margin: auto 2px auto 1px;
+	padding: 2px;
+	color: #fff;
+	background: linear-gradient(#888888, #000000);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#888888",endColorstr="#000000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #888888, endColorstr = #000000);
+	background: -webkit-linear-gradient(top, #888888, #000000);
+	background: -moz-linear-gradient(top, #888888, #000000);
+	background: -o-linear-gradient(top, #888888, #000000);
+	border: 1px solid #737373;
+	border-radius: 5px;
+}
+.btn-search:hover {
+	background: linear-gradient(#000000, #888888);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#888888",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #888888);
+	background: -webkit-linear-gradient(top, #000000, #888888);
+	background: -moz-linear-gradient(top, #000000, #888888);
+	background: -o-linear-gradient(top, #000000, #888888);
+}
+
+#fullsearch,
+#wordsearch,
+#startsearch,
+#instantsearch {margin: 0 4px 0 8px;}
 .navtitle {font-size: 13pt; font-weight: bold; margin-bottom: 10px;}
 .nojstitle {font-size: 11pt; white-space: nowrap; margin-top: -8px;}
 .nojstitle a {color: black; text-decoration: none;}
 .nojstitle a:visited {color: black;}
 .nojstitle a:hover {text-decoration: underline;}
-#idx {margin: 0; padding: 0;} /* ~ div tag that wraps the keyword index - тег div, который обертывает индекс ключевых слов */
+
+.idx-keyword,
+.idx-section {width: 100%;}
+.idx-section span {width: fit-content;}
+
+.flash-light {
+	border-radius: 100px;
+	animation: flash-light ease 2s;
+	-webkit-animation: flash-light ease 2s;
+	-moz-animation: flash-light ease 2s;
+	-o-animation: flash-light ease 2s;
+}
+
+.idx-index {
+	width: auto;
+	height: auto;
+	flex: 1 1 100%;
+	align-items: center;
+}
+/* #idx {margin: 0; padding: 0;} */ /* ~ div tag that wraps the keyword index - тег div, который обертывает индекс ключевых слов */
 #idx a {color: #000; text-decoration: none; outline: none;} /* ~ all links in index appear as text - все ссылки в индексе отображаются в виде текста */
 #idx a:visited {color: #000;}
 #idx a:hover {color: #000; text-decoration: underline;}
 
 #idx p {margin: 2px;} /* ~ keywords and secondary keywords - ключевые слова и вторичные ключевые слова */
-#idx p.idxkeyword2 {margin-left: 20px} /* indentation for secondary keywords */
-.idxsection {font-family: Arial,Helvetica; font-weight: normal; font-size: 14pt; color: #000000; text-decoration: none; margin-top: 15px; margin-bottom: 5px;}
-.idxkeyword {font-family: Arial,Helvetica; font-weight: normal; font-size: 11pt; color: #000000; text-decoration: none;}
-.idxkeyword2 {font-family: Arial,Helvetica; font-weight: normal; font-size: 11pt; color: #000000; text-decoration: none;}
-.idxlink {font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none;}
-p.idxkeyword a:link, p.idxkeyword2 a:link {color: black; text-decoration: none;}
-p.idxkeyword a:visited, p.idxkeyword2 a:visited {color: black;}
-p.idxkeyword a:hover, p.idxkeyword2 a:hover {color: black; text-decoration: underline;}
-span.idxlabel {font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt;}
+#idx p.idx-keyword2 {margin-left: 20px} /* indentation for secondary keywords */
+span.idxlabel,
+.idxlink,
+.idx-keyword2,
+.idx-keyword,
+.idx-section {font-family: Arial,Helvetica; font-weight: normal; color: #000000; text-decoration: none;}
+.idx-section {font-size: 1.2em; /* margin-top: 15px; */ /* margin-bottom: 5px; */}
+.idx-keyword2,
+.idx-keyword {font-size: 1em;}
+/* - */
+.idxlink {font-size: 10px;}
+a.idxrefs:link,
+td.idxtable a:link,
+p.idx-keyword a:link,
+p.idx-keyword2 a:link {color: black; text-decoration: none;}
+
+a.idxrefs:visited,
+td.idxtable a:visited,
+p.idx-keyword a:visited,
+p.idx-keyword2 a:visited {color: black;}
+
+a.idxrefs:hover,
+td.idxtable a:hover,
+p.idx-keyword a:hover,
+p.idx-keyword2 a:hover {color: black; text-decoration: underline;}
+span.idxlabel {font-size: 9px;}
+td.idxtable {background: #F4F4F4;}
+/* (?) */
 table\.idxtable {
 	background: #F4F4F4;
 	border: 1px solid #000000;
@@ -53,11 +178,84 @@ table\.idxtable {
 	-moz-box-shadow: 2px 2px 2px #B0B0B0;
 	filter: progid:DXImageTransform.Microsoft.Shadow(color=B0B0B0, Direction=135, Strength=4);
 }
-td.idxtable {background: #F4F4F4;}
-td.idxtable a:link {color: black; text-decoration: none;}
-td.idxtable a:visited {color: black;}
-td.idxtable a:hover {color: black; text-decoration: underline;}
-a.idxrefs:link {color: black; text-decoration: none;}
-a.idxrefs:visited {color: black;}
-a.idxrefs:hover {color: black; text-decoration: underline;}
-.searchopts {font-size: 12px;}
+/* - */
+.idx-wrapper {
+	width: 100%;
+	height: auto;
+	/* margin: 1px; */ /* x чтобы расположить div под элементом p */
+	text-indent: 0;
+}
+
+.idx-wrapper a {
+	color: silver;
+	text-decoration: none;
+}
+.idx-wrapper a:hover {
+	color: #fff;
+	text-decoration: underline;
+}
+
+.idx-list {
+	position: absolute;
+	left: 80px; top: 0;
+	width: auto;
+	height: auto;
+	margin: auto 10px;
+	padding: 4px;
+	border: 1px solid silver;
+	border-radius: 5px;
+	box-shadow: 0 0 20px 0px #000;
+
+	transition: all ease 1.5s;
+	-webkit-transition: all ease 1.5s;
+	-moz-transition: all ease 1.5s;
+	-o-transition: all ease 1.5s;
+	/* will-change: transform, transition; */
+}
+.idx-list:hover {border-color: #fff;}
+.idx-list {
+	background: linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,.9));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#494949e6",endColorstr="#000000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #494949e6, endColorstr = #000000);
+	background: -webkit-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,.9));
+	background: -moz-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,.9));
+	background: -o-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,.9));
+}
+
+.idx_list-show {
+	transform: translate(0px, 0px) scale(1);
+	-webkit-transform: translate(0px, 0px) scale(1);
+	-moz-transform: translate(0px, 0px) scale(1);
+	-o-transform: translate(0px, 0px) scale(1);
+	-ms-transform: translate(0px, 0px) scale(1);
+	opacity: 1;
+}
+.idx_list-hide {
+	transform: translate(-270px, -50px) scale(0);
+	-webkit-transform: translate(-270px, -50px) scale(0);
+	-moz-transform: translate(-270px, -50px) scale(0);
+	-o-transform: translate(-270px, -50px) scale(0);
+	-ms-transform: translate(-270px, -50px) scale(0);
+	opacity: 0;
+}
+
+div.idx-icon {
+	position: relative;
+	left: 0; top: 0;
+	width: 14px;
+	height: 11px;
+}
+ul.idx-icon li,
+div.idx-icon {
+	background: url(../icon/keyword.gif) no-repeat 100% 100%;
+}
+ul.idx-icon li,
+ul.idx-icon {
+	list-style: none;
+	list-style-type: none;
+}
+ul.idx-icon li {
+	padding: 2px 4px 2px 12px;
+	background-position: 0 4px;
+}
+ul.idx-icon li:not(:first-child) {border-top: 1px solid silver;}

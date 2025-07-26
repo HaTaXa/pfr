@@ -8,18 +8,22 @@
 	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
 	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
 	<title>О проекте «Мониторинг заявок ФГИС "ФРИ" в АСТП»</title>
-	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="icon/x-icon">
+	<link rel="icon" href="icon/favicons/fgis-fri.png" type="image/png">
+
+	<!-- <link rel="manifest" href="icons_manifest.webmanifest"> --> <!-- (?) -->
+
 	<meta name="author" content="HaTaXa">
 	<meta name="copyright" content="HaTaXa">
 	<meta name="robots" content="index,follow"/> <!-- 'для поисковиков -->
 	<meta name ="revisit-after" content="15 days"> <!-- 'посещение программой роботом сайта и индексирование его содержания -->
 	<meta name="keywords" content="Мониторинг,Учет,заявка,ФГИС,ФРИ,АСТП,HaTaXa,CHB,НаТаХа,СНВ,Солянина,НаталИя,Владиславовна">
 	<!-- (!) подключение стилей -->
-	<link rel="stylesheet" href="css/topic.css"> <!-- 'вместо hm_topic.css -->
+	<link rel="stylesheet" href="css/topic.css">
 	<link rel="stylesheet" href="css/loading.css"> <!-- 'загрузчик -->
 	<link rel="stylesheet" href="css/linkstyles.css"> <!-- 'стилизация ссылок -->
 	<link rel="stylesheet" href="css/animation.css">
-	<!-- <link type="text/css" href="css/footer.css" rel="stylesheet"> --> <!-- 'вместо hm_footer.css -->
+	<!-- <link type="text/css" href="css/footer.css" rel="stylesheet"> -->
 	<!-- (!) подключение скриптов + см.внизу -->
 	<script src="js/settings.js"></script>
 	<script type="text/javascript">forceReDirect();</script>
@@ -33,10 +37,21 @@
 	<!-- (!) loader - загрузчик -->
 	<script type="text/javascript">writeLoaderPreLoader();</script>
 	<noscript><div class="loader"><div class="loader-img"></div></div></noscript>
+	<!-- (!) user-interaction - взаимодействие с пользователем -->
+	<noscript>
+		<div class="user-interaction" style="display: none;">
+			<div class="box-user-inter">
+				<span></span><span></span><span></span><span></span>
+				<p>Разрешить<br>сопровождение анимационных эффектов звуковыми воспроизведениями?</p>
+				<div id="idReject" class="btns-user-inter">Отклонить</div>
+				<div id="idAccept" class="btns-user-inter">Принять</div>
+			</div>
+		</div>
+	</noscript>
 	<!-- (!) idTabSliderTrack -->
-	<ul id="idTabSliderTrack" class="tab-slider-track">
+	<ul id="idTabSliderTrack" class="tab_slider-track">
 		<li id="idIndexTab" class="tabs tab-current">
-			<a href="#" id="idIndexTabLink">
+			<a href="#" id="indextablink">
 				<span>О проекте «Мониторинг заявок ФГИС "ФРИ" в АСТП»</span>
 			</a>
 		</li>
@@ -46,9 +61,9 @@
 		<div id="idTopicHeader" class="topic-header">
 			<div id="idNavLinks" class="nav-links">
 				<div id="idPageToc" class="toc-page">
-					<img id="idPageIconToc" class="btn-icon" src="icon/toc-menu_off.png" title="На этой странице содержание отсутствует">
-					<span class="btn-text">Содержание</span>
-					<div id="idPageMenuToc" class="toc-menu" style="display: none;" title="Если меню содержание мешает, нажмите клавишу «Esc»"></div>
+					<img id="idPageIconToc" class="toc-btn_icon" src="icon/toc-menu_off.png" title="На этой странице содержание отсутствует">
+					<span class="toc-btn_text">Содержание</span>
+					<div id="idPageMenuToc" class="toc-menu toc-menu-title" title="Если меню содержание мешает, нажмите клавишу «Esc»"></div>
 				</div>
 				<p>
 					<span class="sync-toc">&lt;&lt;&nbsp;
@@ -65,13 +80,37 @@
 			</div>
 		</div> <!-- idTopicHeader the end -->
 		<!-- (!) idMsgBox - всплывающее окно сообщения -->
-		<div id="idMsgBox" class="msg-box" style="display: none;">
-			<div id="idMsgContent" class="msg-content" style="display: none;">
-				<div id="idMsgImg" class="msg-icon msg-info"></div>
+		<div id="idMsgBox" class="msg-box msg-effect" style="display: none;">
+			<div id="idBtnToggleMsgBox" class="msg-btn msg-show" title="Тыкните сюда, чтобы скрыть/показать информационное сообщение"></div>
+			<div id="idMsgContent" class="msg-content">
+				<div id="idIconLightSwitch" class="msg-icon msg_icon-lightswitch not-select msg_icon-eff_on"></div>
 				<div id="idMsgText" class="msg-text"></div>
-				<div id="idIconClose" class="msg-icon msg-close" title="Чтобы скрыть/отобразить окно нажмите на святящуюся нижнюю полосу"></div>
+				<div id="idIconFingerToggle" class="msg-icon msg_icon-finger_toggle not-select">
+					<div class="msg-tooltip tooltip-finger_toggle">
+						<p>Следим за рукой</p>
+						<p>(i) Чтобы скрыть/отобразить окно кликните на святящийся бегунок или потяните за висюльку переключателя спецэффектов напротив</p>
+					</div>
+				</div>
 			</div>
-			<div id="idMsgBtn" class="msg-btn" title="Скрыть/Показать информационное сообщение"></div>
+			<div class="lightswitch-wrapper">
+				<div id="idBtnLightSwitch" class="light-switch">
+					<div class="lightswitch-chain"></div>
+					<div class="lightswitch-ball"></div>
+				</div>
+				<div class="msg-tooltip-wrapper">
+					<div class="msg-tooltip tooltip-lightswitch">
+						<div class="tooltip-lightswitch-info1">
+							<p>(i) 1. Чтобы скрыть/отобразить окно потяните за висюльку</p>
+						</div>
+						<div class="tooltip-lightswitch-info2">
+							<p>(i) 2. Для переключения спецэффекта нажмите на висюльку</p>
+							<p mode="on">Спецэффект на переднем плане</p>
+							<p mode="bgr" style="display: none;">Спецэффект на заднем плане</p>
+							<p mode="off" style="display: none;">Спецэффект отключен</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div> <!-- idMsgBox the end -->
 		<!-- (!) idLinksComment-Комментарии
 			*см.функцию в файле comments.js -->
@@ -88,25 +127,25 @@
 			<div id="idUnclicker"></div>
 			<!-- (!) idContentText -->
 			<div id="idContentText" class="content-text">
-				<h1 id="bkmk1" class="heading1">
+				<h1 id="yakor1" class="heading1">
 					Принятый руководством принцип работы
 				</h1>
 				<p>
 					<span class="txt-style2">Идея руководства МИЦ ОВИВ</span>. Создать один общий файл по ведению хода состояния заявок совместно с карточками на основе динамических ссылок, связанных с ярлыками из того же файла посредством ручной подготовки каждой карточки для каждой заявки.
 				</p>
-				<p id="bkmk2" class="text-offset">
+				<p id="yakor2" class="text-offset">
 					<img class="toggle-icon" src="icon/tgl-expand1.gif" title="Нажмите, чтобы равернуть\свернуть">
-					Далее демонстрируется общий вид и принцип подхода к работе по мониторингу заявок в АСТП, который по мнению руководства МИЦ ОВИВ оценивался и считался наиболее <a class="toggle-dropdown" href="#" title="Нажмите, чтобы равернуть\свернуть">приемлемым</a>.
+					Далее демонстрируется общий вид и принцип подхода к работе по мониторингу заявок в АСТП, который по мнению руководства МИЦ ОВИВ оценивался и считался наиболее <a class="toggle-dropdown" href="#lbx1" title="Нажмите, чтобы равернуть\свернуть">приемлемым</a>.
 				</p>
 				<div class="toggle-content toggle-collapse">
-					<div class="lightbox toggle-collapse">
+					<div id="lbx1" class="lightbox toggle-collapse">
 						<div class="btn-box lightbox-btn-close" title="Закрыть окно просмотра изображений">&times;</div>
 						<div class="lightbox-img">
 							<div class="btn-box img-btn-prev"><a href="#">&#10094;</a></div>
 							<div class="zoomer"><img class="zoom-in" src="icon/zoom.png"></div>
 							<div class="img-viewer"></div>
 							<div class="btn-box img-btn-next"><a href="#">&#10095;</a></div>
-							<div class="btn-top"><a href="#bkmk2"></a></div>
+							<div class="btn-top"><a href="#yakor2"></a></div>
 						</div>
 						<div class="img-title"></div>
 						<div class="img-slider">
@@ -121,11 +160,11 @@
 						</div>
 					</div>
 				</div>
-				<p id="bkmk3" class="text-offset">
+				<p id="yakor3" class="text-offset">
 					<img src="icon/tgl-fri.png">
 					1. Файл формата Microsoft Office Excel представляет собой один общий процесс хода работы по мониторингу заявок в АСТП, где ярлык «Мониторинг заявок» содержит отображаемую информацию по всем данным о заявках из других ярлыков с присвоенными именами по «номеру» заявки, с учетом ручного ведения, а так же ежедневного обновления ярлыков с заявками каждым ответственным лицом за свой "блок" рабочего процесса по мониторингу заявок в АСТП.
 				</p>
-				<p id="bkmk4" class="text-offset">
+				<p id="yakor4" class="text-offset">
 					<img src="icon/tgl-fri.png">
 					2. В данном файле создаются заявки на основе ярлыка карточки-шаблона по требованию лица, ответственного за ведение жизненного цикла заявки (далее – ЖЦ заявки). Ярлык «Карточка» подготавливается лицом, ответственным в свою очередь за ярлык «Мониторинг заявок» со всей информацией, посредством ручной подготовки гипертекстовой связи (ссылками) из ярлыка «"Карточка" с будущей заявкой под своим номером» в ярлык «Мониторинг заявок». После чего, ответственным лицом за ведение ЖЦ заявки, информация о ней переносится в подготовленную карточку путем заполнения ее данными из АСТП и последующим обновлением информации по заявке.
 				</p>
@@ -134,7 +173,7 @@
 				</p>
 				<p class="txt-style2">Пояснение:</p>
 				<p>
-					– Для штатных сотрудников работа по <a href="#bkmk3" title="2. В данном файле создаются заявки на основе ярлыка карточки-шаблона по требованию лица, ответственного за ведение жизненного цикла заявки (далее – ЖЦ заявки)...">п.2</a> носит запутанный характер с неоднократными, смешанными между собой процессами начиная от создания карточки на основе шаблона до занесения информации в будущую заявку.
+					– Для штатных сотрудников работа по <a href="#yakor4" class="topiclink" title="2. В данном файле создаются заявки на основе ярлыка карточки-шаблона по требованию лица, ответственного за ведение жизненного цикла заявки (далее – ЖЦ заявки)...">п.2</a> носит запутанный характер с неоднократными, смешанными между собой процессами начиная от создания карточки на основе шаблона до занесения информации в будущую заявку.
 				</p>
 				<p>
 					– Для руководства же идеология ведения ЖЦ заявки сводится лишь к отображению шагов прохождения, выраженных в схематично-цветовой гамме ЖЦ в каждой заявке.
@@ -154,8 +193,8 @@
 			</div> <!-- idContentText the end -->
 		</div> <!-- idTopicBody the end -->
 		<!-- (!) idTopicFooter -->
-		<div id="idTopicFooter" class="topic-footer">
-			<div id="idTopicFooterLeft" class="topic-footer-left">
+		<div id="idTopicFooter" class="topic-footer reflect">
+			<div id="idTopicFooterLeft" class="topic-footer-left reflect">
 				<p>
 					Межрегиональный Информационный Центр<br>
 					Отдела Внешнего Информационного Взаимодействия<br>
@@ -168,8 +207,8 @@
 			</div>
 			<div id="idTopicFooterRight" class="topic-footer-right">
 				<p>
-					Не коммерческая тайна<br>
-					Для служебного пользования<br>
+					Не&nbsp;Уже&nbsp;не коммерческая тайна<br>
+					Уже&nbsp;не&nbsp;для служебного пользования
 				</p>
 			</div>
 		</div> <!-- idTopicFooter the end -->
@@ -178,9 +217,8 @@
 	<!-- <script type="text/javascript">loaderPreLoader();</script> -->
 	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
 	<!-- локальное подключение библиотеки jquery: несжатый -->
-	<script src="js/jquery-3.6.0.js"></script>
-	<!-- локальное подключение библиотеки jquery: минимизированный -->
-	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<script src="js/jquery-3.7.1.js"></script>
+	<!-- <script src="js/jquery-3.7.1.min.js"></script> -->
 	<!-- ************************************************************ -->
 	<!-- ссылка на jquery CDN: несжатый -->
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->

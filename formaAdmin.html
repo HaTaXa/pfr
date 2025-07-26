@@ -8,18 +8,22 @@
 	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
 	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
 	<title>Панель «Админ»</title>
-	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="icon/x-icon">
+	<link rel="icon" href="icon/favicons/fgis-fri.png" type="image/png">
+
+	<!-- <link rel="manifest" href="icons_manifest.webmanifest"> --> <!-- (?) -->
+
 	<meta name="author" content="HaTaXa">
 	<meta name="copyright" content="HaTaXa">
 	<meta name="robots" content="index,follow"/> <!-- 'для поисковиков -->
 	<meta name ="revisit-after" content="15 days"> <!-- 'посещение программой роботом сайта и индексирование его содержания -->
 	<meta name="keywords" content="Мониторинг,Учет,заявка,ФГИС,ФРИ,АСТП,HaTaXa,CHB,НаТаХа,СНВ,Солянина,НаталИя,Владиславовна">
 	<!-- (!) подключение стилей -->
-	<link rel="stylesheet" href="css/topic.css"> <!-- 'вместо hm_topic.css -->
+	<link rel="stylesheet" href="css/topic.css">
 	<link rel="stylesheet" href="css/loading.css"> <!-- 'загрузчик -->
 	<link rel="stylesheet" href="css/linkstyles.css"> <!-- 'стилизация ссылок -->
 	<link rel="stylesheet" href="css/animation.css">
-	<!-- <link type="text/css" href="css/footer.css" rel="stylesheet"> --> <!-- 'вместо hm_footer.css -->
+	<!-- <link type="text/css" href="css/footer.css" rel="stylesheet"> -->
 	<!-- (!) подключение скриптов + см.внизу -->
 	<script src="js/settings.js"></script>
 	<script type="text/javascript">forceReDirect();</script>
@@ -33,10 +37,21 @@
 	<!-- (!) loader - загрузчик -->
 	<script type="text/javascript">writeLoaderPreLoader();</script>
 	<noscript><div class="loader"><div class="loader-img"></div></div></noscript>
+	<!-- (!) user-interaction - взаимодействие с пользователем -->
+	<noscript>
+		<div class="user-interaction" style="display: none;">
+			<div class="box-user-inter">
+				<span></span><span></span><span></span><span></span>
+				<p>Разрешить<br>сопровождение анимационных эффектов звуковыми воспроизведениями?</p>
+				<div id="idReject" class="btns-user-inter">Отклонить</div>
+				<div id="idAccept" class="btns-user-inter">Принять</div>
+			</div>
+		</div>
+	</noscript>
 	<!-- (!) idTabSliderTrack -->
-	<ul id="idTabSliderTrack" class="tab-slider-track">
+	<ul id="idTabSliderTrack" class="tab_slider-track">
 		<li id="idIndexTab" class="tabs tab-current">
-			<a href="#" id="idIndexTabLink">
+			<a href="#" id="indextablink">
 				<span>Панель «Админ»</span>
 			</a>
 		</li>
@@ -46,9 +61,9 @@
 		<div id="idTopicHeader" class="topic-header">
 			<div id="idNavLinks" class="nav-links">
 				<div id="idPageToc" class="toc-page">
-					<img id="idPageIconToc" class="btn-icon" src="icon/toc-menu_off.png" title="На этой странице содержание отсутствует">
-					<span class="btn-text">Содержание</span>
-					<div id="idPageMenuToc" class="toc-menu" style="display: none;" title="Если меню содержание мешает, нажмите клавишу «Esc»"></div>
+					<img id="idPageIconToc" class="toc-btn_icon" src="icon/toc-menu_off.png" title="На этой странице содержание отсутствует">
+					<span class="toc-btn_text">Содержание</span>
+					<div id="idPageMenuToc" class="toc-menu toc-menu-title" title="Если меню содержание мешает, нажмите клавишу «Esc»"></div>
 				</div>
 				<p>
 					<span class="sync-toc">&lt;&lt;&nbsp;
@@ -56,8 +71,8 @@
 					</span>
 					<span class="sync-toc-off">Навигация:&nbsp;</span>
 					<noscript>
-						<span class="sync-toc-off"><a href="about.html" target="hmcontent">Мониторинг заявок ФГИС «ФРИ» в АСТП</a>&nbsp;&#47;&ensp;</span>
-						<span class="sync-toc-off"><a href="intro.html" target="hmcontent">Проект «Учет заявок ФГИС "ФРИ" на АСТП»</a>:</span>
+						<span class="sync-toc-off"><a href="about.html" target="ifrmtopic">Мониторинг заявок ФГИС «ФРИ» в АСТП</a>&nbsp;&#47;&ensp;</span>
+						<span class="sync-toc-off"><a href="intro.html" target="ifrmtopic">Проект «Учет заявок ФГИС "ФРИ" на АСТП»</a>:</span>
 					</noscript>
 				</p>
 			</div>
@@ -65,14 +80,38 @@
 				<p>Панель «Админ»</p>
 			</div>
 		</div> <!-- idTopicHeader the end -->
-		<!-- (!) idMsgBox - всплывающее окно сообщения - работает через глобальную переменную в variables.js -->
-		<div id="idMsgBox" class="msg-box" style="display: none;">
-			<div id="idMsgContent" class="msg-content" style="display: none;">
-				<div id="idMsgImg" class="msg-icon msg-info"></div>
+		<!-- (!) idMsgBox - всплывающее окно сообщения -->
+		<div id="idMsgBox" class="msg-box msg-effect" style="display: none;">
+			<div id="idBtnToggleMsgBox" class="msg-btn msg-show" title="Тыкните сюда, чтобы скрыть/показать информационное сообщение"></div>
+			<div id="idMsgContent" class="msg-content">
+				<div id="idIconLightSwitch" class="msg-icon msg_icon-lightswitch not-select msg_icon-eff_on"></div>
 				<div id="idMsgText" class="msg-text"></div>
-				<div id="idIconClose" class="msg-icon msg-close" title="Чтобы скрыть/отобразить окно нажмите на святящуюся нижнюю полосу"></div>
+				<div id="idIconFingerToggle" class="msg-icon msg_icon-finger_toggle not-select">
+					<div class="msg-tooltip tooltip-finger_toggle">
+						<p>Следим за рукой</p>
+						<p>(i) Чтобы скрыть/отобразить окно кликните на святящийся бегунок или потяните за висюльку переключателя спецэффектов напротив</p>
+					</div>
+				</div>
 			</div>
-			<div id="idMsgBtn" class="msg-btn" title="Скрыть/Показать информационное сообщение"></div>
+			<div class="lightswitch-wrapper">
+				<div id="idBtnLightSwitch" class="light-switch">
+					<div class="lightswitch-chain"></div>
+					<div class="lightswitch-ball"></div>
+				</div>
+				<div class="msg-tooltip-wrapper">
+					<div class="msg-tooltip tooltip-lightswitch">
+						<div class="tooltip-lightswitch-info1">
+							<p>(i) 1. Чтобы скрыть/отобразить окно потяните за висюльку</p>
+						</div>
+						<div class="tooltip-lightswitch-info2">
+							<p>(i) 2. Для переключения спецэффекта нажмите на висюльку</p>
+							<p mode="on">Спецэффект на переднем плане</p>
+							<p mode="bgr" style="display: none;">Спецэффект на заднем плане</p>
+							<p mode="off" style="display: none;">Спецэффект отключен</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div> <!-- idMsgBox the end -->
 		<!-- (!) idLinksComment-Комментарии
 			*см.функцию в файле comments.js -->
@@ -89,7 +128,7 @@
 			<div id="idUnclicker"></div> <!-- (?) -->
 			<!-- (!) idContentText -->
 			<div id="idContentText" class="content-text">
-				<h1 id="bkmk1" class="heading1">
+				<h1 id="yakor1" class="heading1">
 					Панель «Админ»
 				</h1>
 				<p>
@@ -119,19 +158,19 @@
 						<span class="txt-style2" style="color: #3f3f3f">«Toolbar»</span> – предназначена для быстрого доступа к разработанным панелям для базы данных и хранению, и использованию иконок в программном обеспечении.
 					</li>
 				</ul>
-				<p id="bkmk2" class="text-offset">
+				<p id="yakor2" class="text-offset">
 					<img class="toggle-icon" src="icon/tgl-expand1.gif" title="Нажмите, чтобы равернуть\свернуть">
-					Иллюстрация панели «<a class="toggle-dropdown" href="#" title="Нажмите, чтобы равернуть\свернуть">Админ</a>».
+					Иллюстрация панели «<a class="toggle-dropdown" href="#lbx1" title="Нажмите, чтобы равернуть\свернуть">Админ</a>».
 				</p>
 				<div class="toggle-content toggle-collapse">
-					<div class="lightbox toggle-collapse">
+					<div id="lbx1" class="lightbox toggle-collapse">
 						<div class="btn-box lightbox-btn-close" title="Закрыть окно просмотра изображений">&times;</div>
 						<div class="lightbox-img">
 							<div class="btn-box img-btn-prev"><a href="#">&#10094;</a></div>
 							<div class="zoomer"><img class="zoom-in" src="icon/zoom.png"></div>
 							<div class="img-viewer"></div>
 							<div class="btn-box img-btn-next"><a href="#">&#10095;</a></div>
-							<div class="btn-top"><a href="#bkmk2"></a></div>
+							<div class="btn-top"><a href="#yakor2"></a></div>
 						</div>
 						<div class="img-title"></div>
 						<div class="img-slider">
@@ -163,8 +202,8 @@
 			</div> <!-- idContentText the end -->
 		</div> <!-- idTopicBody the end -->
 		<!-- (!) idTopicFooter -->
-		<div id="idTopicFooter" class="topic-footer">
-			<div id="idTopicFooterLeft" class="topic-footer-left">
+		<div id="idTopicFooter" class="topic-footer reflect">
+			<div id="idTopicFooterLeft" class="topic-footer-left reflect">
 				<p>
 					Межрегиональный Информационный Центр<br>
 					Отдела Внешнего Информационного Взаимодействия<br>
@@ -177,8 +216,8 @@
 			</div>
 			<div id="idTopicFooterRight" class="topic-footer-right">
 				<p>
-					Не коммерческая тайна<br>
-					Для служебного пользования
+					Не&nbsp;Уже&nbsp;не коммерческая тайна<br>
+					Уже&nbsp;не&nbsp;для служебного пользования
 				</p>
 			</div>
 		</div> <!-- idTopicFooter the end -->
@@ -187,9 +226,8 @@
 	<!-- <script type="text/javascript">loaderPreLoader();</script> -->
 	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
 	<!-- локальное подключение библиотеки jquery: несжатый -->
-	<script src="js/jquery-3.6.0.js"></script>
-	<!-- локальное подключение библиотеки jquery: минимизированный -->
-	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<script src="js/jquery-3.7.1.js"></script>
+	<!-- <script src="js/jquery-3.7.1.min.js"></script> -->
 	<!-- ************************************************************ -->
 	<!-- ссылка на jquery CDN: несжатый -->
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->

@@ -1,4 +1,7 @@
-/* (!) function animationOffset-анимационное смещение для: 1) вкладок на панели тема топика, 2) слайдера изображений в скрытом контенте */
+/* (!) function animationOffset - анимационное смещение для:
+'вкладок на панели тема топика
+''слайдера изображений в скрытом контенте
+*/
 @keyframes jumpToLeft {
 	/* from {transform: translateX(0);} */
 	/* to {transform: translateX(-10px);} */
@@ -23,49 +26,475 @@
 		/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 	}
 }
-/**для function setImageCurrent-установить изо.текущим */
+/*
+*для function setImageCurrent - установить изо.текущим
+*/
 @keyframes img-item-center {
 	0% {opacity: 0;}
 	100% {opacity: 1;}
 }
-/**для function goToImage-переключение по изо.в lightbox */
+/*
+*для function goToImage - переключение по изо.в lightbox
+*/
 @keyframes img-item-left {
 	0% {
 		opacity: 0;
 		transform: translateX(100%);
+		-webkit-transform: translateX(100%);
+		-moz-transform: translateX(100%);
+		-o-transform: translateX(100%);
+		-ms-transform: translateX(100%);
 	}
 	100% {
 		opacity: 1;
 		transform: translateX(0);
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-o-transform: translateY(0);
+		-ms-transform: translateY(0);
 	}
 }
 @keyframes img-item-right {
 	0% {
 		opacity: 0;
 		transform: translateX(-100%);
+		-webkit-transform: translateX(-100%);
+		-moz-transform: translateX(-100%);
+		-o-transform: translateX(-100%);
+		-ms-transform: translateX(-100%);
 	}
 	100% {
 		opacity: 1;
 		transform: translateX(0);
+		-webkit-transform: translateX(0);
+		-moz-transform: translateX(0);
+		-o-transform: translateX(0);
+		-ms-transform: translateX(0);
 	}
 }
 @keyframes img-item-up {
 	0% {
 		opacity: 0;
 		transform: translateY(100%);
+		-webkit-transform: translateY(100%);
+		-moz-transform: translateY(100%);
+		-o-transform: translateY(100%);
+		-ms-transform: translateY(100%);
 	}
 	100% {
 		opacity: 1;
 		transform: translateY(0);
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-o-transform: translateY(0);
+		-ms-transform: translateY(0);
 	}
 }
 @keyframes img-item-down {
 	0% {
 		opacity: 0;
 		transform: translateY(-100%);
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
 	}
 	100% {
 		opacity: 1;
 		transform: translateY(0);
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-o-transform: translateY(0);
+		-ms-transform: translateY(0);
+	}
+}
+/*
+(!) в topic.css/navigation.css
+'topic.css - спецэфф.цветового фона idMsgBox/.msg-effect
+''navigation.css - цветовой фон кнопок: JS, hh
+*/
+@keyframes eff-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 100% 0;}
+	100% {background-position: 0 0;}
+}
+@-webkit-keyframes eff-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 100% 0;}
+	100% {background-position: 0 0;}
+}
+@-moz-keyframes eff-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 100% 0;}
+	100% {background-position: 0 0;}
+}
+@-o-keyframes eff-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 100% 0;}
+	100% {background-position: 0 0;}
+}
+/*
+(!) в loading.css
+*/
+/**светящаяся рамка для.user-interaction div */
+@keyframes brdr-top-glow {
+	0% {left: -100%;}
+	50%, 100% {left: 100%;}
+}
+@keyframes brdr-right-glow {
+	0% {top: -100%;}
+	50%, 100% {top: 100%;}
+}
+@keyframes brdr-bottom-glow {
+	0% {right: -100%;}
+	50%, 100% {right: 100%;}
+}
+@keyframes brdr-left-glow {
+	0% {bottom: -100%;}
+	50%, 100% {bottom: 100%;}
+}
+/* webkit */
+@-webkit-keyframes brdr-top-glow {
+	0% {left: -100%;}
+	50%, 100% {left: 100%;}
+}
+@-webkit-keyframes brdr-right-glow {
+	0% {top: -100%;}
+	50%, 100% {top: 100%;}
+}
+@-webkit-keyframes brdr-bottom-glow {
+	0% {right: -100%;}
+	50%, 100% {right: 100%;}
+}
+@-webkit-keyframes brdr-left-glow {
+	0% {bottom: -100%;}
+	50%, 100% {bottom: 100%;}
+}
+/* moz */
+@-moz-keyframes brdr-top-glow {
+	0% {left: -100%;}
+	50%, 100% {left: 100%;}
+}
+@-moz-keyframes brdr-right-glow {
+	0% {top: -100%;}
+	50%, 100% {top: 100%;}
+}
+@-moz-keyframes brdr-bottom-glow {
+	0% {right: -100%;}
+	50%, 100% {right: 100%;}
+}
+@-moz-keyframes brdr-left-glow {
+	0% {bottom: -100%;}
+	50%, 100% {bottom: 100%;}
+}
+/* o */
+@-o-keyframes brdr-top-glow {
+	0% {left: -100%;}
+	50%, 100% {left: 100%;}
+}
+@-o-keyframes brdr-right-glow {
+	0% {top: -100%;}
+	50%, 100% {top: 100%;}
+}
+@-o-keyframes brdr-bottom-glow {
+	0% {right: -100%;}
+	50%, 100% {right: 100%;}
+}
+@-o-keyframes brdr-left-glow {
+	0% {bottom: -100%;}
+	50%, 100% {bottom: 100%;}
+}
+/*
+(!) в topic.css
+*/
+/**спецэфф.цветового фона кн.idBtnToggleMsgBox/.msg-btn */
+@keyframes bgr-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 50% 0;}
+	100% {background-position: 0 0;}
+}
+@-webkit-keyframes bgr-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 50% 0;}
+	100% {background-position: 0 0;}
+}
+@-moz-keyframes bgr-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 50% 0;}
+	100% {background-position: 0 0;}
+}
+@-o-keyframes bgr-line-gradient {
+	0% {background-position: 0 0;}
+	50% {background-position: 50% 0;}
+	100% {background-position: 0 0;}
+}
+/**светящийся бегунок кн.idBtnToggleMsgBox/.msg-btn */
+@keyframes runner-glow {
+	0% {left: -100%;}
+	80% {left: -100%;}
+	100% {left: 100%;}
+}
+@-webkit-keyframes runner-glow {
+	0% {left: -100%;}
+	80% {left: -100%;}
+	100% {left: 100%;}
+}
+@-moz-keyframes runner-glow {
+	0% {left: -100%;}
+	80% {left: -100%;}
+	100% {left: 100%;}
+}
+@-o-keyframes runner-glow {
+	0% {left: -100%;}
+	80% {left: -100%;}
+	100% {left: 100%;}
+}
+/**демонстрация курсора при наведении на кн.idBtnLightSwitch/.lightswitch-ball */
+@keyframes cursor-transform {
+	0% { cursor: pointer; }
+	50% {
+		cursor: grab;
+		cursor: -webkit-grab;
+		cursor: -moz-grab;
+	}
+	55% {
+		cursor: grabbing;
+		cursor: -webkit-grabbing;
+		cursor: -moz-grabbing;
+	}
+	100% {
+		cursor: grab;
+		cursor: -webkit-grab;
+		cursor: -moz-grab;
+	}
+}
+/**толчок светового переключателя кн.idBtnLightSwitch/.lightswitch-ball */
+/* 1-вар. */
+/* @keyframes jump-lightswitch {
+	from, to {
+		transform: scaleY(1.1);
+		-webkit-transform: scaleY(1.1);
+		-moz-transform: scaleY(1.1);
+		-o-transform: scaleY(1.1);
+		-ms-transform: scaleY(1.1);
+	}
+} */ /* 1-вар. */
+@keyframes jump-lightswitch {
+	from, to {
+		height: 65px;
+		transform: translateY(-5px);
+		-webkit-transform: scaleY(-5px);
+		-moz-transform: scaleY(-5px);
+		-o-transform: scaleY(-5px);
+		-ms-transform: scaleY(-5px);
+	}
+}
+/**покачивание кн.idBtnLightSwitch/.lightswitch-shake */
+@keyframes shake {
+	0% {
+		transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+	}
+	30% {
+		transform: rotate(-20deg);
+		-ms-transform: rotate(-20deg);
+	}
+	50% {
+		transform: rotate(20deg);
+		-ms-transform: rotate(20deg);
+	}
+	60% {
+		transform: rotate(-10deg);
+		-ms-transform: rotate(-10deg);
+	}
+	70% {
+		transform: rotate(10deg);
+		-ms-transform: rotate(10deg);
+	}
+	80% {
+		transform: rotate(-5deg);
+		-ms-transform: rotate(-5deg);
+	}
+	90% {
+		transform: rotate(5deg);
+		-ms-transform: rotate(5deg);
+	}
+	100% {
+		transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+	}
+}
+@-webkit-keyframes shake {
+	0% {-webkit-transform: rotate(0deg);}
+	30% {-webkit-transform: rotate(-20deg);}
+	50% {-webkit-transform: rotate(20deg);}
+	60% {-webkit-transform: rotate(-10deg);}
+	70% {-webkit-transform: rotate(10deg);}
+	80% {-webkit-transform: rotate(-5deg);}
+	90% {-webkit-transform: rotate(5deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
+@-moz-keyframes shake {
+	0% {-moz-transform: rotate(0deg);}
+	30% {-moz-transform: rotate(-20deg);}
+	50% {-moz-transform: rotate(20deg);}
+	60% {-moz-transform: rotate(-10deg);}
+	70% {-moz-transform: rotate(10deg);}
+	80% {-moz-transform: rotate(-5deg);}
+	90% {-moz-transform: rotate(5deg);}
+	100% {-moz-transform: rotate(0deg);}
+}
+@-o-keyframes shake {
+	0% {-o-transform: rotate(0deg);}
+	30% {-o-transform: rotate(-20deg);}
+	50% {-o-transform: rotate(20deg);}
+	60% {-o-transform: rotate(-10deg);}
+	70% {-o-transform: rotate(10deg);}
+	80% {-o-transform: rotate(-5deg);}
+	90% {-o-transform: rotate(5deg);}
+	100% {-o-transform: rotate(0deg);}
+}
+/**обратное покачивание для подсказки.tooltip-lightswitch/.lightswitch_shake-reverse */
+@keyframes shake-reverse {
+	0% {
+		transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+	}
+	30% {
+		transform: rotate(20deg);
+		-ms-transform: rotate(20deg);
+	}
+	50% {
+		transform: rotate(-20deg);
+		-ms-transform: rotate(-20deg);
+	}
+	60% {
+		transform: rotate(10deg);
+		-ms-transform: rotate(10deg);
+	}
+	70% {
+		transform: rotate(-10deg);
+		-ms-transform: rotate(-10deg);
+	}
+	80% {
+		transform: rotate(5deg);
+		-ms-transform: rotate(5deg);
+	}
+	90% {
+		transform: rotate(-5deg);
+		-ms-transform: rotate(-5deg);
+	}
+	100% {
+		transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+	}
+}
+@-webkit-keyframes shake-reverse {
+	0% {-webkit-transform: rotate(0deg);}
+	30% {-webkit-transform: rotate(20deg);}
+	50% {-webkit-transform: rotate(-20deg);}
+	60% {-webkit-transform: rotate(10deg);}
+	70% {-webkit-transform: rotate(-10deg);}
+	80% {-webkit-transform: rotate(5deg);}
+	90% {-webkit-transform: rotate(-5deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
+@-moz-keyframes shake-reverse {
+	0% {-moz-transform: rotate(0deg);}
+	30% {-moz-transform: rotate(20deg);}
+	50% {-moz-transform: rotate(-20deg);}
+	60% {-moz-transform: rotate(10deg);}
+	70% {-moz-transform: rotate(-10deg);}
+	80% {-moz-transform: rotate(5deg);}
+	90% {-moz-transform: rotate(-5deg);}
+	100% {-moz-transform: rotate(0deg);}
+}
+@-o-keyframes shake-reverse {
+	0% {-o-transform: rotate(0deg);}
+	30% {-o-transform: rotate(20deg);}
+	50% {-o-transform: rotate(-20deg);}
+	60% {-o-transform: rotate(10deg);}
+	70% {-o-transform: rotate(-10deg);}
+	80% {-o-transform: rotate(5deg);}
+	90% {-o-transform: rotate(-5deg);}
+	100% {-o-transform: rotate(0deg);}
+}
+/* все равно дрыгается по высоте */
+@keyframes shake-anti-shake {
+	0% {
+		transform: rotate(0deg) translate(40px, -50px);
+		-ms-transform: rotate(0deg) translate(40px, -50px);
+	}
+	30% {
+		transform: rotate(20deg) translate(20px, -50px);
+		-ms-transform: rotate(20deg) translate(20px, -50px);
+	}
+	50% {
+		transform: rotate(-20deg) translate(60px, -50px);
+		-ms-transform: rotate(-20deg) translate(60px, -50px);
+	}
+	60% {
+		transform: rotate(10deg) translate(30px, -50px);
+		-ms-transform: rotate(10deg) translate(30px, -50px);
+	}
+	70% {
+		transform: rotate(-10deg) translate(50px, -50px);
+		-ms-transform: rotate(-10deg) translate(50px, -50px);
+	}
+	80% {
+		transform: rotate(5deg) translate(35px, -50px);
+		-ms-transform: rotate(5deg) translate(35px, -50px);
+	}
+	90% {
+		transform: rotate(-5deg) translate(45px, -50px);
+		-ms-transform: rotate(-5deg) translate(45px, -50px);
+	}
+	100% {
+		transform: rotate(0deg) translate(40px, -50px);
+		-ms-transform: rotate(0deg) translate(40px, -50px);
+	}
+}
+/* @-webkit-keyframes shake-anti-shake {
+	0% {-webkit-transform: rotate(0deg) translate(0, 0);}
+	30% {-webkit-transform: rotate(20deg) translate(-20px, 5px);}
+	50% {-webkit-transform: rotate(-20deg) translate(20px, 0px);}
+	60% {-webkit-transform: rotate(10deg) translate(-10px, 5px);}
+	70% {-webkit-transform: rotate(-10deg) translate(10px, 0px);}
+	80% {-webkit-transform: rotate(5deg) translate(-5px, 0px);}
+	90% {-webkit-transform: rotate(-5deg) translate(5px, 0px);}
+	100% {-webkit-transform: rotate(0deg) translate(0, 0);}
+}
+@-moz-keyframes shake-anti-shake {
+	0% {-moz-transform: rotate(0deg) translate(0, 0);}
+	30% {-moz-transform: rotate(20deg) translate(-20px, 5px);}
+	50% {-moz-transform: rotate(-20deg) translate(20px, 0px);}
+	60% {-moz-transform: rotate(10deg) translate(-10px, 5px);}
+	70% {-moz-transform: rotate(-10deg) translate(10px, 0px);}
+	80% {-moz-transform: rotate(5deg) translate(-5px, 0px);}
+	90% {-moz-transform: rotate(-5deg) translate(5px, 0px);}
+	100% {-moz-transform: rotate(0deg) translate(0, 0);}
+}
+@-o-keyframes shake-anti-shake {
+	0% {-o-transform: rotate(0deg) translate(0, 0);}
+	30% {-o-transform: rotate(20deg) translate(-20px, 5px);}
+	50% {-o-transform: rotate(-20deg) translate(20px, 0px);}
+	60% {-o-transform: rotate(10deg) translate(-10px, 5px);}
+	70% {-o-transform: rotate(-10deg) translate(10px, 0px);}
+	80% {-o-transform: rotate(5deg) translate(-5px, 0px);}
+	90% {-o-transform: rotate(-5deg) translate(5px, 0px);}
+	100% {-o-transform: rotate(0deg) translate(0, 0);}
+} */
+/*
+в topic.css the end
+(!) kewords.css
+*/
+@keyframes flash-light {
+	0% {
+		background: yellow;
+		box-shadow: 0 0 20px 20px yellow;
+	}
+	100% {
+		box-shadow: none;
+		background: transparent;
 	}
 }

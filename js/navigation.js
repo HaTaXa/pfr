@@ -1,114 +1,186 @@
 // 'Инициализация переменных
 let isCollapse = true; // - переменная для хранения условия в функции setGoToWithOptionDefault // (i) если вариант 1
-// document.addEventListener("DOMContentLoaded", function () { // - js. Дожидаемся, когда Объектная модель документа страницы (DOM) будет готова к выполнению кода JavaScript
+// document.addEventListener('DOMContentLoaded', function () { // - js. Дожидаемся, когда Объектная модель документа страницы (DOM) будет готова к выполнению кода JavaScript
 // }, false); // - false - фаза "всплытие"
 // (!) *window
-// window.addEventListener("load", function () { // - js. Сработает, как только вся страница (изображения или встроенные фреймы), а не только DOM, будет готово
+// window.addEventListener('load', function () { // - js. Сработает, как только вся страница (изображения или встроенные фреймы), а не только DOM, будет готово
 // }, false); // - false - фаза "всплытие"
 // (!) *document
 $(document).ready(function () { // - jq
-	if (document !== null && typeof (document) === "object") {
+	if (document !== null && typeof(document) === "object") {
 		// setListExpandCollapse(true); // 'если требуется, чтобы при старте все оглавление было сразу развернутым
 		// (!) message
-		window.addEventListener("message", (event) => {
-			// console.log(`window.addEventListener("message", (event) window.name: ${window.name}):\n location.origin: "${location.origin}" <=> event.origin: "${event.origin}": ${location.origin === event.origin}\n event.origin === 0: ${event.origin === 0}\n event.data: ${JSON.stringify(event.data, null, 1)}`); // x -
-			if (location.origin === "file://") {
-				if (event.data.value === "goToPage" || event.data.value === "setVariables") {
-					// (i) в Firefox не работает
-					if (event.data.currP !== "") {
-						let elem = document.getElementById('idToc-ul').querySelector('a[href="' + event.data.currP + '"]');
-						if (elem !== null || typeof (elem) !== "undefined" || typeof (elem) === "object" || elem === Object(elem)) {
-							if (event.data.value === "goToPage") {
-								let isKey = false;
-								for (const key in event.data) {
-									if (key === "collapse") {
-										isKey = true;
-										break;
-									}
-								}
-								if (isKey) {
-									goToPage(elem, event.data.currP, event.data.collapse); // - перейти на страницу
-								} else {
-									goToPage(elem, event.data.currP); // - перейти на страницу
-								}
-							} else if (event.data.value === "setVariables") {
-								setVariables(elem, event.data.currP); // - обновление глобальных переменных в variables.js
-							}
-						}
+		window.addEventListener('message', (event) => {
+			// console.log(`window.addEventListener('message', (event) window.name: ${window.name}):\n location.origin: "${location.origin}" <=> event.origin: "${event.origin}": ${location.origin === event.origin}\n event.origin === 0: ${event.origin === 0}\n event.data: ${JSON.stringify(event.data, null, 1)}`); // x -
+			if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
+				if (event.data.value === "goToPage") {
+					if ("collapse" in event.data) { // проверка наличия ключа в объекте
+						goToPage(null, event.data.href, event.data.collapse); // перейти на страницу
+					} else {
+						goToPage(null, event.data.href); // перейти на страницу
+					}
+				} else if (event.data.value === "setVariables") {
+					let elem = document.getElementById('idToc-ul').querySelector('a[href="' + event.data.currP + '"]');
+					if (elem !== null && elem === Object(elem)) {
+						setVariables(elem, event.data.currP, event.data.hash); // обновление глобальных переменных в variables.js
 					}
 				} else if (event.data.value === "setCollapse") { // (i) если вариант 1
 					isCollapse = event.data.collapse;
+				} else if (event.data.value === "setTargetWindow") {
+					// *установить целевое окно ч.1
+					setTargetWindow(event.data.frmName);
+				} else if (event.data.value === "handlerPoPuPs") {
+					// *скрываем всплывающие эл.в текущем окне
+					handlerPoPuPs(event); // обработчик вплывающих эл.
 				}
 			}
 		}, false); // false - фаза "всплытие"
 		// (!) click
-		document.addEventListener("click", function (e) {
-			if (window.name === "hmnavigation") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-				// *показать/скрыть всплывающее окно Постоянная ссылка в пан.интсрументов/Меню вкладок в пан.тема топика
-				if (window.location.origin === "file://") { // - при локальном использовании
-					// (i) в Firefox не работает
-					let msg = {
-						value: "setShowHideWindow",
-						winId: ["idPermalinkBox", "idTabsMenuBox", "idPageMenuToc"],
-						winHide: "hide"
-					};
-					window.top.postMessage(msg, '*'); // (?) когда звездочка - это плохое использование в целях безопасности от взлома страниц
-				} else {
-					let elems = [
-						window.top.document.getElementById('idPermalinkBox'),
-						window.top.document.getElementById('idTabsMenuBox'),
-						window.top.frames.hmcontent.document.getElementById('idPageMenuToc')
-					];
-					elems.forEach(item => {
-						if (item.style.display !== "none") {
-							if (item.id === "idPermalinkBox") { window.top.clearPermalink(); } // - очищение инфо-подсказок при закрытии окна Постоянная ссылка
-							setShowHideWindow(item, 'hide');
-						}
-					});
-				}
-			}
+		document.addEventListener('click', function (e) {
+			handlerPoPuPs(e); // обработчик вплывающих эл.
+			// x -на удаление
+			// if (window.name === "ifrmnavigation") { // (window === self || self !== top && window.name !== "") // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+			// 	// *скрываем всплывающие эл.toc-menu/idPermalinkBox/idTabsMenuBox
+			// 	if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
+			// 		let msg = {
+			// 			value: "setShowOrHide",
+			// 			id: ["idPermalinkBox", "idTabsMenuBox", "idPageMenuToc"]
+			// 		};
+			// 		window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
+			// 	} else {
+			// 		let elems = [
+			// 			window.top.document.getElementById('idPermalinkBox'),
+			// 			window.top.document.getElementById('idTabsMenuBox'),
+			// 			window.top.getFrame().contentDocument.getElementById('idPageMenuToc'),
+			// 		];
+			// 		elems.forEach(item => {
+			// 			if (item !== null && item === Object(item)) {
+			// 				if (item.id === "idPermalinkBox") { // всплывающий(-е) эл.в гл.окне
+			// 					window.top.setClearPermalink(); // очистить окно Постоянная ссылка
+			// 					setShowOrHide(item, "", "", "", "permalink-popup");
+			// 					item.classList.remove('permalink-popup');
+			// 					window.top.setEventHandlersPermalink(item, 'remove'); // создание/удаление обработчиков событий для узла permalink
+			// 				} else if (item.id === "idTabsMenuBox") { // всплывающий(-е) эл.в гл.окне
+			// 					if (item.classList.contains('tabs-menu-popup')) {
+			// 						// setShowOrHide(item, "", "", "", "tabs-menu-popup");
+			// 						item.classList.remove('tabs-menu-popup');
+			// 					}
+			// 				} else if (item.id === "idPageMenuToc") { // всплывающий(-е) эл.в топике
+			// 					if (item.classList.contains('toc-menu-popup')) {
+			// 						// setShowOrHide(item, "", "", "", "toc-menu-popup");
+			//						item.classList.remove('toc-menu-popup');
+			// 						let icon = item.parentElement.querySelector('.toc-btn_icon');
+			// 						if (icon !== null && icon === Object(icon)) {
+			// 							if (icon.style.order === "2") {
+			// 								icon.removeAttribute('style');
+			// 							}
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// 		});
+			// 	}
+			// }
 			// '
 			if (e.target.tagName === "INPUT" && e.target.type === "checkbox") {
-				if (e.target.id === "idTocListMenuSwitch") {
+				if (e.target.id === "idTreeView") { // - переключатель режимов древовидного списка
+					// для моб.вар.firefox отображаем всплывающую подсказку
+					if (getBrowser().toString().toLowerCase() === "firefox") {
+						e.target.parentElement.querySelector(`[for="${e.target.id}"]`).classList.add('treeview-tooltip-popup');
+					}
+				} else if (e.target.id === "idTocList") {
 					navigationListToggle(e.target); // - переключатель развернуть/свернуть все оглавление
+					// для моб.вар.firefox отображаем всплывающую подсказку
+					if (getBrowser().toString().toLowerCase() === "firefox") {
+						// e.target.parentElement.classList.add('toclist-tooltip-popup');
+						e.target.parentElement.querySelector(`[for="${e.target.id}"]`).classList.add('toclist-tooltip-popup');
+					}
+				}
+				document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+			} else if (e.target.tagName === "A") { // - кн.: SJ/hh
+				if (e.target.hasAttribute('class') && e.target.classList.contains('super-job') || e.target.classList.contains('hh-ru')) {
+					if (getBrowser().toString().toLowerCase() === "firefox") {
+						let elem = e.target;
+						while (elem.id !== "idTocFooter") {
+							elem = elem.parentElement;
+							if (elem.classList.contains('footer-btn')) {
+								elem.classList.add('footer_btn-tooltip-popup');
+								document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+								break;
+							}
+						}
+					}
+				}
+			} else if (e.target.tagName === "IMG") { // - кн.email
+				if (getBrowser().toString().toLowerCase() === "firefox") {
+					let elem = e.target;
+					while (elem.id !== "idTocFooter") {
+						elem = elem.parentElement;
+						if (elem.classList.contains('footer-btn')) {
+							elem.classList.add('footer_btn-tooltip-popup');
+							document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+							break;
+						}
+					}
 				}
 			} else if (e.target.tagName === "SPAN") {
 				if (e.target.parentElement.tagName === "A") {
 					isCollapse = true; // (i) если вариант 1
 					if (window === top && window.name === "") {
-						goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // - перейти на страницу
+						goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // перейти на страницу
 					} else {
-						if (window.name === "hmnavigation") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-							if (location.origin === "file://") {
-								let msg = {
-									value: "setHistoryPushState",
-									currP: e.target.parentElement.getAttribute('href'),
-									winName: window.name
-								};
-								window.top.postMessage(msg, '*'); // (?) когда звездочка - это плохое использование в целях безопасности от взлома страниц
-							} else {
-								window.top.setHistoryPushState(e.target.parentElement.getAttribute('href')); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
+						if (window.name === "ifrmnavigation") { // (window === self || self !== top && window.name !== "") // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+							if (location.origin !== "file://" && location.origin !== "null") { // (i) в Firefox origin = "null"
 								// *проверяем размер окна браузера для определения запуска анимации скрытия пан.нав., если она занимает весь экран
 								if (window.top.document.documentElement.clientWidth < 501) {
 									window.top.setHideNavPane(); // - скрыть пан.нав.
 								}
 							}
+
+							// x -на удаление
+							// if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
+							// 	let msg = {
+							// 		value: "setHistoryState",
+							// 		href: e.target.parentElement.getAttribute('href'),
+							// 		winName: window.name
+							// 	};
+							// 	window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
+							// } else {
+							// 	// goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // перейти на страницу
+							// 	// (i) только, чтобы при загрузке в топике сработало условие вторичной загрузки
+							// 	window.top.setHistoryState("push", e.target.parentElement.getAttribute('href')); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
+							// 	// window.top.getFrame().src = e.target.parentElement.getAttribute('href'); // 'изменит src iframe
+							// 	// *проверяем размер окна браузера для определения запуска анимации скрытия пан.нав., если она занимает весь экран
+							// 	if (window.top.document.documentElement.clientWidth < 501) {
+							// 		window.top.setHideNavPane(); // - скрыть пан.нав.
+							// 	}
+							// } // x -
 							// (i) если вариант 2 - при очень интенсивных кликах браузер может не успевать и будет срабатывать ошибка
 							// setTimeout(() => { // - без задержки стр.загружается с опозданием
-							// 	goToPage(e.target.parentElement); // - перейти на страницу
+							// 	goToPage(e.target.parentElement); // перейти на страницу
 							// }, 1000); // 'если вариант 2
 						} else {
-							console.error(`(!) Косяк - не удалось установить имя текущего окна:\n window.«${window.name}», location.origin: ${location.origin}`);
+							console.error(`(!) Косяк - не удалось установить имя текущего окна:\n e: ${e}, e.type: ${e.type}\n e.target: ${e.target}\n window.«${window.name}», location.origin: ${location.origin}`);
 							alert(`(!) Косяк - не удалось установить имя текущего окна, см.консоль.`);
 						}
 					}
 				}
 			}
+			// else {
+			// 	if (getBrowser().toString().toLowerCase() === "firefox") {
+			// 		// 'скрытие вплывающих подсказок
+			// 		// document.querySelector('[for=idTreeView]').classList.remove('treeview-tooltip-popup');
+			// 		document.querySelector('[for=idTreeView]').removeAttribute('class');
+			// 		// document.querySelector('[for=idTocList]').classList.remove('toclist-tooltip-popup');
+			// 		document.querySelector('[for=idTocList]').removeAttribute('class');
+			// 		if (document.querySelector('.footer_btn-tooltip-popup') !== null) document.querySelector('.footer_btn-tooltip-popup').classList.remove('footer_btn-tooltip-popup');
+			// 	}
+			// }
 		}, false); // false - фаза "всплытие"
 	}
 }); // ready end
 // (!) setCollapse - обновление глобальной переменной для кнопок Домой/Назад/Вперед в пан.инструментов и при переходах по списку оглавления в пан.нав., см.в функции goToPage переменную аргумента функции setGoToWithOptionDefault
-function setCollapse (value = true) { isCollapse = value; } // (i) если вариант 1
+function setCollapse(value = true) { isCollapse = value; } // (i) если вариант 1
 // (!) setListExpandCollapse - развернуть/свернуть все оглавление
 function setListExpandCollapse (value) {
 	// let ulFirstLevel = document.querySelector('ul:first-child'); // - ul самый 1-ый родитель - предок всех потомков
@@ -142,31 +214,31 @@ function setListExpandCollapse (value) {
 	setSwitchTocIcon(document.querySelectorAll('li.toc-list'), value); // - переключение иконки в оглавлении
 }
 // (!) navigationListToggle - переключатель развернуть/свернуть все оглавление
-function navigationListToggle (elem) {
+function navigationListToggle(elem) {
 	let idNavIcon = document.getElementById('idNavIcon');
 	setListExpandCollapse(elem.checked); // - true - развернуть/свернуть - false, все оглавление
 	if (idNavIcon.classList.contains('btn-icon')) { // - замена первоначальной иконки на иконки-переключатели
-		idNavIcon.classList.replace('btn-icon', 'btn-icon-toggle');
+		idNavIcon.classList.replace('btn-icon', 'btn_icon-toggle');
 		// idNavIcon.classList.remove('btn-icon');
-		// idNavIcon.classList.add('btn-icon-toggle');
+		// idNavIcon.classList.add('btn_icon-toggle');
 	}
 }
 // (!) setHighlightsOnElement - установка подсветки на выбранном элементе
-function setHighlightsOnElement (elem) {
+function setHighlightsOnElement(elem) {
 	// *проверяем наличие подсвечиваемого элемента
-	let e = document.getElementById('idToc-ul').getElementsByClassName('hilight');
-	if (e.length > 0) { // - проверяем длинну, а не наличие объекта, если объект "idToc-ul" содержит элемент(-ы) с классом "hilight"
+	let e = document.getElementById('idToc-ul').getElementsByClassName('highlight');
+	if (e.length > 0) { // - проверяем длинну, а не наличие объекта, если объект "idToc-ul" содержит элемент(-ы) с классом "highlight"
 		for (let i = 0; i < e.length; i++) {
 			if (e[i].id !== elem.id) { // - если не одна и та же страница
-				e[i].classList.remove('hilight');
+				e[i].classList.remove('highlight');
 			}
 		}
 	}
-	elem.classList.add('hilight');
+	elem.classList.add('highlight');
 }
 // (!) setStatusTocListMenuSwitch - изменение состояния кнопки-переключателя развернуть/свернуть все оглавлениеи при переходах по страницам
-function setStatusTocListMenuSwitch () {
-	let inputCheckboxNode = document.getElementById('idTocListMenuSwitch');
+function setStatusTocListMenuSwitch() {
+	let inputCheckboxNode = document.getElementById('idTocList');
 	let toc = document.getElementById('idToc-ul');
 	if (toc.classList.contains('icon-collapse')) {
 		inputCheckboxNode.checked = true;
@@ -181,7 +253,7 @@ function setSwitchTocIcon(elem, value = true) {
 		alert(`(!) Косяк: не удалось выполнить изменение иконки переключателя - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	}
-	if (elem.length > 0) { // (!) нужна проверка, что список может быть NodeList, а не HTMLObject
+	if (elem.length > 0) { // (!) (?) нужна проверка, что список может быть NodeList, а не HTMLObject
 		if (value) { // - expand - развернуть все оглавление
 			for (let li of elem) {
 				if (li.hasAttribute('class')) {
@@ -259,7 +331,7 @@ function setSwitchTocIcon(elem, value = true) {
 // (i) в древовидном виде списка будет скрытие всех разделов/подразделов, кроме выбранного пункта оглавления
 // *jq/jQuery
 // x не используется, см.функцию setGoToWithOptionCurrent
-function setTreeViewListCurrent (elem) {
+function setTreeViewListCurrent(elem) {
 	if (elem.tagName !== "SPAN") return; // 'если кликнули вне тега span
 	// 'предки - родительские узлы элементов:
 	// x let ulAllParents = document.querySelectorAll('ul'); // - ul узлы всех предков
@@ -351,7 +423,7 @@ function setTreeViewListCurrent (elem) {
 		}
 	}
 }
-function setGoToWithOptionCurrent (elem) {
+function setGoToWithOptionCurrent(elem) {
 	setListExpandCollapse(false); // - сворачиваем все оглавление
 	setHighlightsOnElement(elem); // - устанавливаем подсветку на выбранном элементе
 	// *первоначально проникаем внутрь
@@ -421,7 +493,7 @@ function setGoToWithOptionCurrent (elem) {
 // (i) в древовидном виде списка скрытие/отображение будет применительно ко всем пунктам оглавления
 // *jq/jQuery
 // x не используется, см.функцию setGoToWithOptionDefault
-function setTreeViewListDefault (elem) {
+function setTreeViewListDefault(elem) {
 	if (elem.tagName !== "SPAN") return; // 'если кликнули вне тега span
 	// 'предки - родительские узлы элементов:
 	// let ulParents = $(elem).parents('ul'); // - все родительские узлы по селектору, вложенные по цепочке в верх
@@ -486,7 +558,7 @@ function setTreeViewListDefault (elem) {
 		}
 	}
 }
-function setGoToWithOptionDefault (elem, collapse = true) {
+function setGoToWithOptionDefault(elem, collapse = true) {
 	setHighlightsOnElement(elem); // - устанавливаем подсветку на выбранном элементе
 	e = elem.parentElement; // - li
 	// *переключаем иконку
@@ -592,7 +664,7 @@ function setGoToWithOptionDefault (elem, collapse = true) {
 	setStatusTocListMenuSwitch(); // - меняем состояние кнопки-переключателя развернуть/свернуть все оглавление
 }
 // (!) getPageHome - получение ссылки на страницу текущего раздела/подраздела
-function getPageHome (elem) {
+function getPageHome(elem) {
 	let e = elem;
 	while (e.tagName !== "UL") {
 		e = e.parentElement;
@@ -600,7 +672,7 @@ function getPageHome (elem) {
 	if (e.id === "idToc-ul") {
 		while (e.tagName !== "A") {
 			if (e.tagName === "IMG") { // TODO: перепродумать, если +/- будет отдельной иконкой
-				if (e.nextElementSibling !== null && typeof (e.nextElementSibling) === "object" || e.nextElementSibling === Object(e.nextElementSibling)) {
+				if (e.nextElementSibling !== null && typeof(e.nextElementSibling) === "object" || e.nextElementSibling === Object(e.nextElementSibling)) {
 					e = e.nextElementSibling;
 				}
 			}
@@ -610,7 +682,7 @@ function getPageHome (elem) {
 	} else {
 		e = e.parentElement;
 		if (e.tagName === "UL") {
-			if (e.previousElementSibling !== null && typeof (e.previousElementSibling) === "object") {
+			if (e.previousElementSibling !== null && typeof(e.previousElementSibling) === "object") {
 				if (e.previousElementSibling.tagName === "A") {
 					return e.previousElementSibling.getAttribute('href');
 				}
@@ -635,7 +707,7 @@ function getPageHome (elem) {
 	// }
 }
 // (!) getPagePrevious - рекурсия - получение ссылки на предыдущую страницу
-function getPagePrevious (elem) {
+function getPagePrevious(elem) {
 	let href = "";
 	if (elem.id === "idToc-a") {
 		return href;
@@ -680,7 +752,7 @@ function getPagePrevious (elem) {
 	}
 }
 // (!) getPageNext - рекурсия - получение ссылки на следующую страницу
-function getPageNext (elem) {
+function getPageNext(elem) {
 	let href = "";
 	if (elem.id === "idToc-ul") {
 		return href;
@@ -696,11 +768,11 @@ function getPageNext (elem) {
 		// 	getPageNext(eChild.parentElement);
 		// }
 	} else {
-		if (elem.nextElementSibling !== null && typeof (elem.nextElementSibling) === "object") {
+		if (elem.nextElementSibling !== null && typeof(elem.nextElementSibling) === "object") {
 			let e = elem.nextElementSibling;
 			while (e.tagName !== "A") {
 				if (e.tagName === "IMG") { // TODO: перепродумать, если +/- будет отдельной иконкой
-					if (e.nextElementSibling !== null && typeof (e.nextElementSibling) === "object" || e.nextElementSibling === Object(e.nextElementSibling)) {
+					if (e.nextElementSibling !== null && typeof(e.nextElementSibling) === "object" || e.nextElementSibling === Object(e.nextElementSibling)) {
 						e = e.nextElementSibling;
 					}
 				}
@@ -718,7 +790,7 @@ function getPageNext (elem) {
 	}
 }
 // (!) getBreadCrumbs - рекурсия - получение навигационных ссылок
-function getBreadCrumbs (elem) {
+function getBreadCrumbs(elem) {
 	let e = elem;
 	let breadCrumbs = [];
 	while (e.tagName !== "UL") {
@@ -735,7 +807,7 @@ function getBreadCrumbs (elem) {
 					let eChild = e;
 					while (eChild.tagName !== "SPAN") {
 						if (eChild.tagName === "IMG") { // TODO: перепродумать, если +/- будет отдельной иконкой
-							if (eChild.nextElementSibling !== null && typeof (eChild.nextElementSibling) === "object" || eChild.nextElementSibling === Object(eChild.nextElementSibling)) {
+							if (eChild.nextElementSibling !== null && typeof(eChild.nextElementSibling) === "object" || eChild.nextElementSibling === Object(eChild.nextElementSibling)) {
 								eChild = eChild.nextElementSibling;
 							}
 						}
@@ -754,24 +826,24 @@ function getBreadCrumbs (elem) {
 		return breadCrumbs;
 	}
 }
-// (!) getVariables - получение данных для обновления глобальных переменных в variables.js
-function getVariables (elem, currP = "") {
-	if (elem === null || typeof (elem) === "undefined" || typeof (elem) !== "object" || elem !== Object(elem)) { // 'не объект/не объект HTMLlinkElement
-		if (currP !== null && typeof (currP) !== "undefined" && typeof (currP) === "string" && currP !== "") {
+// (!) получение данных для обновления глобальных переменных в variables.js
+function getVariables(elem, currP = "", hash = "") {
+	if (elem === null || typeof(elem) === "undefined" || typeof(elem) !== "object" || elem !== Object(elem)) { // 'НЕ объект/НЕ объект HTMLlinkElement
+		if (currP !== null && typeof(currP) !== "undefined" && typeof(currP) === "string" && currP !== "") {
 			elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 		} else { // - стремимся все равно получить текущий элемент и/или его значение
-			if (window.location.origin === "file://") { // - при локальном использовании
-				console.error(`(!) Косяк - не удалось получить глобальные переменные:\n function getVariables (elem: ${typeof (elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
+			if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
+				console.error(`(!) Косяк - не удалось получить глобальные переменные:\n function getVariables(elem: ${typeof(elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
 				alert(`(!) Косяк - не удалось получить глобальные переменные, см.консоль.`);
-				return;
+				return null;
 			} else {
 				if (window.top.location.search !== "") {
 					currP = window.top.location.search.substring(1).replace(/:/g, "");
 					elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 				} else {
-					console.error(`(!) Косяк - не удалось получить глобальные переменные:\n function getVariables (elem: ${typeof (elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
+					console.error(`(!) Косяк - не удалось получить глобальные переменные:\n function getVariables(elem: ${typeof(elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
 					alert(`(!) Косяк - не удалось получить глобальные переменные, см.консоль.`);
-					return;
+					return null;
 				}
 			}
 		}
@@ -780,90 +852,96 @@ function getVariables (elem, currP = "") {
 	if (currP === "") {
 		currP = elem.getAttribute('href');
 	}
-	let toc = location.href.slice(location.href.lastIndexOf("/") + 1);
-	let url = location.href.replace(toc, "index.html") + "?" + currP;
+	// let toc = location.href.slice(location.href.lastIndexOf("/") + 1);
+	// let url = location.href.replace(toc, "index.html") + "?" + currP;
+	let url = (hash === "") ? "index.html?" + currP : "index.html?" + currP + "#" + hash;
 	return {
-		hmtopicvars: {
+		vrsTopic: {
 			homeP: homeP,
 			prevP: getPagePrevious(elem),
 			nextP: getPageNext(elem),
 			currP: currP,
 			titleP: elem.innerText,
 		},
-		hmnavpages: {
+		vrsNavigation: {
 			top: homeP,
 			def: currP,
 			query: currP,
+			hash: hash,
 			breadCrumbs: getBreadCrumbs(elem),
 		},
-		hmpermalink: { url: url },
+		vrsPermalink: { url: url },
 	};
 }
-// (!) setVariables - обновление глобальных переменных в variables.js
-function setVariables (elem, currP = "") {
-	if (elem === null || typeof (elem) === "undefined" || typeof (elem) !== "object" || elem !== Object(elem)) { // 'не объект/не объект HTMLlinkElement
-		if (currP !== null && typeof (currP) !== "undefined" && typeof (currP) === "string" && currP !== "") {
+// (!) обновление глобальных переменных в variables.js
+function setVariables(elem, currP = "", hash = "") {
+	if (elem === null || typeof(elem) === "undefined" || typeof(elem) !== "object" || elem !== Object(elem)) { // 'не объект/не объект HTMLlinkElement
+		if (currP !== null && typeof(currP) !== "undefined" && typeof(currP) === "string" && currP !== "") {
 			elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 			if (elem === null) {
-				let arr = Array.prototype.slice.call(document.getElementById('idTocBody').querySelectorAll('a[href="' + currP + '"]'));
+				let arr = Array.prototype.slice.call(document.getElementById('idTocBody').querySelectorAll('a[href="' + currP + '"]')); // (!) Array.prototype.slice.call - не сработает для IE8
 				if (arr.length === 1) {
 					elem = arr[0];
 				} else {
-					console.error(`(!) Косяк - не удалось установить глобальные переменные:\n function setVariables (elem: ${typeof (elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-					alert(`(!) Косяк - не удалось установить глобальные переменные, см.консоль.`);
+					console.error(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setVariables(elem: ${typeof(elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
+					alert(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
 			}
 		} else { // - стремимся все равно получить текущий элемент и/или его значение
-			if (window.location.origin === "file://") { // - при локальном использовании
-				console.error(`(!) Косяк - не удалось установить глобальные переменные:\n function setVariables (elem: ${typeof (elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-				alert(`(!) Косяк - не удалось установить глобальные переменные, см.консоль.`);
+			if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
+				console.error(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setVariables(elem: ${typeof(elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
+				alert(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 				return;
 			} else {
 				if (window.top.location.search !== "") {
 					currP = window.top.location.search.substring(1).replace(/:/g, "");
 					elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 				} else {
-					console.error(`(!) Косяк - не удалось установить глобальные переменные:\n function setVariables (elem: ${typeof (elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-					alert(`(!) Косяк - не удалось установить глобальные переменные, см.консоль.`);
+					console.error(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setVariables(elem: ${typeof(elem)} / ${elem}, currP = "${currP}"):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
+					alert(`(!) Косяк - не удалось установить глобальные переменные - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
 			}
 		}
 	}
-	let vrs = getVariables(elem, currP);
+	let vrs = getVariables(elem, currP, hash);
 	if (Object.keys(vrs).length > 0 && JSON.stringify(vrs) !== "{}") {
-		if (window.location.origin === "file://") { // - при локальном использовании
-			// (i) в Firefox не работает
+		if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
 			vrs.value = "setUpdateVariables";
-			window.top.postMessage(vrs, '*'); // (?) когда звездочка - это плохое использование в целях безопасности от взлома страниц
+			window.top.postMessage(vrs, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 		} else {
-			if (window.top.location.search === "") {
-				setToolbarButtonsOnOff(window.top.hmtopicvars.btnExpand);
-			} else {
+			// if (window.top.location.search !== "") { // test - в index.js тоже поправить
 				setUpdateVariables(
-					vrs.hmtopicvars,
-					vrs.hmnavpages,
-					vrs.hmpermalink
+					vrs.vrsTopic,
+					vrs.vrsNavigation,
+					vrs.vrsPermalink
 				); // - обновляем глобальные переменные в variables.js
-				let tab = window.top.document.getElementById('idTopicTab');
-				if (tab !== "" && typeof(tab) !== "undefined" && typeof(tab) === "object") {
-					if (tab.classList.contains('tab-current')) {
-						setToolbarButtonsOnOff(window.top.hmtopicvars.btnExpand);
-					} else {
-						setTabShowHide(tab, 'show'); // - показать/скрыть текущую вкладку
-					}
-				}
-			}
-			setUpdateElements(); // - обновляем группу кнопок навигации на пан.инструментов (домой/назад/вперед), вкладку главная и ссылку на актуальную тему в меню вкладок на пан.тема топика
-			// *идем в hmcontent создавать навигационные ссылки
-			window.top.document.getElementById('hmcontent').contentWindow.writeBreadCrumbs(vrs.hmnavpages.breadCrumbs);
+			// }
+			setUpdateElements(); // - обновляем группу кнопок навигации на пан.инструментов (домой/назад/вперед), кнопку-переключатель скрытого контента, наименование текущей вкладки на пан.топика, ссылку на текущую тему в текущ.вкладке топика в меню вкладок, а так же аттрибут(-ы) фрейма
 		}
 	}
 }
-// (!) goToPage - перейти на страницу
-function goToPage (elem, currP = "", collapse = true) {
-	if (elem === null || typeof (elem) === "undefined" || typeof (elem) !== "object" || elem !== Object(elem)) { // 'не объект/не объект HTMLlinkElement
+// (!) перейти на страницу
+function goToPage(elem, href = "", collapse = true) {
+	// 'проверяем и исключаем наличие hash href
+	if (href === "" && typeof(href) === "string") {
+		console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+		alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+		return;
+	}
+	// проверка наличия якоря
+	// 1) href.match(/#/i); // вернет номер символа в строке
+	// 2) /#/i.test(href); // true/false
+	// 3) href.toLowerCase().includes("#") // true - строка найдена
+	// 4) href.indexOf("#") === -1 // строка НЕ найдена
+	let hash = (/#/i.test(href)) ? href.slice(href.lastIndexOf("#") + 1): "";
+	let currP = (/\\?/i.test(href)) ? href.slice(href.lastIndexOf("?") + 1) : href;
+	if (hash !== "") currP = currP.replace("#" + hash, "");
+	// console.log(`href: ${href}:\n currP: ${currP}\n hash: ${hash}`);
+
+	// '
+	if (elem === null || typeof(elem) === "undefined" || typeof(elem) !== "object" || elem !== Object(elem)) { // 'не объект/не объект HTMLlinkElement
 		if (currP !== null && typeof(currP) !== "undefined" && typeof(currP) === "string" && currP !== "") {
 			elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 			if (elem === null) {
@@ -871,23 +949,23 @@ function goToPage (elem, currP = "", collapse = true) {
 				if (arr.length === 1) {
 					elem = arr[0];
 				} else {
-					console.error(`(!) Косяк - не удалось выполнить переход на страницу:\n function goToPage (elem: ${typeof (elem)} / ${elem}, currP = "${currP}", collapse = ${collapse}):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-					alert(`(!) Косяк - не удалось выполнить переход на страницу, см.консоль.`);
+					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+					alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
 			}
 		} else { // - стремимся все равно получить текущий элемент и/или его значение
-			if (window.location.origin === "file://") { // - при локальном использовании
-				console.error(`(!) Косяк - не удалось выполнить переход на страницу:\n function goToPage (elem: ${typeof (elem)} / ${elem}, currP = "${currP}", collapse = ${collapse}):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-				alert(`(!) Косяк - не удалось выполнить переход на страницу, см.консоль.`);
+			if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
+				console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+				alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 				return;
 			} else {
 				if (window.top.location.search !== "") {
 					currP = window.top.location.search.substring(1).replace(/:/g, "");
 					elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 				} else {
-					console.error(`(!) Косяк - не удалось выполнить переход на страницу:\n function goToPage (elem: ${typeof (elem)} / ${elem}, currP = "${currP}", collapse = ${collapse}):\n 1) isEmptyObject(${isEmptyObject(elem)})\n 2) elem === null: ${elem === null}`);
-					alert(`(!) Косяк - не удалось выполнить переход на страницу, см.консоль.`);
+					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+					alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
 			}
@@ -895,7 +973,7 @@ function goToPage (elem, currP = "", collapse = true) {
 	}
 	if (elem.tagName === "A") {
 		let inputCheckboxNode = document.getElementById('idTreeView');
-		if (inputCheckboxNode !== null && typeof (inputCheckboxNode) !== "undefined" && typeof (inputCheckboxNode) === "object") {
+		if (inputCheckboxNode !== null && typeof(inputCheckboxNode) !== "undefined" && typeof(inputCheckboxNode) === "object") {
 			if (inputCheckboxNode.checked) {
 				setGoToWithOptionCurrent(elem); // - переход на страницу - опция древовидный вид списка в режиме "Текущий пункт"
 				// setTreeViewListCurrent(elem); // x не используется
@@ -905,7 +983,7 @@ function goToPage (elem, currP = "", collapse = true) {
 				// setTreeViewListDefault(elem); // x не используется
 			}
 		} else { // *код оставлен для варианта классический
-			console.warn(`function goToPage (elem: ${typeof (elem)} / ${elem}, currP = "${currP}", collapse = ${collapse}):\n (i) сработало условие для варианта классический`);
+			console.warn(`function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n (i) сработало условие для варианта классический`);
 			if (elem.tagName !== "INPUT") return; // 'если кликнули вне тега input
 			let inputRadioNodes = document.getElementsByTagName('INPUT');
 			if (inputRadioNodes.length > 0) {
@@ -934,8 +1012,9 @@ function goToPage (elem, currP = "", collapse = true) {
 				alert(`(i) Опция режим древовидного вида списка не найдена.\n Настройка будет работать в режиме "Текущий список".`);
 			}
 		}
-		if (window.name === "hmnavigation") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-			setVariables(elem, currP); // - обновление глобальных переменных в variables.js
+		if (window.name === "ifrmnavigation") { // (window === self || self !== top && window.name !== "") // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+			setVariables(elem, currP, hash); // - обновление глобальных переменных в variables.js
+
 		}
 	}
 }

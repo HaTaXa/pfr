@@ -8,18 +8,22 @@
 	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
 	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
 	<title>Ключевые слова</title>
-	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="icon/x-icon">
+	<link rel="icon" href="icon/favicons/fgis-fri.png" type="image/png">
+
+	<!-- <link rel="manifest" href="icons_manifest.webmanifest"> --> <!-- (?) -->
+
 	<meta name="author" content="HaTaXa">
 	<meta name="copyright" content="HaTaXa">
 	<meta name="robots" content="index,follow"> <!-- 'для поисковиков -->
 	<meta name ="revisit-after" content="15 days"> <!-- 'посещение программой роботом сайта и индексирование его содержания -->
-	<!-- ! подключение стилей -->
-	<link rel="stylesheet" href="css/topic.css"> <!-- 'вместо файла hm_topic.css -->
+	<!-- (!) подключение стилей -->
+	<link rel="stylesheet" href="css/topic.css">
 	<link rel="stylesheet" href="css/keywords.css">
 	<link rel="stylesheet" href="css/linkstyles.css"> <!-- 'стилизация ссылок -->
-	<!-- ! подключение скриптов + см.внизу -->
-	<!-- <script src="js/keywords.js"></script> --> <!-- 'было в хеде файла hmkwindex.htm -->
-	<!-- <script src="js/settings.js"></script> --> <!-- 'вместо файла helpman_settings.js -->
+	<link rel="stylesheet" href="css/animation.css">
+	<!-- (!) подключение скриптов + см.внизу -->
+	<!-- <script src="js/settings.js"></script>
 	<!-- <script type="text/javascript" src="js/hmcontextids.js"></script> --> <!-- (?) -->
 
 	<style type="text/css">#idx div {display: none}</style>
@@ -29,14 +33,111 @@
 	<![endif]-->
 </head>
 <body>
-	Здесь будут ключевые слова
-
+	<ul id="idTabSliderTrack" class="tab_slider-track">
+		<li id="idKeywordsTab" class="tabs tab-current">
+			<a id="idKeywordsTabLink" href="#"><span>Ключевые слова</span></a>
+		</li>
+	</ul>
+	<div id="idTopicBox" class="topic-box">
+		<div id="idKeywordHeader" class="kwd-header">
+			<div class="ref-index">
+				<p>
+					<a href="#A" class="idxrefs">A</a>
+					<a href="#B" class="idxrefs">B</a>
+					<a href="#C" class="idxrefs">C</a>
+					<a href="#D" class="idxrefs">D</a>
+					<a href="#E" class="idxrefs">E</a>
+					<a href="#F" class="idxrefs">F</a>
+					<a href="#G" class="idxrefs">G</a>
+					<a href="#H" class="idxrefs">H</a>
+					<a href="#I" class="idxrefs">I</a>
+					<a href="#J" class="idxrefs">J</a>
+					<a href="#K" class="idxrefs">K</a>
+					<a href="#L" class="idxrefs">L</a>
+					<a href="#M" class="idxrefs">M</a>
+					<a href="#N" class="idxrefs">N</a>
+					<a href="#O" class="idxrefs">O</a>
+					<a href="#P" class="idxrefs">P</a>
+					<a href="#Q" class="idxrefs">Q</a>
+					<a href="#R" class="idxrefs">R</a>
+					<a href="#S" class="idxrefs">S</a>
+					<a href="#T" class="idxrefs">T</a>
+					<a href="#U" class="idxrefs">U</a>
+					<a href="#V" class="idxrefs">V</a>
+					<a href="#W" class="idxrefs">W</a>
+					<a href="#X" class="idxrefs">X</a>
+					<a href="#Y" class="idxrefs">Y</a>
+					<a href="#Z" class="idxrefs">Z</a>
+				</p>
+				<p>
+					<a href="#А" class="idxrefs">А</a>
+					<a href="#Б" class="idxrefs">Б</a>
+					<a href="#В" class="idxrefs">В</a>
+					<a href="#Г" class="idxrefs">Г</a>
+					<a href="#Д" class="idxrefs">Д</a>
+					<a href="#Е" class="idxrefs">Е</a>
+					<a href="#Ё" class="idxrefs">Ё</a>
+					<a href="#З" class="idxrefs">Ж</a>
+					<a href="#И" class="idxrefs">И</a>
+					<a href="#Й" class="idxrefs">Й</a>
+					<a href="#К" class="idxrefs">К</a>
+					<a href="#Л" class="idxrefs">Л</a>
+					<a href="#М" class="idxrefs">М</a>
+					<a href="#Н" class="idxrefs">Н</a>
+					<a href="#О" class="idxrefs">О</a>
+					<a href="#П" class="idxrefs">П</a>
+					<a href="#Р" class="idxrefs">Р</a>
+					<a href="#С" class="idxrefs">С</a>
+					<a href="#Т" class="idxrefs">Т</a>
+					<a href="#У" class="idxrefs">У</a>
+					<a href="#Ф" class="idxrefs">Ф</a>
+					<a href="#Х" class="idxrefs">Х</a>
+					<a href="#Ц" class="idxrefs">Ц</a>
+					<a href="#Ч" class="idxrefs">Ч</a>
+					<a href="#Ш" class="idxrefs">Ш</a>
+					<a href="#Щ" class="idxrefs">Щ</a>
+					<a href="#Ъ" class="idxrefs">Ъ</a>
+					<a href="#Ы" class="idxrefs">Ы</a>
+					<a href="#Ь" class="idxrefs">Ь</a>
+					<a href="#Э" class="idxrefs">Э</a>
+					<a href="#Ю" class="idxrefs">Ю</a>
+					<a href="#Я" class="idxrefs">Я</a>
+				</p>
+			</div>
+			<form id="formSearch" class="form-search">
+				<input type="text" name="idxSearch" id="idxSearch" class="field-search" value="" autocorrect="off" autocapitalize="off" placeholder="Введите одно или несколько ключевых слов для поиска" autocomplete="on">
+				<button type="button" class="btn-search" title="Нажмите кнопку снова или нажмите Enter, чтобы перейти к следующему выделенному объекту">Найти</button>
+				<p>
+					<label><input type="checkbox" id="instantsearch" name="instantsearch" checked="checked" value="Мгновенный поиск"><span class="searchopts">Мгновенный поиск</span></label>
+					<label><input type="radio" id="startsearch" name="fullsearch" checked="checked" value="Первое слово"><span class="searchopts">Первое слово</span></label>
+					<label><input type="radio" id="wordsearch" name="fullsearch" value="В любом месте слова"><span class="searchopts">В любом месте слова</span></label>
+					<label><input type="radio" id="fullsearch" name="fullsearch" value="Полнотекстовый поиск"><span class="searchopts">Полнотекстовый поиск</span></label>
+				</p>
+			</form>
+		</div>
+		<p style="color: blue;">(i) Вкладка «Ключевые слова» находится режиме тестирования</p>
+		<hr style="width: 100%; margin: 10px 0;">
+		<div id="idKeywordBody" class="kwd-body">
+			<div id="idIndex" class="idx-index">
+				<p id="%D0%9A" class="idx-section"><span>- К -</span></p>
+				<p class="idx-keyword"><a href="about.html#yakor1" target="ifrmtopic">Концепция</a></p>
+				<p id="%D0%A1" class="idx-section"><span>- С -</span></p>
+				<p class="idx-keyword"><a href="#ul-1">"Светофор"</a></p>
+				<div class="idx-wrapper">
+					<ul id="ul-1" class="idx-list idx_list-hide idx-icon">
+						<li><a href="proektUchetZayavokFGISFRInaASTP.html#yakor3" target="ifrmtopic">Проект «Учет заявок ФГИС "ФРИ" на АСТП»</a></li>
+						<li><a href="srokiPoIspolneniu.html#yakor2" target="ifrmtopic">Сроки по исполнению</a></li>
+					</ul>
+				</div>
+				<p id="%D0%A2" class="idx-section"><span>- Т -</span></p>
+			</div> <!-- idIndex -->
+		</div> <!-- idKeywordBody -->
+	</div> <!-- idTopicBox -->
 
 	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
 	<!-- локальное подключение библиотеки jquery: несжатый -->
-	<script src="js/jquery-3.6.0.js"></script>
-	<!-- локальное подключение библиотеки jquery: минимизированный -->
-	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<script src="js/jquery-3.7.1.js"></script>
+	<!-- <script src="js/jquery-3.7.1.min.js"></script> -->
 	<!-- ************************************************************ -->
 	<!-- ссылка на jquery CDN: несжатый -->
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->
@@ -45,5 +146,6 @@
 	<!-- ************************************************************ -->
 	<!-- другие js-скрипты -->
 	<script src="js/scripts.js" async></script>
+	<script src="js/keywords.js"></script>
 </body>
 </html>

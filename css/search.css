@@ -1,50 +1,82 @@
 /* (i) Было прописано внутри тега хед файла hmftsearch.htm */
 
-body, html {
-	overflow: hidden;
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-	text-indent: 1.5em;
-}
+body {text-indent: 1em;}
 a {color: blue;}
 a:visited {color: blue;}
 a:hover {color: blue;}
 
-.submit {font-size: 10pt;}
+.zoom_button,
+label {cursor: pointer;}
+
+.inner-box {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	margin: 10px 4px;
+	display: flex;
+	/* flex: 1 1 auto; */
+	flex-flow: row wrap;
+	border-bottom: 1px solid silver;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	/* font-size: 12px; */
+	font-size: .8em;
+}
 
 .zoom_button,
-.zoom_searchbox,
+.zoom_field,
 .zoom_searchform {
 	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
 	display: flex;
-	justify-content: center;
 	align-items: center;
-	align-content: center;
+	justify-content: center;
 }
-
+#allwordsearch,
+#anywordsearch {margin: 0 4px 0 8px;}
 .zoom_searchform {
+	margin: 6px 10px;
 	flex-flow: row wrap;
-	font-size: 100%;
+	/* font-size: 100%; */
 }
 
 .zoom_button,
-.zoom_searchbox {
-	margin: 0 2px;
-	flex-wrap: nowrap;
+.zoom_field {flex-wrap: nowrap;}
+
+.zoom_field {
+	margin: auto 1px auto 2px;
+	flex: 1 1 auto;
 }
 
-.zoom_searchbox {flex: 2 2 auto;
-	/* margin-left: 26px; */
-	/* margin-left: 2em; */
+.zoom_button {
+	margin: auto 2px auto 1px;
+	padding: 2px;
+	color: #fff;
+	background: linear-gradient(#888888, #000000);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#888888",endColorstr="#000000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #888888, endColorstr = #000000);
+	background: -webkit-linear-gradient(top, #888888, #000000);
+	background: -moz-linear-gradient(top, #888888, #000000);
+	background: -o-linear-gradient(top, #888888, #000000);
+	border: 1px solid #737373;
+	border-radius: 5px;
 }
-
-.zoom_button {flex: 0 1 auto;}
-
+.zoom_button:hover {
+	background: linear-gradient(#000000, #888888);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#888888",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #888888);
+	background: -webkit-linear-gradient(top, #000000, #888888);
+	background: -moz-linear-gradient(top, #000000, #888888);
+	background: -o-linear-gradient(top, #000000, #888888);
+}
+#dummy,
 .submit,
 .zoom_results_per_page,
 .zoom_match {
 	width: 100%;
 	margin: 2px;
-	padding: 0;
 }
 
 .searchheading {font-size: 9pt; font-weight: bold; margin-top: 7px;}
@@ -71,7 +103,6 @@ div.results {position: absolute; left: 0; right: 0; bottom: 0; overflow-y: scrol
 .context {font-size: 9pt;}
 .result_title {font-size: 9pt;}
 .category {color: #999999;}
-.zoom_match input {margin-left: 3px;}
 .zoom_categories {font-size: 80%;}
 .zoom_categories ul {display: inline; margin: 0px; padding: 0px;}
 .zoom_categories li {display: inline; margin-left: 15px; list-style-type: none;}
@@ -99,6 +130,6 @@ div.infoline {font-weight: bold; margin-top: 2px;}
 span.highlight {background-color: #ffff40;}
 
 @media (max-width: 501px) {
-	.zoom_searchbox {width: auto;}
+	.zoom_field {width: auto;}
 	.zoom_match {line-height: normal;}
 }

@@ -20,41 +20,56 @@ function lightbox_onMouseover(eVent) {
 		if (eVent.target.classList.contains('zoom-in') || eVent.target.classList.contains('zoom-out')) {
 			toggleZoomerIcon(eVent.target, eVent.type); // - переключить (+/-) иконку масштабирования
 		}
-	}
-}
-// (!) lightbox_onMouseout
-function lightbox_onMouseout(eVent) {
-	if (eVent.target.tagName === "IMG") {
-		if (eVent.target.classList.contains('zoom-in') || eVent.target.classList.contains('zoom-out')) {
-			toggleZoomerIcon(eVent.target, eVent.type); // - переключить (+/-) иконку масштабирования
+		function iconZoomer_onMouseout(evt) {
+			if (eVent.target.classList.contains('zoom-in') || eVent.target.classList.contains('zoom-out')) {
+				toggleZoomerIcon(evt.target, evt.type); // - переключить (+/-) иконку масштабирования
+			}
+			eVent.target.removeEventListener('mouseout', iconZoomer_onMouseout, false);
 		}
+		// (!) mouseout
+		eVent.target.addEventListener('mouseout', iconZoomer_onMouseout, false);
 	}
 }
 // (!) lightbox_onKeydown
 function lightbox_onKeydown(eVent) {
-	if (eVent.key === "Escape" || eVent.code === "Escape" || eVent.keyCode === 27 || eVent.which === 27) {
+	if (window === top && window.name === "") {
+		eVent.preventDefault(); // отменяем действия браузера по умолчанию
+		// (?)~End/Home/PageUp/PageDown - достигает гор.клав.проникая с гл.окна далее для др.эл.НЕ перехватывая на текущий эл., т.е.гор.клав.для др.эл.в гл.окне тоже срабатывают одновременно наряду с текущим эл.т.к.присутствует общий слушатель на весь док.
+	}
+	// (?)~перехват срабатывает, но курсор двигается по контенту - без preventDefault() не обойтись
+	// console.log(`window.«${window.name}»`);
+	// console.log(document.activeElement);
+	// console.log(eVent.target);
+	// (i) event.code всегда содержит только одно латинское обозначение в отличие от event.key, кот.содержит обозначение относительно раскладки клавиатуры
+	if (eVent.code === "Escape" || eVent.key === "Escape" || eVent.keyCode === 27 || eVent.which === 27) {
 		if (window === top || window.name === "") {
-			setLightboxRemove(eVent.target); // - удаление DOM-элемента - узел lightbox в гл.окне
+			setLightboxRemove(eVent.target); // удаление DOM-элемента - узел lightbox в гл.окне
+		} else if (window === self || self !== top && window.name !== "") { // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+			setLightboxHide(eVent.target); // скрыть окно просмотра изо - текущий lightbox
 		}
-		// else if (window === self || self !== top && window.name === "hmcontent") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-		// 	setLightboxHide(eVent.target); // скрыть окно просмотра изо - текущий lightbox
-		// }
-	} else if (eVent.key === "Home" || eVent.code === "Home" || eVent.keyCode === 36 || eVent.which === 36) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
+	// не стала пока назначать
+	// } else if (eVent.code === "PageUp" || eVent.key === "PageUp" || eVent.keyCode === 33 || eVent.which === 33) {
+	// 	eVent.preventDefault(); // отменяем действия браузера по умолчанию
+	// } else if (eVent.code === "PageDown" || eVent.key === "PageDown" || eVent.keyCode === 34 || eVent.which === 34) {
+	// 	eVent.preventDefault(); // отменяем действия браузера по умолчанию
+	} else if (eVent.code === "End" || eVent.key === "End" || eVent.keyCode === 35 || eVent.which === 35) {
 		eVent.preventDefault(); // отменяем действия браузера по умолчанию
-	} else if (eVent.key === "End" || eVent.code === "End" || eVent.keyCode === 35 || eVent.which === 35) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
+	} else if (eVent.code === "Home" || eVent.key === "Home" || eVent.keyCode === 36 || eVent.which === 36) {
 		eVent.preventDefault(); // отменяем действия браузера по умолчанию
-	} else if (eVent.key === "ArrowLeft" || eVent.code === "ArrowLeft" || eVent.keyCode === 37 || eVent.which === 37) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
-	} else if (eVent.key === "ArrowUp" || eVent.code === "ArrowUp" || eVent.keyCode === 38 || eVent.which === 38) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
+	} else if (eVent.code === "ArrowLeft" || eVent.key === "ArrowLeft" || eVent.keyCode === 37 || eVent.which === 37) {
 		eVent.preventDefault(); // отменяем действия браузера по умолчанию
-	} else if (eVent.key === "ArrowRight" || eVent.code === "ArrowRight" || eVent.keyCode === 39 || eVent.which === 39) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
-	} else if (eVent.key === "ArrowDown" || eVent.code === "ArrowDown" || eVent.keyCode === 40 || eVent.which === 40) {
-		goToImage(eVent.target, eVent.code); // - переключение по изо.в lightbox
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
+	} else if (eVent.code === "ArrowUp" || eVent.key === "ArrowUp" || eVent.keyCode === 38 || eVent.which === 38) {
 		eVent.preventDefault(); // отменяем действия браузера по умолчанию
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
+	} else if (eVent.code === "ArrowRight" || eVent.key === "ArrowRight" || eVent.keyCode === 39 || eVent.which === 39) {
+		eVent.preventDefault(); // отменяем действия браузера по умолчанию
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
+	} else if (eVent.code === "ArrowDown" || eVent.key === "ArrowDown" || eVent.keyCode === 40 || eVent.which === 40) {
+		eVent.preventDefault(); // отменяем действия браузера по умолчанию
+		goToImage(eVent.target, eVent.code); // переключение по изо.в lightbox
 	}
 }
 // (!) lightbox_onClick
@@ -78,8 +93,8 @@ function lightbox_onClick(eVent) {
 	} else if (eVent.target.tagName === "DIV") {
 		if (eVent.target.classList.contains('lightbox-btn-close')) {
 			if (window === top || window.name === "") {
-				setLightboxRemove(eVent.target); // - удаление DOM-элемента - узел lightbox в гл.окне
-			} else if (window === self || self !== top && window.name === "hmcontent") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+				setLightboxRemove(eVent.target); // удаление DOM-элемента - узел lightbox в гл.окне
+			} else if (window === self || self !== top && window.name !== "") { // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
 				setLightboxHide(eVent.target); // - скрыть окно просмотра изо - текущий lightbox
 			}
 		}
@@ -91,43 +106,45 @@ function lightbox_onClick(eVent) {
 			if (window === top || window.name === "") { // (i) окно элемента яв-ся главным, например, при запуске отдельной страницей или через ctrl+клик из общего проекта
 				// *toggle image zoom
 				toggleZoomerIcon(eVent.target, ""); // - переключить (+/-) иконку масштабирования
-			} else if (window === self || self !== top && window.name === "hmcontent") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+			} else if (window === self || self !== top && window.name !== "") { // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
 				// *image full screen - вывод текущего lightbox в гл.окне
-				if (location.origin === "file://") { // - получаем элемент lightbox clone и передаем его в гл.окно
-					alert(`(!) Не удалось осуществить image full screen - вывод текущего lightbox в гл.окне.\n (i) Нельзя передать узел/копию DOM-элемента в другое окно/фрейм, см.спецификацию.\n function lightbox_onClick(eVent.target: ${eVent.target}\n ${eVent})\n window.«${window.name}»\n location.origin: ${location.origin}`);
-
-					let clone = getLightboxCopy(eVent.target); // - создать и получить копию/клона DOM-элемента - узел lightbox
-					if (clone) { // TODO: (!)
-						console.log(`I) function lightbox_onClick(eVent: ${eVent.target.tagName} / ${eVent.target.classList}):\n clone.classList: ${clone.classList}\n 1) ${clone}\n 2) typeof(clone): ${typeof(clone)}\n 3) clone === Object(clone): ${clone === Object(clone)}`); // x -
+				let retVal = false;
+				let clone = getLightboxCopy(eVent.target); // создать и получить копию/клона DOM-элемента - узел lightbox
+				if (clone) {
+					// retVal = setItemSessionStorage("lightbox", clone);
+					retVal = true;
+				} else {
+					let lbx = getLightbox(eVent.target);
+					clone = getLightboxCopy(lbx); // создать и получить копию/клона DOM-элемента - узел lightbox
+					if (clone) {
+						// retVal = setItemSessionStorage("lightbox", clone);
+						retVal = true;
 					} else {
-						let lbx = getLightbox(eVent.target);
-						clone = getLightboxCopy(lbx); // - создать и получить копию/клона DOM-элемента - узел lightbox
-
-						console.log(`II) function lightbox_onClick(eVent: ${eVent.target.tagName} / ${eVent.target.classList}):\n clone = getLightboxCopy(eVent.target)\n clone.classList: ${clone.classList}\n 1) ${lbx}\n 2) typeof(lbx): typeof(lbx)\n 3) ${lbx === Object(lbx)}\n lbx.classList: ${lbx.classList}\n---\n clone: 1) ${clone}\n 2) typeof(clone): ${typeof(clone)}\n 3) clone === Object(clone): ${clone === Object(clone)}`); // x -
+						console.error(`(!) Косяк: не удалось осуществить вывод текущего элемента в гл.окне - не найден элемент:\n function lightbox_onClick(eVent: ${eVent}): window.«${window.name}» | location.origin: ${location.origin}:\n clone: ${clone}`);
+						alert(`(!) Косяк: не удалось осуществить вывод текущего элемента в гл.окне - не найден элемент, см.консоль.`);
 					}
-					// (i) нельзя передать узел/копию DOM-элемента в другое окно/фрейм, см.спецификацию
-					// x // let clone = getLightboxCopy(e.target);
-					// clone = clone.innerHTML;
-					// x // let clone = JSON.parse(JSON.stringify(getLightboxCopy(e.target))) // (i) JSON-форматированный и/или сериализованный объект
-					// x let deepCopy = structuredClone(getLightboxCopy(e.target));
-					// let clone = deepCopy.innerHTML;
-
-					let msg = {
-						value: "setImageFullScreen",
-						clone: clone
-					};
-					window.top.postMessage(msg, '*'); // (?) когда звездочка - это плохое использование в целях безопасности от взлома страниц
+				}
+				if (location.origin === "file://" || location.origin === "null") { // - получаем элемент lightbox и передаем его в гл.окно
+					// (i) в Firefox origin = "null"
+					// (i)~нельзя передать узел/копию DOM-элемента в другое окно/фрейм, см.спецификацию, поэтому передаем узел в виде строки методом parseFromString() объекта DOMParser()
+					if (retVal) {
+						let msg = {
+							value: "setImageFullScreen",
+							lbxString: clone.outerHTML,
+						};
+						window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
+					}
 				} else { // - вывод текущего lightbox в гл.окне
 					// *проверяем наличие ссылки на файл lightbox.js
 					// **получить скрипт - ссылка на lightbox.js
-					if (getLightboxLink(window.top)) { // (i) если еще ни разу не было ни одного раскрытия скрытого контента на стр.
-						window.top.setImageFullScreen(eVent.target); // - вывод текущего lightbox в гл.окне
+					if (getScript(window.top, "js/lightbox.js")) { // (i) если еще ни разу не было ни одного раскрытия скрытого контента на стр.
+						if (retVal) window.top.setImageFullScreen(clone); // - вывод текущего lightbox в гл.окне
 					} else {
-						let js = setLightboxLink(window.top); // - создать скрипт - ссылка на lightbox.js
-						let id = setInterval(() => {
+						let js = setScript(window.top, "js/lightbox.js"); // - создать скрипт - ссылка на js-файл
+						let idInt = setInterval(() => {
 							if (js) {
-								clearInterval(id);
-								window.top.setImageFullScreen(eVent.target); // - вывод текущего lightbox в гл.окне
+								clearInterval(idInt);
+								if (retVal) window.top.setImageFullScreen(clone); // - вывод текущего lightbox в гл.окне
 							}
 						}, 500);
 					}
@@ -141,13 +158,14 @@ function lightbox_onClick(eVent) {
 		}
 	}
 }
-// (!) lightbox_onAnimationend - удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться:
+// (!) удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться:
 // 'slider-track - для 1-ого/последнего слайда
 // ''img-viewer>.img-item: img-item-center/img-item-left/img-item-right/img-item-up/img-item-down
 function lightbox_onAnimationend(eVent) {
 	eVent.target.style.removeProperty('animation');
+	eVent.target.removeEventListener('animationend', lightbox_onAnimationend, false);
 }
-// (!) setEventHandlersLightbox - создание/удаление обработчиков событий для узла lightbox
+// (!) создание/удаление обработчиков событий для узла.lightbox
 function setEventHandlersLightbox(elem, addOrRemove = "") {
 	// 'elem - lightbox/дочерние элементы
 	// if (addOrRemove === "" && (addOrRemove !== String(addOrRemove) || typeof(addOrRemove) !== "string")) {
@@ -161,29 +179,27 @@ function setEventHandlersLightbox(elem, addOrRemove = "") {
 		alert(`(!) Косяк: не удалось создать/удалить обработчик события - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return false;
 	} else if (!elem.classList.contains('lightbox')) {
-		console.error(`(!) Косяк: не удалось создать/удалить обработчик события - у элемента отсутствует класс, либо класс не установлен:\n function setEventHandlersLightbox(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, addOrRemove: "${addOrRemove}")\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось создать/удалить обработчик события - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось создать/удалить обработчик события - у элемента отсутствует класс, либо класс не определен:\n function setEventHandlersLightbox(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, addOrRemove: "${addOrRemove}")\n elem.classList: ${elem.classList}`);
+		alert(`(!) Косяк: не удалось создать/удалить обработчик события - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return false;
 	}
 	// *добавляем/удаляем обработчики событий
 	if (addOrRemove === "add") {
-		window.addEventListener("resize", lightbox_window_onReSize);
-		elem.addEventListener("animationend", lightbox_onAnimationend);
-		elem.addEventListener("mouseover", lightbox_onMouseover);
-		elem.addEventListener("mouseout", lightbox_onMouseout);
-		elem.addEventListener("keydown", lightbox_onKeydown);
-		elem.addEventListener("click", lightbox_onClick);
+		window.addEventListener('resize', lightbox_window_onReSize, false);
+		elem.addEventListener('animationend', lightbox_onAnimationend, false);
+		elem.addEventListener('mouseover', lightbox_onMouseover, false);
+		elem.addEventListener('keydown', lightbox_onKeydown, false);
+		elem.addEventListener('click', lightbox_onClick, false);
 	} else if (addOrRemove === "remove") {
-		window.removeEventListener("resize", lightbox_window_onReSize);
-		elem.removeEventListener("animationend", lightbox_onAnimationend);
-		elem.removeEventListener("mouseover", lightbox_onMouseover);
-		elem.removeEventListener("mouseout", lightbox_onMouseout);
-		elem.removeEventListener("keydown", lightbox_onKeydown);
-		elem.removeEventListener("click", lightbox_onClick);
+		window.removeEventListener('resize', lightbox_window_onReSize, false);
+		elem.removeEventListener('animationend', lightbox_onAnimationend, false);
+		elem.removeEventListener('mouseover', lightbox_onMouseover, false);
+		elem.removeEventListener('keydown', lightbox_onKeydown, false);
+		elem.removeEventListener('click', lightbox_onClick, false);
 	}
 	return true;
 }
-// (!) getLightbox - получить DOM-элемент - узел lightbox
+// (!) получить DOM-элемент - узел lightbox
 function getLightbox(elem) {
 	let lbx;
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -240,12 +256,12 @@ function getLightbox(elem) {
 		}
 	}
 }
-// (!) hasLightboxVisible - получить значение существования DOM-элемента - узел lightbox
+// (!) проверка видимости DOM-элемента - узел lightbox
 function hasLightboxVisible(elem) {
 	// 'elem - toggle-content
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
-		console.error(`(!) Косяк: не удалось получить значение существования DOM-элемента - узел lightbox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function hasLightboxVisible(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
-		alert(`(!) Косяк: не удалось получить значение существования DOM-элемента - узел lightbox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+		console.error(`(!) Косяк: не удалось проверить видимость DOM-элемента - узел lightbox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function hasLightboxVisible(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
+		alert(`(!) Косяк: не удалось проверить видимость DOM-элемента - узел lightbox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return false;
 	}
 	for (let i = 0; i < elem.children.length; i++) {
@@ -255,9 +271,9 @@ function hasLightboxVisible(elem) {
 	}
 	return false;
 }
-// (!) getLightboxCopy - создать и получить копию/клона DOM-элемента - узел lightbox
-function getLightboxCopy(elem) { // (i) нельзя передать узел/копию DOM-элемента в другое окно/фрейм, см.спецификацию
-	if (typeof (elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
+// (!) создать и получить копию/клона DOM-элемента - узел lightbox
+function getLightboxCopy(elem) {
+	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк: не удалось создать копию/клонировать элемент - узел для просмотра изо.во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function getLightboxCopy(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}`);
 		alert(`(!) Косяк: не удалось создать копию/клонировать элемент - узел для просмотра изображения во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return null;
@@ -275,13 +291,13 @@ function getLightboxCopy(elem) { // (i) нельзя передать узел/�
 			return null;
 		}
 	}
-	// *варианты клонирования - копия узла lightbox:
+	// *варианты клонирования - копия узла:
 	// '.cloneNode() - для копирования внутри того же документа (для клонирования узла из текущего document)
 	// ''.importNode() - для копирования узлов из других документов (для клонирования узла из другого документа) importNode() копирует исходный элемент, не удаляя его
 	// '''.adoptNode() - это еще один метод, который очень похож на importNode() с той разницей, что он удаляет исходный элемент из его родительского DOM. adoptNode() полностью удаляет исходный элемент из его DOM
 	// ''''Object.assign({}, e.target) - вариант клонирования объекта
 	// '''''structuredClone() - глубокое копирование - структурированное клонирование
-	// clone = document.importNode(lbx, true); // - создаем копию lightbox
+	// let clone = document.importNode(lbx, true); // - создаем копию lightbox
 	let clone = lbx.cloneNode(true); // - клонируем lightbox
 	// *обрабатываем клон
 	if (clone.hasAttribute('num')) {clone.removeAttribute('num');} // - убираем аттрибут "num"
@@ -322,17 +338,21 @@ function setLightboxRemove(elem) {
 			lbx = document.activeElement;
 		} else if (document.activeElement.classList.contains('lightbox-btn-close')) {
 			lbx = getLightbox(document.activeElement);
-			if (lbx === null || typeof(lbx) === "undefined") {
+			if (lbx === null && lbx !== Object(lbx)) {
 				lbx = document.querySelector('.lightbox');
-				if (typeof(lbx) === "undefined" || lbx === null && (lbx === Object(lbx) || typeof(lbx) === "object")) {
+				if (lbx === null && lbx !== Object(lbx)) {
 					let btn = document.querySelector('.lightbox-btn-close');
-					if (typeof(btn) === "undefined" || btn === null && (btn === Object(btn) || typeof(btn) === "object")) {
+					if (btn === null && btn !== Object(btn)) {
 						console.error(`(!) Косяк: не удалось закрыть окно просмотра изо.во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setLightboxRemove(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n document.activeElement: ${document.activeElement}\n lbx: typeof(${typeof(lbx)}) / Object(${Object(lbx)}) / ${lbx}\n btn: typeof(${typeof(btn)}) / Object(${Object(btn)}) / ${btn}`);
 						alert(`(!) Косяк: не удалось закрыть окно просмотра изображений во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 						return;
 					} else {
-						lbx = getLightbox(btn); // - получить DOM-элемент - узел lightbox
-						if (lbx === null || typeof(lbx) === "undefined") {return;}
+						lbx = getLightbox(btn); // получить DOM-элемент - узел lightbox
+						if (lbx === null && lbx !== Object(lbx)) {
+							console.error(`(!) Косяк: не удалось закрыть окно просмотра изо.во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setLightboxRemove(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n document.activeElement: ${document.activeElement}\n lbx: typeof(${typeof(lbx)}) / Object(${Object(lbx)}) / ${lbx}\n btn: typeof(${typeof(btn)}) / Object(${Object(btn)}) / ${btn}`);
+							alert(`(!) Косяк: не удалось закрыть окно просмотра изображений во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+							return;
+						};
 					}
 				}
 			}
@@ -341,21 +361,22 @@ function setLightboxRemove(elem) {
 		if (elem.classList.contains('lightbox')) {
 			lbx = elem;
 		} else if (elem.classList.contains('lightbox-btn-close')) {
-			lbx = getLightbox(elem); // - получить DOM-элемент - узел lightbox
-			if (lbx === null || typeof(lbx) === "undefined") {return;}
+			lbx = getLightbox(elem); // получить DOM-элемент - узел lightbox
 		} else {
-			if (!elem.classList.contains('lightbox-btn-close') || !elem.classList.contains('lightbox')) {
-				console.error(`(!) Косяк: не удалось закрыть окно просмотра изо.во весь экран - у элемента отсутствует класс, либо класс не установлен:\n function setLightboxRemove(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n elem.classList.contains('lightbox-btn-close'): ${elem.classList.contains('lightbox-btn-close')}\n elem.classList.contains('lightbox'): ${elem.classList.contains('lightbox')}\n elem.classList: ${elem.classList}`);
-				alert(`(!) Косяк: не удалось закрыть окно просмотра изображений во весь экран - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+			lbx = getLightbox(elem); // получить DOM-элемент - узел lightbox
+			if (lbx === null && lbx !== Object(lbx)) {
+				console.error(`(!) Косяк: не удалось закрыть окно просмотра изо.во весь экран - у элемента отсутствует класс, либо класс не определен:\n function setLightboxRemove(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n elem.classList.contains('lightbox-btn-close'): ${elem.classList.contains('lightbox-btn-close')}\n elem.classList.contains('lightbox'): ${elem.classList.contains('lightbox')}\n elem.classList: ${elem.classList}`);
+				alert(`(!) Косяк: не удалось закрыть окно просмотра изображений во весь экран - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 				return;
 			}
 		}
 	}
-	// '
-	lbx.remove(); // - удаляем узел lightbox
-	setEventHandlersLightbox(lbx, 'remove'); // - создание/удаление обработчиков событий для узла lightbox
+	if (lbx) {
+		lbx.remove(); // удаляем узел lightbox
+		setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
+	}
 }
-// (!) writeImageElement - создать дочерний элемент изо
+// (!) создать дочерний элемент изо
 function writeImageElement(elem) {
 	// 'elem - div lightbox
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -363,8 +384,8 @@ function writeImageElement(elem) {
 		alert(`(!) Косяк: не удалось создать дочерний элемент изображения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return null;
 	} else if (elem.tagName === "DIV" && !elem.classList.contains('lightbox')) {
-		console.error(`(!) Косяк: не удалось создать дочерний элемент изо - у элемента отсутствует класс, либо класс не установлен:\n function writeImageElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
-		alert(`(!) Косяк: не удалось создать дочерний элемент изображения - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось создать дочерний элемент изо - у элемента отсутствует класс, либо класс не определен:\n function writeImageElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
+		alert(`(!) Косяк: не удалось создать дочерний элемент изображения - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return null;
 	}
 	let imgItem = null; // img img-item
@@ -377,7 +398,9 @@ function writeImageElement(elem) {
 		return null
 	}
 	if (imgViewer.children.length === 0) { // - img отсутствует, создаем его из слайдера
-		imgViewer.insertAdjacentHTML('afterbegin', '<img class="img-item" src="' + img.src + '" alt="' + img.alt + '"style="animation-name:img-item-center";>');
+		imgViewer.insertAdjacentHTML('afterbegin', '<img class="img-item" src="' + img.src + '" alt="' + img.alt + '">');
+		// imgViewer.insertAdjacentHTML('afterbegin', '<img class="img-item" src="' + img.src + '" alt="' + img.alt + '" style="animation-name:img-item-center;">'); // или так
+		// imgViewer.insertAdjacentHTML('afterbegin', `<img class="img-item" src="${img.src}" alt="${img.alt}" style="animation-name:img-item-center;">`);
 		// *проверяем наличие пользовательского аттрибута « cap »
 		if (img.hasAttribute('cap')) {
 			txt.innerHTML = img.getAttribute('cap');
@@ -387,7 +410,7 @@ function writeImageElement(elem) {
 		imgItem = elem.querySelector('.img-item');
 	} return imgItem;
 }
-// (!) toggleZoomer - скрыть/отобразить кнопку масштабирование
+// (!) скрыть/отобразить кнопку масштабирование
 function toggleZoomer(elem) {
 	// 'elem - img-item - tagName img
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -395,8 +418,8 @@ function toggleZoomer(elem) {
 		alert(`(!) Косяк: не удалось показать/скрыть кнопку мастабирование элемента в окне просмотра изображения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	} else if (!elem.classList.contains('img-item')) {
-		console.error(`(!) Косяк: не удалось скрыть/отобразить кнопку масштабирование элемента в окне просмотра изо - у элемента отсутствует класс, либо класс не установлен:\n function toggleZoomer(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('img-item'): ${elem.classList.contains('img-item')}\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось показать/скрыть кнопку мастабирование элемента в окне просмотра изображения - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось скрыть/отобразить кнопку масштабирование элемента в окне просмотра изо - у элемента отсутствует класс, либо класс не определен:\n function toggleZoomer(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('img-item'): ${elem.classList.contains('img-item')}\n elem.classList: ${elem.classList}`);
+		alert(`(!) Косяк: не удалось показать/скрыть кнопку мастабирование элемента в окне просмотра изображения - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return;
 	}
 	let lbx = getLightbox(elem);
@@ -417,7 +440,7 @@ function toggleZoomer(elem) {
 		}
 	} else {zoomer.style.display = "none"}
 }
-// (!) toggleZoomerIcon - переключить (+/-) иконку масштабирования
+// (!) переключить (+/-) иконку масштабирования
 function toggleZoomerIcon(elem, typeEvent = "") {
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк: не удалось переключить (+/-) иконку масштабирования - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function toggleZoomerIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}: window."${window.name}", location.origin: ${location.origin}`);
@@ -430,16 +453,17 @@ function toggleZoomerIcon(elem, typeEvent = "") {
 		return;
 	}
 	// 'elem - tagName img:
-	// '.img-item <=>.img-item.img-zoom100 фрейма hmcontent
+	// '.img-item <=>.img-item.img-zoom100 текущ.фрейма
 	// ''.zoomer>.zoom-in <=>.zoom-out гл.окна
 	let lbx = getLightbox(elem); // - lightbox гл.окна
-	if (lbx === null || typeof(lbx) === "undefined") {return;}
-	if (typeEvent !== "mouseover" && typeEvent !== "mouseout") {
-		lbx.scrollIntoView(); // - переход к элементу - не путать с фокусированием
-		if (!(elem.classList.contains('zoom-in') || elem.classList.contains('zoom-out'))) {
-			setFocus(lbx, 'focusIn'); // - фокусировка на lightbox
-		}
-	}
+	if (lbx === null || typeof(lbx) === "undefined") { return; }
+	// (?)~не понятно работает или нет
+	// if (typeEvent !== "mouseover" && typeEvent !== "mouseout") {
+	// 	lbx.scrollIntoView({behavior: "smooth"}); // переход к элементу - не путать с фокусированием {behavior: "smooth", block: "center", inline: "start"}
+	// 	if (!(elem.classList.contains('zoom-in') || elem.classList.contains('zoom-out'))) {
+	// 		setFocus(lbx, 'focusIn'); // фокусировка на lightbox
+	// 	}
+	// }
 	let imgItem = null;
 	if (elem.classList.contains('img-item')) {
 		imgItem = elem;
@@ -490,7 +514,7 @@ function toggleZoomerIcon(elem, typeEvent = "") {
 					}
 				}
 			}
-		} else if (window === self || self !== top && window.name === "hmcontent") { // 'вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
+		} else if (window === self || self !== top && window.name !== "") { // еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
 			if (typeEvent === "mouseover") { // - меняется только иконка
 				// zoom.setAttribute('src', 'icon/zoom-in.png'); // или так
 				zoom.src = "icon/zoom-in.png";
@@ -511,7 +535,7 @@ function toggleZoomerIcon(elem, typeEvent = "") {
 		}
 	}
 }
-// (!) setCursorIcon - установить значок курсора
+// (!) установить значок курсора
 function setCursorIcon(elem) {
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк: не удалось установить значок изображения курсора - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setCursorIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
@@ -527,10 +551,10 @@ function setCursorIcon(elem) {
 		if (elem.style.cursor !== "default") {elem.style.cursor = "default";}
 	}
 }
-// (!) setToggleIcon - переключатель иконки/списка для скрытого контента в теме топика
+// (!) переключатель иконки/списка для скрытого контента в теме топика
 function setToggleIcon(elem = null, btnValue = null) {
-	// 'btnValue - value: true/false input (checkbox)
-	// ''elem - tagName: img/a/any elem (UL/LI/p)..?
+	// 'elem - tagName: img/a/any elem (UL/LI/p)..?
+	// ''btnValue - boolean tagName div.toolbar_box-center>img: idExpandOn/idExpandOff
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		if (btnValue === null || typeof(btnValue) !== "boolean" || btnValue !== Boolean(btnValue)) {
 			console.error(`(!) Косяк: не удалось выполнить изменение иконки-переключателя - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnValue = ${btnValue})`);
@@ -627,8 +651,8 @@ function setToggleIcon(elem = null, btnValue = null) {
 				}
 			}
 		} else { // - если есть глубина
-			// 1) Array.from(chdn.parentElement.children).indexOf(chdn) // получить номер индекса текущего дочернего эл.
-			// 2) Array.prototype.indexOf.call(chdn.parentElement.children, chdn)
+			// 1) Array.from(chdn.parentElement.children).indexOf(chdn); // получить номер индекса текущего дочернего эл.
+			// 2) Array.prototype.indexOf.call(chdn.parentElement.children, chdn);
 			while (!chdn.parentElement.classList.contains('content-text')) {
 				if (chdn.children.length > 0) { // - погружаемся
 					chdn = chdn.firstElementChild; // перезаписываем узел
@@ -724,7 +748,7 @@ function setToggleIcon(elem = null, btnValue = null) {
 				}
 			}
 		}
-	} else { // - кнопка idTextExpandCollapse - для каждого элемента на всей странице
+	} else { // - кнопка idExpandOn/idExpandOff - для всех эл-в на всей странице
 		if (typeof(btnValue) !== "boolean" || btnValue !== Boolean(btnValue)) {
 			console.error(`(!) Косяк - не удалось выполнить изменение иконки - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnValue = ${btnValue})`);
 			alert(`(!) Косяк - не удалось выполнить изменение иконки - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
@@ -780,7 +804,7 @@ function setToggleIcon(elem = null, btnValue = null) {
 		}
 	}
 }
-// (!) toggleInlineElement - переключить встроенный элемент
+// (!) переключить встроенный элемент
 function toggleInlineElement(elem) {
 	// 'elem - tagName a.toggle-inline
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -788,8 +812,8 @@ function toggleInlineElement(elem) {
 		alert(`(!) Косяк: не удалось переключить встроенный элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	} else if (!elem.classList.contains('toggle-inline')) {
-		console.error(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не установлен:\n function toggleInlineElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('toggle-inline'): ${elem.classList.contains('toggle-inline')}\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не определен:\n function toggleInlineElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('toggle-inline'): ${elem.classList.contains('toggle-inline')}\n elem.classList: ${elem.classList}`);
+		alert(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return;
 	}
 	// *меняем состояние отображения span.toggle-content
@@ -800,12 +824,12 @@ function toggleInlineElement(elem) {
 	} else if (elem.nextElementSibling.classList.contains('toggle-content')) {
 		elem.nextElementSibling.classList.toggle('toggle-collapse');
 	} else {
-		console.error(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не установлен:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('toggle-content'): ${elem.classList.contains('toggle-content')}\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не определен:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('toggle-content'): ${elem.classList.contains('toggle-content')}\n elem.classList: ${elem.classList}`);
+		alert(`(!) Косяк: не удалось переключить встроенный элемент - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return;
 	}
 }
-// (!) setReSizeViewerImg - переустановить размер элемента просмотра изо
+// (!) переустановить размер элемента просмотра изо
 function setReSizeViewerImg(elem) {
 	// 'elem - tagName div.lightbox
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
@@ -813,11 +837,26 @@ function setReSizeViewerImg(elem) {
 		alert(`(!) Косяк: не удалось переустановить размер элемента просмотра изображения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	} else if (elem.tagName === "DIV" && !elem.classList.contains('lightbox')) {
-		console.error(`(!) Косяк: не удалось переустановить размер элемента просмотра изо - у элемента отсутствует класс, либо класс не установлен:\n function setReSizeViewerImg(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n window.«${window.name}», location.origin: ${location.origin}:\n elem.tagName: ${elem.tagName}\n elem.classList.contains('lightbox'): ${elem.classList} = ${elem.classList.contains('lightbox')}`);
-		alert(`(!) Косяк: не удалось переустановить размер элемента просмотра изображения - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+		console.error(`(!) Косяк: не удалось переустановить размер элемента просмотра изо - у элемента отсутствует класс, либо класс не определен:\n function setReSizeViewerImg(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n window.«${window.name}», location.origin: ${location.origin}:\n elem.tagName: ${elem.tagName}\n elem.classList.contains('lightbox'): ${elem.classList} = ${elem.classList.contains('lightbox')}`);
+		alert(`(!) Косяк: не удалось переустановить размер элемента просмотра изображения - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 		return;
 	}
 	let lbxImg = elem.querySelector('.lightbox-img');
+	// 'только для топика
+	if (window !== self || self !== top || window !== top && window.name !== "") {
+		// *проверяем внутренний размер окна без полос прокрутки
+		if (document.documentElement.clientHeight < 530) { // удаляем стиль
+			elem.style.removeProperty('height');
+			if (lbxImg === null) {
+				console.error(`(!) Косяк: не удалось переустановить размер элемента просмотра изо - не найден элемент:\n function setReSizeViewerImg(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n window.«${window.name}», location.origin: ${location.origin}:\n lbxImg: typeof(${typeof(lbxImg)}) / Object(${Object(lbxImg)}) / ${lbxImg}, lbxImg.classList: ${lbxImg.classList}`);
+				alert(`(!) Косяк: не удалось переустановить размер элемента просмотра изображения - не найден элемент, см.консоль.`);
+				return;
+			}
+			lbxImg.style.removeProperty('height');
+			return;
+		}
+	}
+	// ''как для гл.окна, так и в топике
 	let txt = elem.querySelector('.img-title');
 	let sldr = elem.querySelector('.img-slider');
 	if (lbxImg === null || txt === null) {
@@ -829,276 +868,525 @@ function setReSizeViewerImg(elem) {
 	let lbxHeight = null;
 	// *отталкиваемся от высоты видимой части контента, т.е.высота.lightbox = высоте idTopicBody.clientHeight - видимая часть контента на стр.
 	let idTpCnt = document.getElementById('idTopicBody');
-	if (idTpCnt === null) { // - копия lightbox создана в глобальном окне, а не открыта отд.окном
-		lbxHeight = getValueFullSizeProperty(elem).height; // - получить полноразмерное значение св-ва
+	if (idTpCnt === null) { // - копия lightbox создана в гл.окне, а не открыта отд.окном
+		// lbxHeight = getValueFullSizeProperty(elem).height; // получить полноразмерное значение св-ва
+		lbxHeight = window.top.document.documentElement.clientHeight;
 	} else { // - lightbox во фрейме или стр.открыта отд.окном
-		lbxHeight = getValueFullSizeProperty(idTpCnt).height; // - получить полноразмерное значение св-ва
+		lbxHeight = getValueFullSizeProperty(idTpCnt).height; // получить полноразмерное значение св-ва
 	}
 	// *минусуем padding.lightbox
 	lbxHeight = lbxHeight - (parseInt(getComputedStyle(elem, null).paddingTop, 10) + parseInt (getComputedStyle(elem, null).paddingBottom, 10));
-	if (window !== top || window.name !== "" && window.name === "hmcontent") {
+	if (window !== self || self !== top || window !== top && window.name !== "") {
 		elem.style.height = lbxHeight + "px";
+	} else { // для lightbox в гл.окне удаляем стиль высоты
+		elem.style.removeProperty('height');
 	}
 	// *определяем высоту у остальных элементов с учетом margin, padding, border, кот.не будут учитываться, т.к.box-sizing для.lightbox-img изменяет алгоритм расчета ширины и высоты элемента
-	let txtHeight = getValueFullSizeProperty(txt).height; // - получить полноразмерное значение св-ва
+	let txtHeight = getValueFullSizeProperty(txt).height; // получить полноразмерное значение св-ва
 	// *если изо.одиночное, чтобы вместо узла DOM элемента не получить « NAN »
 	if (sldr === null) {
 		lbxImg.style.height = lbxHeight - txtHeight + "px";
 	} else {
-		let sldrHeight = getValueFullSizeProperty(sldr).height; // - получить полноразмерное значение св-ва
+		let sldrHeight = getValueFullSizeProperty(sldr).height; // получить полноразмерное значение св-ва
 		lbxImg.style.height = lbxHeight - (txtHeight + sldrHeight) + "px";
 	}
 }
-// (!) toggleDropdownElement - переключить выпадающий элемент
+// (!) переключить выпадающий эл.
 function toggleDropdownElement(elem) {
-	// 'elem - tagName a.toggle-dropdown
+	// x - elem - tagName a.toggle-dropdown
+	// 'elem:
+	// 'div.lightbox (img/video)
+	// ''др.потомок.toggle-content
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
-		console.error(`(!) Косяк: не удалось переключить выпадающий элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
+		console.error("(!) Косяк: не удалось переключить выпадающий элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
 		alert(`(!) Косяк: не удалось переключить выпадающий элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
-	} else if (!elem.classList.contains('toggle-dropdown')) {
-		console.error(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не установлен:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n elem.classList.contains('toggle-dropdown'): ${elem.classList.contains('toggle-dropdown')}\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
-		return;
 	}
-	let el = elem;
-	while (!el.parentElement.classList.contains('content-text')) { // поднимаемся выше до <DIV> id="idContentText"
-		el = el.parentElement;
-		if (el.tagName === "BODY") {
-			console.error(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n el: typeof(${typeof(el)}) / Object(${Object(el)} / ${el}`);
-			alert(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент, см.консоль.`);
-			return;
-		}
-	}
-	let tgl = el.nextElementSibling; // - div.toggle-content
-	if (typeof(tgl) === "undefined" || tgl === null && (tgl === Object(tgl) || typeof(tgl) === "object")) {
-		console.error(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n tgl: typeof(${typeof(tgl)}) / Object(${Object(tgl)} / ${tgl}`);
-		alert(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент, см.консоль.`);
-		return;
-	} else if (!tgl.classList.contains('toggle-content')) {
-		console.error(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не установлен:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n tgl.classList.contains('toggle-content'): ${tgl.classList.contains('toggle-content')}\n tgl.classList: ${tgl.classList}`);
-		alert(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
-		return;
-	}
-	// 'проверяем существование (existence) элемента lightbox
-	if (tgl.querySelector('.lightbox') === null) { // - если скрытый контент - это НЕ изо, а например какой-то текст...
-		tgl.classList.toggle('toggle-collapse');
-	} else { // *в lightbox's ищем аттрибут "num", сверяя его с аттрибутом текущ.эл.tagName a
-		for (let i = 0; i < tgl.children.length; i++) {
-			if (tgl.children[i].classList.contains('lightbox')) {
-				let lbx = tgl.children[i];
-				let imgItem = lbx.querySelector('.img-item');
-				if (lbx.hasAttribute('num')) { // *в lightbox's ищем аттрибут "num", сверяя его с аттрибутом текущ.эл.tagName a
-					if (+lbx.getAttribute('num') === +elem.getAttribute('num')) {
-						if (lbx.querySelectorAll('.lightbox-img').length > 0) { // - изо
-							if (lbx.classList.contains('toggle-collapse')) { // - отображаем
-								// 'проверяем существование (existence) элемента.img-item в.img-viewer
-								if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
-									if (lbx.querySelector('.img-slider')) { // - если есть слайдер
-										imgItem = writeImageElement(lbx); // создать дочерний элемент изо.в текущем.lightbox
-									} else {
-										console.error(`(!) Косяк: не удалось получить элемент с классом.img-item/.img-slider для одиночного.lightbox:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n imgItem: typeof(${typeof(imgItem)}) / Object(${Object(imgItem)} / ${imgItem}`);
-										alert(`(!) Косяк: не удалось получить элемент с классом.img-item для одиночного.lightbox, см.консоль.`);
-									}
-								}
-								toggleZoomer(imgItem); // скрыть/отобразить кнопку масштабирование
-								setCursorIcon(imgItem); // установить значок курсора
-								lbx.classList.remove('toggle-collapse'); // отображаем.lightbox
-								tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
-								// (i) переустанавливаем размер только после того, как будет отображен сам div.toggle-content
-								setReSizeViewerImg(lbx); // переустановить размер элемента просмотра изо
-								setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
-								// *анимируем появление/переключение по изо
-								imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
-								// imgItem.style.animationName = "img-item-center"; // или так
-								// imgItem.setAttribute('style', 'animation-name: img-item-center');
-								setFocus(lbx, 'focusIn'); // фокусировка на.lightbox
-							} else { // - скрываем
-								setFocus(lbx, 'focusOut'); // фокусировка на.lightbox
-								lbx.classList.add('toggle-collapse'); // скрываем.lightbox
-								setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
-								// *проверяем видимость др.lightbox's, кот.вложенны в.toggle-content для текущего абзаца, если есть хотя бы 1 раскрытый.lightbox,.toggle-content остается видимым
-								if (hasLightboxVisible(tgl)) {
-									tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
-								} else {
-									tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
-								}
-							}
-						} else if (lbx.querySelectorAll('.lightbox-video').length > 0) { // - видео
-							if (lbx.classList.contains('toggle-collapse')) { // - отображаем
-								lbx.classList.remove('toggle-collapse');
-								tgl.classList.remove('toggle-collapse');
-								setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
-								setFocus(lbx, 'focusIn'); // фокусировка на.lightbox
-								// (i) для tagName a, чтобы сработал scrollIntoView() надо использовать отмену действия браузером по умолчанию - preventDefault(), см.событие keydown в lightbox, с использованием св-ва tabIndex = "0" элементов, не имеющих автофокусировку
-								lbx.scrollIntoView(); // переход к элементу - не путать с фокусированием
-							} else { // - скрываем
-								setFocus(lbx, 'focusOut'); // фокусировка на.lightbox
-								lbx.classList.add('toggle-collapse');
-								setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
-								// *проверяем видимость др.lightbox's, кот.вложенны в.toggle-content для текущего абзаца, если есть хотя бы 1 раскрытый.lightbox,.toggle-content остается видимым
-								if (hasLightboxVisible(tgl)) {
-									tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
-								} else {
-									tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
-								}
-							}
-						} break;
-					}
-				} else { // - одиночный.lightbox или забыли добавить аттрибут num
-					if (lbx.querySelectorAll('.lightbox-img').length > 0) { // - изо
-						if (lbx.classList.contains('toggle-collapse')) { // - отображаем
-							// 'проверяем существование (existence) элемента.img-item в.img-viewer
-							if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
-								if (lbx.querySelector('.img-slider')) { // - если есть слайдер
-									imgItem = writeImageElement(lbx); // создать дочерний элемент изо.в текущем.lightbox
-								} else {
-									console.error(`(!) Косяк: не удалось получить элемент с классом.img-item/.img-slider для одиночного.lightbox:\n function toggleDropdownElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n imgItem: typeof(${typeof(imgItem)}) / Object(${Object(imgItem)} / ${imgItem}`);
-									alert(`(!) Косяк: не удалось получить элемент с классом.img-item для одиночного.lightbox, см.консоль.`);
-								}
-							}
-							toggleZoomer(imgItem); // скрыть/отобразить кнопку масштабирование
-							setCursorIcon(imgItem); // установить значок курсора
-							lbx.classList.remove('toggle-collapse');
-							tgl.classList.remove('toggle-collapse');
-							// (i) переустанавливаем размер только после того, как будет отображен сам div.toggle-content
-							setReSizeViewerImg(lbx); // переустановить размер элемента просмотра изо
-							setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
-							// *анимируем появление/переключение по изо
-							imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
-							// imgItem.style.animationName = "img-item-center"; // или так
-							// imgItem.setAttribute('style', 'animation-name: img-item-center');
-							setFocus(lbx, 'focusIn'); // - фокусировка на.lightbox
-							// (i) для tagName a, чтобы сработал scrollIntoView() надо использовать отмену действия браузером по умолчанию - preventDefault(), см.событие keydown в lightbox, с использованием св-ва tabIndex = "0" элементов, не имеющих автофокусировку
-							lbx.scrollIntoView(); // переход к элементу - не путать с фокусированием
-						} else { // - скрываем
-							setFocus(lbx, 'focusOut'); // фокусировка на.lightbox
-							lbx.classList.add('toggle-collapse');
-							setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
-							// *проверяем видимость др.lightbox's, кот.вложенны в.toggle-content для текущего абзаца, если есть хотя бы 1 раскрытый.lightbox,.toggle-content остается видимым
-							if (hasLightboxVisible(tgl)) {
-								tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
-							} else {
-								tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
-							}
-						}
-					} else if (lbx.querySelectorAll('.lightbox-video').length > 0) { // - видео
-						if (lbx.classList.contains('toggle-collapse')) { // - отображаем
-							lbx.classList.remove('toggle-collapse');
-							tgl.classList.remove('toggle-collapse');
-							setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
-							setFocus(lbx, 'focusIn'); // фокусировка на.lightbox
-							// (i) для tagName a, чтобы сработал scrollIntoView() надо использовать отмену действия браузером по умолчанию - preventDefault(), см.событие keydown в lightbox, с использованием св-ва tabIndex = "0" элементов, не имеющих автофокусировку
-							lbx.scrollIntoView(); // переход к элементу - не путать с фокусированием
-						} else { // - скрываем
-							setFocus(lbx, 'focusOut'); // фокусировка на.lightbox
-							lbx.classList.add('toggle-collapse');
-							setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
-							// *проверяем видимость др.lightbox's, кот.вложенны в.toggle-content для текущего абзаца, если есть хотя бы 1 раскрытый.lightbox,.toggle-content остается видимым
-							if (hasLightboxVisible(tgl)) {
-								tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
-							} else {
-								tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
-							}
-						}
+	// else if (!elem.classList.contains('lightbox')) { // x -
+	// 	console.error("(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не определен:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n elem.classList: ", elem.classList);
+	// 	alert(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
+	// 	return;
+	// } // x -
+
+	let tgl = elem.parentElement;
+	if (tgl.hasAttribute('class')) {
+		if (!tgl.classList.contains('toggle-content')) {
+			while (!el.parentElement.classList.contains('content-text')) { // поднимаемся выше до <DIV> id="idContentText"
+				tgl = tgl.parentElement;
+				if (tgl.tagName === "BODY") {
+					console.error("(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n tgl: ", tgl);
+					alert(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент, см.консоль.`);
+					return;
+				} else if (tgl.hasAttribute('class')) {
+					if (tgl.classList.contains('toggle-content')) {
+						break;
 					}
 				}
 			}
 		}
 	}
-}
-// (!) setToggleElement - установить элемент переключения скрытого контента - развернуть/свернуть скрытый контент
-function setToggleElement(elem = null, btnChecked = null) {
-	// 'elem - tagName a
-	// ''elem - tagName img
-	// '''btnChecked - boolean input (checkbox)
-	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) { // *работаем по всем элементам на стр.
-		if (btnChecked === null || typeof(btnChecked) !== "boolean" || btnChecked !== Boolean(btnChecked)) {
-			console.error(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnChecked: ${btnChecked})`);
-			alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
-			return;
+
+	// let tgl = el.nextElementSibling; // div.toggle-content // x -
+	// if (typeof(tgl) === "undefined" || tgl === null && (tgl === Object(tgl) || typeof(tgl) === "object")) {
+	// 	console.error("(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n tgl: ", tgl);
+	// 	alert(`(!) Косяк: не удалось переключить выпадающий элемент - не найден элемент, см.консоль.`);
+	// 	return;
+	// } else if (!tgl.classList.contains('toggle-content')) {
+	// 	console.error("(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не определен:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n tgl.classList: ", tgl.classList);
+	// 	alert(`(!) Косяк: не удалось переключить выпадающий элемент - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
+	// 	return;
+	// } // x -
+	function setToggleLightbox(lbx) {
+		if (lbx.querySelectorAll('.lightbox-img').length > 0) { // - изо
+			if (lbx.classList.contains('toggle-collapse')) { // - отображаем
+				// setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
+				// 'проверяем существование (existence) элемента.img-item в.img-viewer
+				let imgItem = lbx.querySelector('.img-item');
+				if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
+					if (lbx.querySelector('.img-slider')) { // - если есть слайдер
+						imgItem = writeImageElement(lbx); // создать дочерний элемент изо.в текущем.lightbox
+					} else {
+						console.error("(!) Косяк: не удалось получить элемент с классом.img-item/.img-slider для одиночного.lightbox:\n function toggleDropdownElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "imgItem: ", imgItem);
+						alert(`(!) Косяк: не удалось получить элемент с классом.img-item для одиночного.lightbox, см.консоль.`);
+					}
+				}
+				toggleZoomer(imgItem); // скрыть/отобразить кнопку масштабирование
+				setCursorIcon(imgItem); // установить значок курсора
+				lbx.classList.remove('toggle-collapse'); // отображаем.lightbox
+				lbx.tabIndex = "0"; // для возможности перевести фокус
+				tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
+				// (i) переустанавливаем размер только после того, как будет отображен сам div.toggle-content
+				setReSizeViewerImg(lbx); // переустановить размер элемента просмотра изо
+				// *анимируем появление/переключение по изо
+				imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
+				// imgItem.style.animationName = "img-item-center"; // или так
+				// imgItem.setAttribute('style', 'animation-name: img-item-center');
+			} else { // - скрываем
+				lbx.removeAttribute('tabIndex');
+				// setFocus(lbx, 'focusOut'); // фокусировка на.узел эл. // перенесено в setToggleElement()
+				lbx.classList.add('toggle-collapse'); // скрываем.lightbox
+				// setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
+				// *проверяем видимость др.эл.-узлов, вложенных в.toggle-content, если есть хотя бы 1 раскрытый узел,.toggle-content остается видимым
+				// if (hasLightboxVisible(tgl)) { // проверка по каждому узлу в.toggle-content
+				if (tgl.children.length === tgl.querySelectorAll('.lightbox.toggle-collapse').length) {
+					tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
+				} else {
+					tgl.classList.remove('toggle-collapse'); // отображаем div.toggle-content
+				}
+			}
+		} else if (lbx.querySelectorAll('.lightbox-video').length > 0) { // - видео
+			console.info("function setToggleLightbox(lbx: ", lbx, ")");
 		}
+	}
+	if (elem.classList.contains('lightbox')) {
+		setToggleLightbox(elem);
+	} else { // если скрытый контент - это НЕ изо, а например какой-то текст...
+		if (elem.hasAttribute('class')) {
+			tgl.classList.toggle('toggle-collapse');
+		}
+	}
+
+	// 'проверяем существование (existence) элемента lightbox в скрытом контенте
+	// if (tgl.querySelector('.lightbox') === null) { // - если скрытый контент - это НЕ изо, а например какой-то текст...
+	// 	tgl.classList.toggle('toggle-collapse');
+	// } else { // *в lightbox's сверяем аттрибуты id/"num" с текущ.эл.tagName a
+	// 	let lbx = null;
+	// 	for (let i = 0; i < tgl.children.length; i++) {
+	// 		if (tgl.children[i].hasAttribute('id')) { // *в lightbox's ищем аттрибут "id", сверяя его с аттрибутом текущ.эл.tagName a
+	// 			// const hash = elem.hash.substring(1).replace(/:/g, ""); // др.вар.
+	// 			const hash = elem.href.slice(elem.href.lastIndexOf("#") + 1);
+	// 			if (hash === tgl.children[i].id) {
+	// 				lbx = tgl.children[i];
+	// 				break;
+	// 			}
+	// 		} else if (tgl.children[i].classList.contains('lightbox')) { // ~надо исключить исп.аттрибута "num"
+	// 			if (tgl.children[i].hasAttribute('num')) { // *в lightbox's ищем аттрибут "num", сверяя его с аттрибутом текущ.эл.tagName a
+	// 				if (+tgl.children[i].getAttribute('num') === +elem.getAttribute('num')) {
+	// 					lbx = tgl.children[i];
+	// 					break;
+	// 				}
+	// 			} else { // - одиночный.lightbox или отсутствует аттрибут num
+	// 				lbx = tgl.children[i];
+	// 			}
+	// 		}
+	// 	}
+	// 	setToggleLightbox(lbx);
+	// }
+}
+// (!) установить элемент переключения скрытого контента - развернуть/свернуть скрытый контент
+function setToggleElement(elem) {
+	// (i)(!) для неск-их сгруппированных скрытых контентов в одном текущем абзаце работает принцип переключателя
+	// elem - tagName a/img //~null (для кн.div.toolbar_box-center>img: idExpandOn/idExpandOff)
+	if (!elem === null && !elem.classList.contains('toggle-icon') && !elem.classList.contains('toggle-inline') && !elem.classList.contains('toggle-dropdown')) {
+		console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
+		alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+		return;
+	}
+	function getToggleNode(item) {
+		if (item === null && item !== Object(item)) {
+			console.error("(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function getToggleNode(item: ", item, "): window.«", window.name, "», location.origin: ", location.origin);
+			alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+			return null;
+		}
+		if (item.hasAttribute('class')) {
+			if (item.classList.contains('toggle-icon') || item.classList.contains('toggle-dropdown') || item.classList.contains('toggle-inline')) { // a/img
+				let el = item;
+				while (!el.parentElement.classList.contains('content-text')) { // поднимаемся выше до <DIV> id="idContentText"
+					el = el.parentElement;
+					if (el.tagName === "BODY") {
+						console.error("(!) Косяк: не удалось получить узел скрытого контента - не найден элемент:\n function getToggleNode(item: ", item, "): window.«", window.name, "», location.origin: ", location.origin, "\n el: ", el);
+						alert(`(!) Косяк: не удалось получить узел скрытого контента - не найден элемент, см.консоль.`);
+						break;
+					}
+				}
+				if (el.nextElementSibling.classList.contains('toggle-content')) {
+					return el.nextElementSibling;
+				}
+			} else { // потомок.toggle-content - lightbox
+				let el = item;
+				while (!el.parentElement.classList.contains('content-text')) { // поднимаемся выше до <DIV> id="idContentText"
+					el = el.parentElement;
+					if (el.tagName === "BODY") {
+						console.error("(!) Косяк: не удалось получить узел скрытого контента - не найден элемент:\n function getToggleNode(item: ", item, "): window.«", window.name, "», location.origin: ", location.origin, "\n el: ", el);
+						alert(`(!) Косяк: не удалось получить узел скрытого контента - не найден элемент, см.консоль.`);
+						break;
+					}
+				}
+				if (el.hasAttribute('class')) {
+					if (el.classList.contains('toggle-content')) {
+						return el;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	function setFocusLoss(el = document) {
+		let list = null;
+		if (el === document) {
+			list = el.getElementById('idTopicBody').querySelectorAll('.toggle-collapse[tabIndex="0"]'); // NodeList
+			if (list.length === 0) return;
+		} else {
+			if (el.hasAttribute('class')) {
+				if (el.classList.contains('toggle-content')) {
+					list = el.querySelectorAll('.toggle-collapse[tabIndex="0"]'); // NodeList
+					if (list.length === 0) return;
+				} else {
+					const tgl = getToggleNode(el);
+					if (tgl !== null && tgl === Object(tgl)) {
+						list = tgl.querySelectorAll('.toggle-collapse[tabIndex="0"]'); // NodeList
+						if (list.length === 0) return;
+					}
+				}
+			}
+		}
+		if (list !== null && list.length > 0) {
+			list.forEach(item => {
+				if (item.hasAttribute('tabIndex')) { // наличие аттрибута в теге html
+					item.removeAttribute('tabIndex');
+				}
+			});
+		}
+	}
+	// '
+	if (elem === null) { // ~работаем по всем элементам на стр.
 		// 'toggle-content - tagName: div/span; lightbox's - tagName div; toggle-dropdown/toggle-inline - tagName a; toggle-icon - tagName img
 		let elems = document.getElementById('idTopicBody').querySelectorAll('.toggle-content');
 		if (elems.length === 0) {
-			console.error(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден элемент:\n function setToggleElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnChecked: ${btnChecked}):\n elems: typeof(${typeof(elems)}) / Object(${Object(elems)}) / ${elems}`);
-			alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден элемент, см.консоль.`);
+			console.info("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден(-ы) элемент(-ы):\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n ndListShown: ", ndListShown, "\n ndListHidden: ", ndListHidden);
+			alert(`(i) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден(-ы) элемент(-ы), см.консоль.`);
 			return;
 		}
-		if (elems.length > 0) {
-			elems.forEach(tgl => {
-				// 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
-				let lbx = Array.prototype.slice.call(tgl.querySelectorAll('.lightbox')); // 'преобразуем NodeList в массив
-				if (btnChecked) { // - отображаем
-					tgl.classList.remove('toggle-collapse'); // - div/span
-					if (lbx.length > 0) { // if (lbx instanceof(NodeList)
-						for (let i = 0; i < lbx.length; i++) {
-							if (lbx[i].querySelectorAll('.lightbox-img').length > 0) {
-								let imgItem = lbx[i].querySelector('.img-item');
-								// 'проверяем существование (existence) элемента.img-item в.img-viewer
-								if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
-									imgItem = writeImageElement(lbx[i]); // - создать дочерний элемент изо
-								} else {
-									// *анимируем появление/переключение по изо
-									imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
-									// imgItem.style.animationName = "img-item-center"; // или так
-									// imgItem.setAttribute('style', 'animation-name: img-item-center');
-								}
-								setEventHandlersLightbox(lbx[i], 'add'); // - создание/удаление обработчиков событий для узла.lightbox
-								toggleZoomer(imgItem); // - скрыть/отобразить кнопку масштабирование
-								setCursorIcon(imgItem); // - установить значок курсора
-								lbx[i].classList.remove('toggle-collapse');
-								setReSizeViewerImg(lbx[i]); // - переустановить размер элемента просмотра изо
-							} else if (lbx[i].querySelectorAll('.lightbox-video').length > 0) {
-								setEventHandlersLightbox(lbx[i], 'add'); // - создание/удаление обработчиков событий для узла.lightbox
-								lbx[i].classList.remove('toggle-collapse');
+		// elems.forEach(tgl => { // ~классическая проверка
+		// 	if (getButtonExpand().value) { // - скрываем
+		// 		tgl.classList.add('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
+		// 		for (let i = 0; i < tgl.children.length; i++) {
+		// 			if (tgl.children[i].hasAttribute('class')) {
+		// 				if (tgl.children[i].classList.contains('lightbox')) {
+		// 					if (!tgl.children[i].classList.contains('toggle-collapse')) {
+		// 						toggleDropdownElement(tgl.children[i]);
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	} else { // - отображаем
+		// 		tgl.classList.remove('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
+		// 		for (let i = 0; i < tgl.children.length; i++) {
+		// 			if (tgl.children[i].hasAttribute('class')) {
+		// 				if (tgl.children[i].classList.contains('lightbox')) {
+		// 					if (tgl.children[i].classList.contains('toggle-collapse')) {
+		// 						toggleDropdownElement(tgl.children[i]);
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }); // ~классическая проверка
+		let ndListShown = document.getElementById('idContentText').querySelectorAll('.toggle-content:not(.toggle-collapse)'); // список видимых узлов
+		let ndListHidden = document.getElementById('idContentText').querySelectorAll('.toggle-content.toggle-collapse'); // список скрытых узлов
+		if (ndListShown.length === 0 && ndListHidden.length === 0) {
+			console.info("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден(-ы) элемент(-ы):\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n ndListShown: ", ndListShown, "\n ndListHidden: ", ndListHidden);
+			alert(`(i) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден(-ы) элемент(-ы), см.консоль.`);
+			return;
+		}
+		// *проверяем на условие скрыть или отобазить, т.к. в toggleDropdownElement() переключение происходит логически
+		elems.forEach(tgl => {
+			if (ndListShown.length === 0 || ndListShown.length === ndListHidden.length || ndListShown.length < ndListHidden.length) { // - отображаем
+				tgl.classList.remove('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
+				for (let i = 0; i < tgl.children.length; i++) {
+					if (tgl.children[i].hasAttribute('class')) {
+						if (tgl.children[i].classList.contains('lightbox')) {
+							if (tgl.children[i].classList.contains('toggle-collapse')) {
+								toggleDropdownElement(tgl.children[i]);
 							}
 						}
 					}
-				} else { // - скрываем
-					if (lbx.length > 0) {
-						for (let i = 0; i < lbx.length; i++) {
-							lbx[i].classList.add('toggle-collapse');
-							setEventHandlersLightbox(lbx[i], 'remove'); // - создание/удаление обработчиков событий для узла.lightbox
+				}
+			} else if (ndListHidden.length === 0) { // - скрываем
+				tgl.classList.add('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
+				for (let i = 0; i < tgl.children.length; i++) {
+					if (tgl.children[i].hasAttribute('class')) {
+						if (tgl.children[i].classList.contains('lightbox')) {
+							if (!tgl.children[i].classList.contains('toggle-collapse')) {
+								toggleDropdownElement(tgl.children[i]);
+							}
 						}
 					}
-					tgl.classList.add('toggle-collapse'); // - div/span
 				}
-			});
-		}
+			} else { // test
+				console.log("test:\n", "ndListShown.length === ndListHidden.length: ", ndListShown.length === ndListHidden.length);
+			}
+		});
+
+		// elems.forEach(tgl => { // x -
+			// let lbx = Array.prototype.slice.call(tgl.querySelectorAll('.lightbox')); // преобразуем NodeList в массив // (!) Array.prototype.slice.call - не сработает для IE8
+			// if (lbx.length > 0) { // if (lbx instanceof(NodeList)
+			// 	for (let i = 0; i < lbx.length; i++) {
+			// 		if (lbx[i].querySelectorAll('.lightbox-img').length > 0) {
+			// 			let imgItem = lbx[i].querySelector('.img-item');
+			// 			// 'проверяем существование (existence) элемента.img-item в.img-viewer
+			// 			if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
+			// 				imgItem = writeImageElement(lbx[i]); // создать дочерний элемент изо.в текущем.lightbox
+			// 			} else {
+			// 				// *анимируем появление/переключение по изо
+			// 				imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
+			// 				// imgItem.style.animationName = "img-item-center"; // или так
+			// 				// imgItem.setAttribute('style', 'animation-name: img-item-center');
+			// 			}
+			// 			// setEventHandlersLightbox(lbx[i], 'add'); // создание/удаление обработчиков событий для узла.lightbox
+			// 			toggleZoomer(imgItem); // скрыть/отобразить кнопку масштабирование
+			// 			setCursorIcon(imgItem); // установить значок курсора
+			// 			lbx[i].classList.remove('toggle-collapse');
+			// 			lbx[i].tabIndex = "0"; // для возможности перевести фокус
+			// 			setReSizeViewerImg(lbx[i]); // переустановить размер элемента просмотра изо
+			// 		} else if (lbx[i].querySelectorAll('.lightbox-video').length > 0) {
+			// 			// setEventHandlersLightbox(lbx[i], 'add'); // создание/удаление обработчиков событий для узла.lightbox
+			// 			lbx[i].classList.remove('toggle-collapse');
+			// 			lbx[i].tabIndex = "0"; // для возможности перевести фокус
+			// 		}
+			// 	}
+			// }
+			// if (btnValue) { // - отображаем
+				// 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
+			// 	tgl.classList.remove('toggle-collapse'); // - div/span
+			// 	if (lbx.length > 0) { // if (lbx instanceof(NodeList)
+			// 		for (let i = 0; i < lbx.length; i++) {
+			// 			if (lbx[i].querySelectorAll('.lightbox-img').length > 0) {
+			// 				let imgItem = lbx[i].querySelector('.img-item');
+			// 				// 'проверяем существование (existence) элемента.img-item в.img-viewer
+			// 				if (typeof(imgItem) === "undefined" || imgItem === null && (imgItem === Object(imgItem) || typeof(imgItem) === "object")) {
+			// 					imgItem = writeImageElement(lbx[i]); // создать дочерний элемент изо.в текущем.lightbox
+			// 				} else {
+			// 					// *анимируем появление/переключение по изо
+			// 					imgItem.style.setProperty('animation-name', 'img-item-center'); // или так
+			// 					// imgItem.style.animationName = "img-item-center"; // или так
+			// 					// imgItem.setAttribute('style', 'animation-name: img-item-center');
+			// 				}
+			// 				// setEventHandlersLightbox(lbx[i], 'add'); // создание/удаление обработчиков событий для узла.lightbox
+			// 				toggleZoomer(imgItem); // скрыть/отобразить кнопку масштабирование
+			// 				setCursorIcon(imgItem); // установить значок курсора
+			// 				lbx[i].classList.remove('toggle-collapse');
+			// 				lbx[i].tabIndex = "0"; // для возможности перевести фокус
+			// 				setReSizeViewerImg(lbx[i]); // переустановить размер элемента просмотра изо
+			// 			} else if (lbx[i].querySelectorAll('.lightbox-video').length > 0) {
+			// 				// setEventHandlersLightbox(lbx[i], 'add'); // создание/удаление обработчиков событий для узла.lightbox
+			// 				lbx[i].classList.remove('toggle-collapse');
+			// 				lbx[i].tabIndex = "0"; // для возможности перевести фокус
+			// 			}
+			// 		}
+			// 	}
+			// } else { // - скрываем
+			// 	if (lbx.length > 0) {
+			// 		for (let i = 0; i < lbx.length; i++) {
+			// 			lbx[i].removeAttribute('tabIndex');
+			// 			lbx[i].classList.add('toggle-collapse');
+			// 			// setEventHandlersLightbox(lbx[i], 'remove'); // создание/удаление обработчиков событий для узла.lightbox
+			// 		}
+			// 	}
+			// 	tgl.classList.add('toggle-collapse'); // - div/span
+			// }
+		// });
 		// *перелапачиваем все иконки/списоки, если есть
-		setToggleIcon(null, btnChecked); // - переключатель иконки/списка
-	} else { // *работаем с текущим элементом - на кот.кликнули
+		setToggleIcon(null, getButtonExpand().value); // переключатель иконки/списка
+		setFocusLoss();
+	} else { // ~работаем с текущим элементом - на кот.кликнули
 		if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
-			console.error(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnChecked: ${btnChecked})`);
+			console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
 			alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 			return;
 		}
+		let arr = [];
 		if (elem.tagName === "A") {
 			if (elem.classList.contains('toggle-inline')) { // - встроенный переключатель
-				toggleInlineElement(elem); // - переключить встроенный элемент
+				toggleInlineElement(elem); // переключить встроенный элемент
 			} else if (elem.classList.contains('toggle-dropdown')) { // - выпадающий переключатель
-				toggleDropdownElement(elem); // - переключить выпадающий элемент
+				// x - toggleDropdownElement(elem); // переключить выпадающий эл.
+				// проверка наличия якоря
+				// getAttribute если (# + ...) вернет string || null если (#)
+				if (elem.hash !== "" && elem.hash.length > 0 && elem.getAttribute('hash') !== "") {
+					const hash = elem.href.slice(elem.href.lastIndexOf("#") + 1);
+					if (hash !== "" && hash.length > 0) { // ~НЕ заглушка
+						const lbx = document.getElementById(hash);
+						if (lbx !== null && lbx === Object(lbx)) {
+							arr.push(lbx);
+							toggleDropdownElement(lbx); // переключить выпадающий эл.
+						} else {
+							console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n hash: ", hash, "lbx: ", lbx, "arr: ", arr);
+							alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент, см.консоль.`);
+							return;
+						}
+					}
+				}
 			} else {
-				console.error(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не установлен:\n function setToggleElement(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnChecked: ${btnChecked}):\n elem.classList: ${elem.classList}`);
-				alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
+				console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не определен:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n elem.classList: ", elem.classList);
+				alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
 				return;
 			}
-		} else if (elem.tagName === "IMG") { // *в текущем абзаце отображаем/скрываем каждый скрытый контент
-			let links = elem.parentElement.querySelectorAll('a.toggle-inline, a.toggle-dropdown');
-			links.forEach(link => {
-				if (link.classList.contains('toggle-inline')) {
-					toggleInlineElement(link); // - переключить встроенный элемент
-				} else if (link.classList.contains('toggle-dropdown')) {
-					toggleDropdownElement(link); // - переключить выпадающий элемент
+		} else if (elem.tagName === "IMG") {
+			if (elem.classList.contains('toggle-icon')) {
+				// *если иконка верхнего ур-ня, отображаем/скрываем все скрытые узлы текущего узла и узла.toggle-content
+				// *если иконка вложенного узла, в текущем узле с общей иконкой отображаем/скрываем каждый скрытый узел и в.toggle-content узлы, относящиеся к текущему узлу
+				let links = elem.parentElement.querySelectorAll('a.toggle-inline, a.toggle-dropdown');
+				if (links.length > 0) {
+					links.forEach(lnk => {
+						if (lnk.classList.contains('toggle-inline')) {
+							toggleInlineElement(lnk); // переключить встроенный элемент
+						} else if (lnk.classList.contains('toggle-dropdown')) {
+							// x - toggleDropdownElement(lnk); // переключитй выпадающие эл.
+							// проверка наличия якоря
+							// getAttribute если (# + ...) вернет string || null если (#)
+							if (lnk.hash !== "" && lnk.hash.length > 0 && lnk.getAttribute('hash') !== "") {
+								const hash = lnk.href.slice(lnk.href.lastIndexOf("#") + 1);
+								if (hash !== "" && hash.length > 0) { // ~НЕ заглушка
+									const lbx = document.getElementById(hash);
+									if (lbx !== null && lbx === Object(lbx)) {
+										arr.push(lbx);
+										toggleDropdownElement(lbx); // переключитй выпадающие эл.
+									} else {
+										console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n hash: ", hash, "lbx: ", lbx, "arr: ", arr);
+										alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент, см.консоль.`);
+										return;
+									}
+								}
+							}
+						}
+					});
 				}
-			});
+			} else {
+				console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не определен:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n elem.classList: ", elem.classList);
+				alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
+				return;
+			}
 		}
-		// *перелапачиваем все иконки/списки, если есть
-		setToggleIcon(elem) // - переключатель иконки/списка
+		setToggleIcon(elem) // переключатель иконки/списка // ~перелапачиваем все иконки/списки, если есть
+		// *фокусируемся на узле в.toggle-content
+		if (arr.length > 0) {
+			function setFocusItem(el, goTo = "next") {
+				let retVal = false;
+				const tgl = getToggleNode(el);
+				if (tgl !== null && tgl !== Object(tgl)) {
+					console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент:\n function setFocusItem(el: ", el, "\n goTo: ", goTo, "): window.«", window.name, "», location.origin: ", location.origin, "\n tgl: ", tgl);
+					alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент, см.консоль.`);
+					return;
+				}
+				// получить номер индекса текущего дочернего эл.
+				// 1) Array.from(tgl.children).indexOf(el);
+				// 2) Array.prototype.indexOf.call(el.parentElement.children, el);
+				const index = Array.from(tgl.children).indexOf(el); // номер индекса текущ.эл.(умерация с 0-ля)
+				console.log("index: ", index, " | tgl.children.length: ", tgl.children.length);
+				if (goTo === "next") {
+					for(let i = index + 1; i < tgl.children.length; i++) {
+						if (tgl.children[i].classList.contains('toggle-collapse')) {
+							if (tgl.children[i].hasAttribute('tabIndex')) { // наличие аттрибута в теге html
+								tgl.children[i].removeAttribute('tabIndex');
+							}
+						} else {
+							if (tgl.children[i].hasAttribute('class')) {
+								if (tgl.children[i].classList.contains('lightbox')) {
+									// tgl.children[i].focus({ focusVisible: false }); // true - по умолчанию
+									setFocus(tgl.children[i], 'focusIn'); // фокусировка на.узел эл.
+									retVal = true;
+									break;
+								}
+							}
+						}
+					}
+				} else if (goTo === "prev") {
+					for(let i = index - 1; i >= 0; i--) {
+						if (tgl.children[i].classList.contains('toggle-collapse')) {
+							if (tgl.children[i].hasAttribute('tabIndex')) { // наличие аттрибута в теге html
+								tgl.children[i].removeAttribute('tabIndex');
+							}
+						} else {
+							if (tgl.children[i].hasAttribute('class')) {
+								if (tgl.children[i].classList.contains('lightbox')) {
+									// tgl.children[i].focus({ focusVisible: false }); // true - по умолчанию
+									setFocus(tgl.children[i], 'focusIn'); // фокусировка на.узел эл.
+									retVal = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+				if (retVal) return retVal;
+				if (goTo === "next") {
+					return setFocusItem(el, "prev");
+				} else if (goTo === "prev") {
+					return retVal;
+				}
+				return retVal;
+			}
+			if (arr.length === 1) {
+				if (arr[0].hasAttribute('class')) {
+					if (arr[0].classList.contains('toggle-collapse')) {
+						// setFocus(arr[0], 'focusOut'); // фокусировка на.узел эл.
+						// *проверяем видимость др.эл.-узлов, вложенных в.toggle-content, если есть хотя бы 1 раскрытый узел,.toggle-content остается видимым, и если есть узел эл.для фокусирования переключаемся на узел, лежащий до/после текущего
+						setFocusItem(arr[0]);
+					} else {
+						setFocus(arr[0], 'focusIn'); // фокусировка на.узел эл.
+						// arr[0].scrollIntoView({ behavior: "smooth" }); // переход к элементу - не путать с фокусированием {behavior: "smooth", block: "center", inline: "start"} // ~без этого тоже скролится
+					}
+				}
+				setFocusLoss(arr[0].parentElement);
+			} else {
+				if (arr[arr.length - 1].hasAttribute('class')) {
+					if (arr[arr.length - 1].classList.contains('toggle-collapse')) {
+						// setFocus(arr[arr.length - 1], 'focusOut'); // фокусировка на.узел эл.
+						// *проверяем видимость др.эл.-узлов, вложенных в.toggle-content, если есть хотя бы 1 раскрытый узел,.toggle-content остается видимым, и если есть узел эл.для фокусирования переключаемся на узел, лежащий до/после текущего
+						setFocusItem(arr[arr.length - 1]);
+					} else {
+						setFocus(arr[arr.length - 1], 'focusIn'); // фокусировка на.узел эл.
+						// (i) для tagName a, чтобы сработал scrollIntoView() надо использовать отмену действия браузером по умолчанию - preventDefault(), см.событие keydown в lightbox, с использованием св-ва tabIndex = "0" элементов, не имеющих автофокусировку
+						// arr[arr.length - 1].scrollIntoView({ behavior: "smooth" }); // переход к элементу - не путать с фокусированием {behavior: "smooth", block: "center", inline: "start"} // ~без этого тоже скролится
+					}
+				}
+				setFocusLoss(arr[arr.length - 1].parentElement);
+			}
+		}
 	}
 }
-// (!) setImageCurrent - установить изо.текущим
+// (!) установить изо.текущим
 function setImageCurrent(elem) {
 	// 'elem - tagName img:.slider-item <=>.slider-item.slider-current
 	let lbx;
@@ -1113,8 +1401,11 @@ function setImageCurrent(elem) {
 			if (lbx === null) { return };
 		}
 	}
-	lbx.scrollIntoView(); // - переход к элементу - не путать с фокусированием
-	setFocus(lbx, 'focusIn'); // - фокусировка на.lightbox
+	// (?)~не понятно работает или нет
+	// lbx.scrollIntoView({behavior: "smooth"}); // переход к элементу - не путать с фокусированием {behavior: "smooth", block: "center", inline: "start"}
+	// setFocus(lbx, 'focusIn'); // фокусировка на.узел эл.
+
+
 	let img = lbx.querySelector('.img-item'); // img-viewer>img - это slider-current в слайдере lightbox
 	let txt = lbx.querySelector('.img-title');
 	let sldr = lbx.querySelector('.slider-current');
@@ -1153,7 +1444,7 @@ function setImageCurrent(elem) {
 		} else {zoomer.style.display = "none"}
 	}
 }
-// (!) goToImage - переключение по изо.в.lightbox
+// (!) переключение по изо.в.lightbox
 function goToImage(elem, keyEvent = "") {
 	// *elem - tagName div:
 	// '.lightbox
@@ -1177,14 +1468,18 @@ function goToImage(elem, keyEvent = "") {
 			if (lbx === null) { return; }
 		}
 	}
-	if (typeof(keyEvent) === "undefined" || keyEvent !== String(keyEvent) || typeof(keyEvent) !== "string") { // - может оставаться пустой строкой
+	if (typeof(keyEvent) === "undefined" || keyEvent !== String(keyEvent) || typeof(keyEvent) !== "string") { // (i) может оставаться пустой строкой
 		console.error(`(!) Косяк: не удалось осуществить переключение на другое изо - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToImage(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, keyEvent: "${keyEvent}"): window."${window.name}", location.origin: ${location.origin}`);
 		alert(`(!) Косяк: не удалось осуществить переключение на другое изображение - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	}
+
+	// (?)~не понятно работает или нет
 	// (i) для tagName a, чтобы сработал scrollIntoView() надо использовать отмену действия браузером по умолчанию - preventDefault(), см.событие keydown в lightbox, с использованием св-ва tabIndex = "0" элементов, не имеющих автофокусировку
-	lbx.scrollIntoView(); // - переход к элементу - не путать с фокусированием
-	setFocus(lbx, 'focusIn'); // - фокусировка на lightbox
+	// lbx.scrollIntoView({behavior: "smooth"}); // переход к элементу - не путать с фокусированием {behavior: "smooth", block: "center", inline: "start"}
+	// setFocus(lbx, 'focusIn'); // фокусировка на lightbox
+
+
 	let img = lbx.querySelector('.img-item'); // - img-viewer>img - это slider-current в слайдере lightbox
 	let txt = lbx.querySelector('.img-title');
 	let sldr = lbx.querySelector('.slider-track');
@@ -1391,88 +1686,213 @@ function goToImage(elem, keyEvent = "") {
 		} else {zoomer.style.display = "none"}
 	}
 }
-// (!) setImageFullScreen - создать изо.во весь экран - вывод текущего lightbox в гл.окне
+// (!) создать изо.во весь экран - вывод текущего lightbox в гл.окне
 function setImageFullScreen(elem) {
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк: не удалось создать изо.во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}`);
 		alert(`(!) Косяк: не удалось создать изображение во весь экран - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
-	} else if (!(elem.classList.contains('zoom-in') || elem.classList.contains('lightbox'))) {
-		console.error(`(!) Косяк: не удалось создать изо.во весь экран - у элемента отсутствует класс, либо класс не установлен:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n elem.classList.contains('zoom-in'): ${elem.classList.contains('zoom-in')} / elem.classList.contains('lightbox'): ${elem.classList.contains('lightbox')}\n elem.classList: ${elem.classList}`);
-		alert(`(!) Косяк: не удалось создать изображение во весь экран - у элемента отсутствует класс, либо класс не установлен, см.консоль.`);
-		return;
 	}
-	// 'elem - zoomer>zoom-in - tagName img
-	// ''elem - lightbox - tagName div
-	let clone = getLightboxCopy(elem); // - создать и получить копию/клона DOM-элемента - узел lightbox
-	if (typeof(clone) === "undefined" || clone === null && (clone === Object(clone) || typeof(clone) === "object")) {
-		console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n clone: typeof(${typeof(clone)}) / Object(${Object(clone)} / ${clone}`);
-		alert(`(!) Косяк: не удалось создать изображение во весь экран - не найден элемент, см.консоль.`);
-		return;
-	}
+	// else if (!elem.classList.contains('lightbox')) { // x -
+	// 	console.error(`(!) Косяк: не удалось создать изо.во весь экран - у элемента отсутствует класс, либо класс не определен:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n elem.classList.contains('zoom-in'): ${elem.classList.contains('zoom-in')} / elem.classList.contains('lightbox'): ${elem.classList.contains('lightbox')}\n elem.classList: ${elem.classList}`);
+	// 	alert(`(!) Косяк: не удалось создать изображение во весь экран - у элемента отсутствует класс, либо класс не определен, см.консоль.`);
+	// 	return;
+	// }
 	// *проверяем существование (existence) DOM-элемента - узел lightbox в гл.окне
 	let lbx = window.top.document.body.querySelector('.lightbox');
-		if (lbx !== null && (lbx === Object(lbx) || typeof(lbx) === "object")) { // x typeof(lbx) === "undefined"
+	if (lbx !== null && lbx === Object(lbx)) {
 		lbx.remove();
 		lbx = null;
 	}
 	// *создаем клона lightbox в гл.окне и фокусируемся на нем
-	window.top.document.body.prepend(clone); // - создаем DOM-элемент - узел lightbox
-	setEventHandlersLightbox(clone, 'add'); // - создание/удаление обработчиков событий для узла lightbox
-	setReSizeViewerImg(clone); // - переустановить размер элемента просмотра изо
-	setFocus(clone, 'focusIn'); // - фокусировка на lightbox
-	// (?)'странно, что срабатывает возможность фокусировки для клона, а не для созданного DOM-элемента
-	// x // lbx = window.top.document.body.querySelector('.lightbox');
-	// if (typeof(lbx) === "undefined" || lbx === null && (lbx === Object(lbx) || typeof(lbx) === "object")) {
-	// 	console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n lbx.classList: ${lbx.classList}\n lbx: typeof(${typeof(lbx)}) / Object(${Object(lbx)})\n ${lbx}`);
+	// 'elem:
+	// 'lightbox - tagName div
+	// ''zoomer>zoom-in - tagName img
+	// '''lightbox children's
+	if (elem.classList.contains('lightbox')) {
+		window.top.document.body.prepend(elem); // создаем DOM-элемент - узел lightbox
+	} else if (elem.classList.contains('zoom-in')) {
+		let clone = getLightboxCopy(elem); // создать и получить копию/клона DOM-элемента - узел lightbox
+		if (clone !== null && clone === Object(clone)) {
+			window.top.document.body.prepend(clone); // создаем DOM-элемент - узел lightbox
+		} else {
+			console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n clone: ${clone}`);
+			alert(`(!) Косяк: не удалось создать изображение во весь экран - не найден элемент, см.консоль.`);
+			return;
+		}
+	} else { // lightbox children's
+		let clone = getLightboxCopy(elem); // создать и получить копию/клона DOM-элемента - узел lightbox
+		if (clone !== null && clone === Object(clone)) {
+			window.top.document.body.prepend(clone); // создаем DOM-элемент - узел lightbox
+		} else {
+			console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}\n clone: ${clone}\n document.activeElement: ${document.activeElement}`);
+			alert(`(!) Косяк: не удалось создать изображение во весь экран - не найден элемент, см.консоль.`);
+			return;
+		}
+	}
+	// перепроверяемся
+	lbx = window.top.document.querySelector('.lightbox');
+	if (lbx !== null && lbx === Object(lbx)) {
+		setEventHandlersLightbox(lbx, 'add'); // создание/удаление обработчиков событий для узла.lightbox
+		setReSizeViewerImg(lbx); // переустановить размер элемента просмотра изо
+		setFocus(lbx, 'focusIn');
+	}
+
+	// x -
+	// // 'elem - zoomer>zoom-in - tagName img
+	// // // ''elem - lightbox - tagName div
+	// let clone = getLightboxCopy(elem); // создать и получить копию/клона DOM-элемента - узел lightbox
+	// if (typeof(clone) === "undefined" || clone === null && (clone === Object(clone) || typeof(clone) === "object")) {
+	// 	console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n clone: typeof(${typeof(clone)}) / Object(${Object(clone)} / ${clone}`);
 	// 	alert(`(!) Косяк: не удалось создать изображение во весь экран - не найден элемент, см.консоль.`);
 	// 	return;
 	// }
-	// setEventHandlersLightbox(clone, 'add'); // - создание/удаление обработчиков событий для узла lightbox
-	// setFocus(clone, 'focusIn'); // - фокусировка на lightbox
+	// // *проверяем существование (existence) DOM-элемента - узел lightbox в гл.окне
+	// let lbx = window.top.document.body.querySelector('.lightbox');
+	// 	if (lbx !== null && (lbx === Object(lbx) || typeof(lbx) === "object")) { // x typeof(lbx) === "undefined"
+	// 	lbx.remove();
+	// 	lbx = null;
+	// }
+	// // *создаем клона lightbox в гл.окне и фокусируемся на нем
+	// window.top.document.body.prepend(clone); // создаем DOM-элемент - узел lightbox
+	// setEventHandlersLightbox(clone, 'add'); // создание/удаление обработчиков событий для узла.lightbox
+	// setReSizeViewerImg(clone); // переустановить размер элемента просмотра изо
+	// setFocus(clone, 'focusIn'); // фокусировка на lightbox // (?)'странно, что срабатывает возможность фокусировки для клона, а не для созданного DOM-элемента
+	// // x // lbx = window.top.document.body.querySelector('.lightbox');
+	// // if (typeof(lbx) === "undefined" || lbx === null && (lbx === Object(lbx) || typeof(lbx) === "object")) {
+	// // 	console.error(`(!) Косяк: не удалось создать изо.во весь экран - не найден элемент:\n function setImageFullScreen(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n lbx.classList: ${lbx.classList}\n lbx: typeof(${typeof(lbx)}) / Object(${Object(lbx)})\n ${lbx}`);
+	// // 	alert(`(!) Косяк: не удалось создать изображение во весь экран - не найден элемент, см.консоль.`);
+	// // 	return;
+	// // }
+	// // setEventHandlersLightbox(clone, 'add'); // создание/удаление обработчиков событий для узла.lightbox
+	// // setFocus(clone, 'focusIn'); // фокусировка на lightbox
 }
-// (!) setLightboxHide - скрыть окно просмотра изо - текущий.lightbox
+// (!) скрыть окно просмотра изо/видео - текущий.lightbox
 function setLightboxHide(elem) {
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
-		console.error(`(!) Косяк: не удалось закрыть окно просмотра изо - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n setLightboxHide(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin})`);
+		console.error("(!) Косяк: не удалось переключить выпадающий элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setLightboxHide(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
 		alert(`(!) Косяк: не удалось закрыть окно просмотра изображений - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	}
-	// 'elem - div.lightbox-btn-close
+	// 'elem:
+	// 'div.lightbox
+	// ''children elements:
+	// ''div.lightbox-btn-close &...
 	let lbx = null;
-	let tgl = elem;
-	while (!tgl.classList.contains('toggle-content')) {
-		tgl = tgl.parentElement;
-		if (tgl.tagName === "BODY" || tgl.id === "idContentText") {
-			console.error(`(!) Косяк: не удалось закрыть окно просмотра изо - не найден элемент:\n setLightboxHide(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}):\n tgl: 1) ${tgl}\n 2) typeof(tgl): ${typeof(tgl)}\n 3) Object(tgl): ${Object(tgl)}`);
-			alert(`(!) Косяк: не удалось закрыть окно просмотра изображений - не найден элемент, см.консоль.`);
-			return;
-		} else if (tgl.classList.contains('lightbox')) {
-			lbx = tgl; // запоминаем текущий.lightbox
-			setFocus(lbx, 'focusOut'); // - фокусировка на.lightbox
-			lbx.classList.add('toggle-collapse');
-			setEventHandlersLightbox(lbx, 'remove'); // - создание/удаление обработчиков событий для узла.lightbox
+	let tgl = null;
+	function setToggleNode() {
+		tgl = elem;
+		while (!tgl.classList.contains('toggle-content')) {
+			tgl = tgl.parentElement;
+			if (tgl.tagName === "BODY" || tgl.id === "idContentText") {
+				console.error("(!) Косяк: не удалось закрыть окно просмотра изображений - не найден элемент:\n function setLightboxHide(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n tgl: ", tgl);
+				alert(`(!) Косяк: не удалось закрыть окно просмотра изображений - не найден элемент, см.консоль.`);
+				return;
+			} else if (tgl.classList.contains('lightbox')) {
+				lbx = tgl; // запоминаем текущий.lightbox
+				// выйдет раньше
+				if (tgl.parentElement.classList.contains('toggle-content')) {
+					tgl = tgl.parentElement;
+					break;
+				}
+			}
 		}
 	}
-	// *проверяем видимость др.lightbox's, кот.вложенны в.toggle-content для текущего абзаца, если есть хотя бы 1 раскрытый.lightbox,.toggle-content остается видимым
-	if (hasLightboxVisible(tgl)) {
-		tgl.classList.remove('toggle-collapse'); // - отображаем div.toggle-content
-		setFocus(tgl, 'focusIn'); // - фокусировка на.lightbox
+	if (elem.hasAttribute('class')) {
+		if (elem.classList.contains('lightbox')) {
+			lbx = elem;
+			tgl = elem.parentElement;
+		} else {
+			setToggleNode();
+		}
 	} else {
-		setFocus(tgl, 'focusOut'); // - фокусировка на.lightbox
-		tgl.classList.add('toggle-collapse'); // - скрываем div.toggle-content
+		setToggleNode();
+	}
+	setFocus(lbx, 'focusOut'); // фокусировка на.узел эл.
+	lbx.classList.add('toggle-collapse');
+	setEventHandlersLightbox(lbx, 'remove'); // создание/удаление обработчиков событий для узла.lightbox
+	function setFocusItem(goTo = "next") {
+		let retVal = false;
+		// получить номер индекса текущего дочернего эл.
+		// 1) Array.from(tgl.children).indexOf(lbx);
+		// 2) Array.prototype.indexOf.call(lbx.parentElement.children, lbx);
+		const index = Array.from(tgl.children).indexOf(lbx); // номер индекса текущ.эл.(умерация с 0-ля)
+		console.log("index: ", index, " | tgl.children.length: ", tgl.children.length);
+		if (goTo === "next") {
+			for(let i = index + 1; i < tgl.children.length; i++) {
+				console.log("goTo: ", goTo, "\n tgl.children[i]: ", tgl.children[i]);
+
+				if (tgl.children[i].classList.contains('toggle-collapse')) {
+					if (tgl.children[i].hasAttribute('tabIndex')) { // наличие аттрибута в теге html
+						tgl.children[i].removeAttribute('tabIndex');
+					}
+				} else {
+					if (tgl.children[i].hasAttribute('class')) {
+						if (tgl.children[i].classList.contains('lightbox')) {
+							// tgl.children[i].focus({ focusVisible: false }); // true - по умолчанию
+							setFocus(tgl.children[i], 'focusIn'); // фокусировка на.узел эл.
+							retVal = true;
+							break;
+						}
+					}
+				}
+			}
+		} else if (goTo === "prev") {
+			for(let i = index - 1; i >= 0; i--) {
+				console.log("goTo: ", goTo, "\n tgl.children[i]: ", tgl.children[i]);
+
+				if (tgl.children[i].classList.contains('toggle-collapse')) {
+					if (tgl.children[i].hasAttribute('tabIndex')) { // наличие аттрибута в теге html
+						tgl.children[i].removeAttribute('tabIndex');
+					}
+				} else {
+					if (tgl.children[i].hasAttribute('class')) {
+						if (tgl.children[i].classList.contains('lightbox')) {
+							// tgl.children[i].focus({ focusVisible: false }); // true - по умолчанию
+							setFocus(tgl.children[i], 'focusIn'); // фокусировка на.узел эл.
+							retVal = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (retVal) return retVal;
+		if (goTo === "next") {
+			return setFocusItem("prev");
+		} else if (goTo === "prev") {
+			return retVal;
+		}
+		return retVal;
+	}
+	// *проверяем видимость др.эл.-узлов, вложенных в.toggle-content, если есть хотя бы 1 раскрытый узел,.toggle-content остается видимым, и если есть узел эл.для фокусирования переключаемся на узел, лежащий до/после текущего
+	if (hasLightboxVisible(tgl)) { // проверка по каждому узлу в.toggle-content
+		// x // tgl.classList.remove('toggle-collapse'); // - отображаем div.toggle-content
+		// // x // setFocus(tgl, 'focusIn'); // - фокусировка на.toggle-content
+		setFocusItem();
+		if (tgl.children.length === tgl.querySelectorAll('.toggle-collapse').length) {
+			tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
+		}
+	} else {
+		// x // setFocus(tgl, 'focusOut'); // - фокусировка на.toggle-content
+		tgl.classList.add('toggle-collapse'); // скрываем div.toggle-content
 	}
 	// *перелапачиваем иконки/списки-переключатели
 	tgl = tgl.previousElementSibling;
 	if (typeof(tgl) !== "undefined" || tgl !== null && (tgl === Object(tgl) || typeof(tgl) === "object")) {
 		if (tgl.children.length > 0) {
-			if (lbx.hasAttribute('num')) { // - ищем ссылку по номеру
+			if (lbx.hasAttribute('id')) { // - ищем ссылку по id
+				let lnk = document.querySelector('a[href="#' + lbx.id + '"]');
+				if (lnk !== null && lnk === Object(lnk)) {
+					setToggleIcon(lnk); // переключатель иконки/списка
+				}
+			} else if (lbx.hasAttribute('num')) { // - ищем ссылку по номеру
 				let links = tgl.querySelectorAll('.toggle-dropdown'); // tagName a
 				if (links.length > 0) {
 					for (let i = 0; i < links.length; i++) {
 						if (links[i].hasAttribute('num')) {
 							if (+links[i].getAttribute('num') === +lbx.getAttribute('num')) {
-								setToggleIcon(links[i]); // - переключатель иконки/списка
+								setToggleIcon(links[i]); // переключатель иконки/списка
 								break;
 							}
 						}

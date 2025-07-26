@@ -8,7 +8,11 @@
 	<meta name="MobileOptimized" content="width"> <!-- 'ширина страницы в соответствии с размером экрана, аналог device-width -->
 	<meta name="HandheldFriendly" content="true"> <!-- 'оптимизация под мобильные устройства на Palm и Blackberry -->
 	<title>Мониторинг заявок ФГИС «ФРИ» в АСТП</title>
-	<link rel="shortcut icon" href="icon/favicon.ico" type="icon/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="icon/x-icon">
+	<link rel="icon" href="icon/favicons/fgis-fri.png" type="image/png">
+
+	<!-- <link rel="manifest" href="icons_manifest.webmanifest"> --> <!-- (?) -->
+
 	<meta name="author" content="HaTaXa">
 	<meta name="copyright" content="HaTaXa">
 	<meta name="robots" content="index,follow"/> <!-- 'для поисковиков -->
@@ -16,7 +20,8 @@
 	<meta name="description" content="&nbsp;"/>
 	<meta name="keywords" content="Мониторинг,«Учет заявок ФГИС ФРИ на АСТП»,ФГИС ФРИ,HaTaXa,CHB,НаТаХа,СНВ,Солянина,НаталИя,Владиславовна">
 	<!-- (!) подключение стилей -->
-	<link rel="stylesheet" href="css/navigation.css"> <!-- 'взято из hmcontent.htm, было прописано внутри страницы в хеде -->
+	<link rel="stylesheet" href="css/navigation.css">
+	<link rel="stylesheet" href="css/animation.css">
 	<!-- (!) подключение скриптов + см.внизу -->
 	<script src="js/settings.js"></script>
 	<script type="text/javascript">forceReDirect();</script>
@@ -34,8 +39,8 @@
 <body>
 	<div id="idTocHeader" class="toc-header">
 		<div id="idTocTools" class="toc-tools">
+			<!-- *idTreeView-checkbox переключение режимов древовидного списка -->
 			<div class="tree-view">
-				<!-- *idTreeView-checkbox переключение режимов древовидного списка -->
 				<input type="checkbox" id="idTreeView" checked="checked"/>
 				<label for="idTreeView">
 					<div id="idTreeViewTooltip" class="treeview-tooltip" treeview-tooltip-default="Режим «По умолчанию»: (i) в древовидном виде списка скрытие/отображение будет применительно ко всем пунктам оглавления" treeview-tooltip-current="Режим «Текущий пункт»: (i) в древовидном виде списка будет скрытие всех разделов/подразделов, кроме выбранного пункта оглавления">
@@ -50,11 +55,11 @@
 					<input id="idTreeViewListCurrent" type="radio" name="treeview" value="1" checked="checked">Current
 				</label> -->
 			</div>
-			<!-- *idTocListMenuToggle-checkbox Развернуть/Свернуть все оглавление -->
-			<div id="idTocListMenuToggle" class="toclist-menu-toggle">
-				<input type="checkbox" id="idTocListMenuSwitch">
-				<label for="idTocListMenuSwitch" toclistmenu-tooltip-expand="Развернуть все оглавление" toclistmenu-tooltip-collapse="Свернуть все оглавление">
-					<div class="toclistmenu-tooltip-triangle"></div>
+			<!-- *idTocList-checkbox Развернуть/Свернуть все оглавление -->
+			<div class="toclist">
+				<input type="checkbox" id="idTocList">
+				<label for="idTocList" toclist-tooltip-expand="Развернуть все оглавление" toclist-tooltip-collapse="Свернуть все оглавление">
+					<div class="toclist-tooltip-triangle"></div>
 					<div id="idNavIcon" class="btn-icon"></div>
 				</label>
 			</div>
@@ -76,17 +81,17 @@
 	<div id="idTocBody" class="toc-body">
 		<ul id="idToc-ul" class="toc icon-expand">
 			<li id="idToc-li" class="toc-list toc-main-icon heading1">
-				<a id="idToc-a" class="heading1" href="about.html" target="hmcontent">
+				<a id="idToc-a" class="heading1" href="about.html" target="ifrmtopic">
 					<span id="idToc-s" class="heading1">Мониторинг заявок ФГИС «ФРИ» в АСТП</span>
 				</a>
 				<ul id="ul1" class="icon-expand" style="display:none;">
 					<li id="li1" class="toc-list icon-book-purple1-close heading1">
-						<a id="a1" class="heading1" href="intro.html" target="hmcontent">
+						<a id="a1" class="heading1" href="intro.html" target="ifrmtopic">
 							<span id="s1" class="heading1">О проекте «Мониторинг заявок ФГИС "ФРИ" в АСТП»</span>
 						</a>
 						<ul id="ul1-1">
 							<li id="li1-1" class="toc-list icon-book-purple2-close heading2">
-								<a id="a1-1" class="heading2" href="obscheeZakluchenie.html" target="hmcontent">
+								<a id="a1-1" class="heading2" href="obscheeZakluchenie.html" target="ifrmtopic">
 									<span id="s1-1" class="heading2">Общее заключение о проекте «Мониторинг заявок ФГИС "ФРИ" в АСТП»</span>
 								</a>
 							</li>
@@ -95,42 +100,42 @@
 				</ul> <!-- ul1 the end -->
 				<ul id="ul2" class="icon-expand" style="display:none;">
 					<li id="li2" class="toc-list icon-book-blue-close heading1">
-						<a id="a2" class="heading1" href="proektUchetZayavokFGISFRInaASTP.html" target="hmcontent">
+						<a id="a2" class="heading1" href="proektUchetZayavokFGISFRInaASTP.html" target="ifrmtopic">
 							<span id="s2" class="heading1">Проект «Учет заявок ФГИС "ФРИ" на АСТП»</span>
 						</a>
 						<ul id="ul2-1">
 							<li id="li2-1" class="toc-list icon-topic heading2">
-								<a id="a2-1" class="heading2" href="rabotaVbd.html" target="hmcontent">
+								<a id="a2-1" class="heading2" href="rabotaVbd.html" target="ifrmtopic">
 									<span id="s2-1" class="heading2">Работа в базе данных</span>
 								</a>
 							</li>
 							<li id="li2-2" class="toc-list icon-topic heading2">
-								<a id="a2-2" class="heading2" href="formaPoisk.html" target="hmcontent">
+								<a id="a2-2" class="heading2" href="formaPoisk.html" target="ifrmtopic">
 									<span id="s2-2" class="heading2">Форма «Поиск»</span>
 								</a>
 							</li>
 							<li id="li2-3" class="toc-list icon-topic heading2">
-								<a id="a2-3" class="heading2" href="srokiPoIspolneniu.html" target="hmcontent">
+								<a id="a2-3" class="heading2" href="srokiPoIspolneniu.html" target="ifrmtopic">
 									<span id="s2-3" class="heading2">Сроки по исполнению</span>
 								</a>
 							</li>
 							<li id="li2-4" class="toc-list icon-topic heading2">
-								<a id="a2-4" class="heading2" href="formaZayavka.html" target="hmcontent">
+								<a id="a2-4" class="heading2" href="formaZayavka.html" target="ifrmtopic">
 									<span id="s2-4" class="heading2">Форма «Заявка»</span>
 								</a>
 							</li>
 							<li id="li2-5" class="toc-list icon-topic heading2">
-								<a id="a2-5" class="heading2" href="statOtchet.html" target="hmcontent">
+								<a id="a2-5" class="heading2" href="statOtchet.html" target="ifrmtopic">
 									<span id="s2-5" class="heading2">Статистика и отчет</span>
 								</a>
 							</li>
 							<li id="li2-6" class="toc-list icon-topic heading2">
-								<a id="a2-6" class="heading1" href="formaAdmin.html" target="hmcontent">
+								<a id="a2-6" class="heading1" href="formaAdmin.html" target="ifrmtopic">
 									<span id="s2-6" class="heading2">Панель «Админ»</span>
 								</a>
 							</li>
 							<li id="li2-7" class="toc-list icon-info heading2">
-								<a id="a2-7" class="heading2" href="zakluchenie.html" target="hmcontent">
+								<a id="a2-7" class="heading2" href="zakluchenie.html" target="ifrmtopic">
 									<span id="s2-7" class="heading2">Выводы</span>
 								</a>
 							</li>
@@ -149,31 +154,30 @@
 	</div>
 	<!-- (!) idTocFooter-Нижний колонтитул -->
 	<div id="idTocFooter" class="toc-footer">
-		<p>Разработчик сайта и автор презентации:<br>
+		<p class="item-0">Разработчик сайта и автор презентации:<br>
 			<a href="https://hataxa.github.io/pfr/" target="_blank" title="НаТаХа.github.io"><i>Солянина<br> Натал<u>И</u>я Владиславовна</i></a>
 		</p>
-		<div class="footer-btn">
+		<div class="footer-btn item-2">
 			<a class="super-job" href="https://www.superjob.ru" target="_blank">SJ</a>
 			<span>SuperJob</span>
 		</div>
-		<div class="footer-btn">
+		<div class="footer-btn item-1">
 			<a class="feed-back" href="mailto:solanina@yandex.ru" title="Солянина НаталИя Владиславовна">
 				<!-- <img class="email-feedback" src="icon/email.png" onmouseover="this.src='icon/HaTaXa.jpg'" onmouseout="this.src='icon/email.png'"> -->
 				<img src="icon/email.png">
 				<div class="feedback-tooltip">
-					<div class="feedback-tooltip-triangle"></div>
-					<div class="feedback-tooltip-title title-txt-custom" style="display: none;">
+					<div class="feedback_tooltip-title title_txt-custom" style="display: none;">
 						<span>Frontend-</span>
 						<span>Разработчик сайта и автор презентации</span>
 					</div>
-					<div class="feedback-tooltip-title title-txt-top">
+					<div class="feedback_tooltip-title title_txt-top">
 						<span>Солянина НаталИя Владиславовна</span>
 					</div>
-					<div class="feedback-tooltip-title title-txt-center">
+					<div class="feedback_tooltip-title title_txt-center">
 						<span>СНВ</span>
-						<span>HaTaXa</span>
+						<span>НаТаХа</span>
 					</div>
-					<div class="feedback-tooltip-title title-txt-bottom">
+					<div class="feedback_tooltip-title title_txt-bottom">
 						<span>Frontend-</span>
 						<span>Разработчик сайта и автор презентации</span>
 					</div>
@@ -181,21 +185,20 @@
 			</a>
 			<span>E-mail</span>
 		</div>
-		<div class="footer-btn">
+		<div class="footer-btn item-2">
 			<a class="hh-ru" href="https://hh.ru" target="_blank">hh</a>
 			<span>hh.ru</span>
 		</div>
-		<p class="hr">
+		<p class="hr item-2">
 			<a href="https://hataxa.github.io/pfr/" target="_blank">Официальный сайт</a>,&nbsp;
 			<a href="mailto:user231082@gmail.com">Электронная почта</a>
 		</p>
-		<p>&copy;&nbsp;«<a href="https://hataxa.github.io/pfr/" target="_blank" title="HaTaXa.github.io">HaTaXa</a>» 2023</p>
+		<p class="item-2">&copy;&nbsp;«<a href="https://hataxa.github.io/pfr/" target="_blank" title="НаТаХа.github.io">HaTaXa</a>» 2023–2025</p>
 	</div> <!-- idTocFooter the end -->
 	<!-- *** асинхронное подключение скриптов js, jQuery *** -->
 	<!-- локальное подключение библиотеки jquery: несжатый -->
-	<script src="js/jquery-3.6.0.js"></script>
-	<!-- локальное подключение библиотеки jquery: минимизированный -->
-	<!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+	<script src="js/jquery-3.7.1.js"></script>
+	<!-- <script src="js/jquery-3.7.1.min.js"></script> -->
 	<!-- ************************************************************ -->
 	<!-- ссылка на jquery CDN: несжатый -->
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->
