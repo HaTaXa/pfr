@@ -295,7 +295,7 @@ $(document).ready(function () { // - jq
 							let lnkToggle = e.target;
 							function lnkToggle_onMouseup(eVent) {
 								function lnkToggle_onClick(evn) {
-									// getAttribute если (# + ...) вернет string || null если (#)
+									// getAttribute если (# + ...) вернет string || null если (#) заглушка
 									if (evn.target.href[evn.target.href.length - 1] === "#" && evn.target.getAttribute('href') === "#" && evn.target.hash === "" && evn.target.hash.length === 0 && evn.target.getAttribute('hash') === null) { // ~если заглушка
 										evn.preventDefault(); // отменяем действия браузера по умолчанию
 									} else {
