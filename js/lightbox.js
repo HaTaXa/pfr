@@ -1187,13 +1187,9 @@ function setToggleElement(elem) {
 				}
 			}
 		});
-		console.log("arrShown: ", arrShown, "\n arrHidden: ", arrHidden);
-		console.log("arrShown.length: ", arrShown.length, "\n arrHidden.length: ", arrHidden.length);
-
 		if (arrShown.length === 0 && arrHidden.length === 0) {
 			console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден(-ы) элемент(-ы):\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n arrShown: ", arrShown, "\n arrHidden: ", arrHidden);
 			alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден(-ы) элемент(-ы), см.консоль.`);
-			// ~попробовать использ.вар.на удаление
 			return;
 		}
 		if (arrHidden.length === 0) { // - скрываем
@@ -1226,51 +1222,6 @@ function setToggleElement(elem) {
 				}
 			}
 		}
-		// ~на удаление
-		// let ndListShown = document.getElementById('idContentText').querySelectorAll('.toggle-content:not(.toggle-collapse)'); // список видимых узлов
-		// let ndListHidden = document.getElementById('idContentText').querySelectorAll('.toggle-content.toggle-collapse'); // список скрытых узлов
-		// if (ndListShown.length === 0 && ndListHidden.length === 0) {
-		// 	console.info("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден(-ы) элемент(-ы):\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "\n ndListShown: ", ndListShown, "\n ndListHidden: ", ndListHidden);
-		// 	alert(`(i) Косяк: не удалось выполнить переключение элементов скрытого контента - не найден(-ы) элемент(-ы), см.консоль.`);
-		// 	return;
-		// }
-		// elems.forEach(tgl => {
-		// 	if (ndListShown.length < ndListHidden.length || ndListShown.length === ndListHidden.length) { // - отображаем
-		// 		tgl.classList.remove('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
-		// 		for (let i = 0; i < tgl.children.length; i++) {
-		// 			if (tgl.children[i].hasAttribute('class')) {
-		// 				if (tgl.children[i].classList.contains('lightbox')) {
-		// 					if (tgl.children[i].classList.contains('toggle-collapse')) {
-		// 						toggleDropdownElement(tgl.children[i]);
-		// 					}
-		// 				}
-		// 			} else if (tgl.children[i].hasAttribute('style')) {
-		// 				// (?)~переделать
-		// 				if (tgl.children[i].style.display === "none") {
-		// 					tgl.children[i].style.removeProperty('display'); // удаляем css св-во
-		// 				}
-		// 			}
-		// 		}
-		// 	} else if (ndListHidden.length === 0) { // - скрываем
-		// 		tgl.classList.add('toggle-collapse'); // div/span // 'если.toggle-content содержит.lightbox's, значит это div, если нет это span
-		// 		for (let i = 0; i < tgl.children.length; i++) {
-		// 			if (tgl.children[i].hasAttribute('class')) {
-		// 				if (tgl.children[i].classList.contains('lightbox')) {
-		// 					if (!tgl.children[i].classList.contains('toggle-collapse')) {
-		// 						toggleDropdownElement(tgl.children[i]);
-		// 					}
-		// 				}
-		// 			} else if (tgl.children[i].hasAttribute('style')) {
-		// 				// (?)~переделать
-		// 				if (tgl.children[i].style.display !== "none") {
-		// 					tgl.children[i].style.display = "none";
-		// 				}
-		// 			}
-		// 		}
-		// 	} else { // test
-		// 		console.log("test:\n", "ndListShown.length === ndListHidden.length: ", ndListShown.length === ndListHidden.length);
-		// 	}
-		// });
 		// *перелапачиваем все иконки/списоки, если есть
 		setToggleIcon(null, getButtonExpand().value); // переключатель иконки/списка
 		setFocusLoss();

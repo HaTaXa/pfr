@@ -40,6 +40,7 @@ window.addEventListener('load', function (e) { // - js. Сработает, ка
 				if (tab === null && tab !== Object(tab)) {
 					tab = window.top.document.getElementById('idTopicTab'); // вкладка текущ.топика по умолчанию
 				}
+				// window.top.setTabVisibility(tab, "show", "setVariables"); // показать/скрыть текущую вкладку
 				window.top.setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
 				setTimeout(() => { // нужна небольшая выдержка времени
 					// *создаем навигационные ссылки

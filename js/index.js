@@ -5,37 +5,6 @@ window.addEventListener('load', function () { // - js. Сработает, ка�
 	if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании
 		window.sessionStorage.setItem('webReadyState', document.readyState);
 	}
-	// x -
-	// *обновляем глобальные переменные в variables.js
-	// (i) если вариант 1
-	// if (vrsPermalink.url !== location.href) { // 'перестраховка
-	// 	vrsPermalink.url = location.href;
-	// }
-	// if (location.search !== "") {
-	// 	if (vrsTopic.currP !== location.search.replace("?", "")) {
-	// 		vrsTopic.currP = vrsNavigation.def = vrsNavigation.query = window.location.search.substring(1).replace(/:/g, "");
-	// 	}
-	// }
-	// (i) если вариант 2
-	// if (vrsPermalink.url !== location.href) {
-	// 	vrsPermalink.url = location.href;
-	// }
-	// if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
-	// 	let msg = {
-	// 		value: location.search === "" ? "setVariables" : "goToPage",
-	// 		currP: vrsTopic.currP
-	// 	};
-	// 	frames.ifrmnavigation.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-	// } else {
-	// 	if (location.search === "") {
-	// 		document.getElementById('ifrmnavigation').contentWindow.setVariables(null, vrsTopic.currP); // - обновление глобальных переменных в variables.js
-	// 	} else {
-	// 		if (vrsTopic.currP !== location.search.replace("?", "")) {
-	// 			vrsTopic.currP = vrsNavigation.def = vrsNavigation.query = window.location.search.substring(1).replace(/:/g, "");
-	// 		}
-	// 		document.getElementById('ifrmnavigation').contentWindow.goToPage(null, vrsTopic.currP); // - перейти на страницу выполнив обновление глобальных переменных в variables.js
-	// 	}
-	// }
 }, false); // false - фаза "всплытие"
 // (!) popstate
 // window.addEventListener('popstate', (event) => {
@@ -73,7 +42,6 @@ $(document).ready(function () { // - jq
 					setHideNavPane(); // скрыть пан.нав.при размере окна браузера <= 500
 				} else if (event.data.value === "setVariables" || event.data.value === "goToPage") {
 					// x // setUpdateVariables(event.data.vrsTopic, event.data.vrsNavigation); // обновляем некоторые глобальные переменные в variables.js из iframe текущего топика
-					// (i) если вариант 1
 					// *получаем остальную часть глобальных переменных в variables.js через ifrmnavigation
 					let msg = {};
 					if (event.data.value === "setVariables") {
@@ -503,23 +471,11 @@ $(document).ready(function () { // - jq
 					} else if (e.target.id === "idPrinterOn") { // (!) кн.Печать
 						setPrintTopic(e.target.parentElement);
 					} else if (e.target.id === "idPagePreviousOn") { // (!) кн.Назад
-						goToPagePrevious(e.target.parentElement); // (i) если вариант 1
-						// (i) если вариант 2 - при очень интенсивных кликах браузер может не успевать и будет срабатывать ошибка
-						// setTimeout(() => { // - без задержки стр.загружается с опозданием
-						// 	goToPagePrevious(e.target.parentElement);
-						// }, 1000); // 'если вариант 2
+						goToPagePrevious(e.target.parentElement);
 					} else if (e.target.id === "idPageHomeOn") { // (!) кн.Домой
-						goToPageHome(e.target.parentElement); // (i) если вариант 1
-						// (i) если вариант 2 - при очень интенсивных кликах браузер может не успевать и будет срабатывать ошибка
-						// setTimeout(() => { // - без задержки стр.загружается с опозданием
-						// 	goToPageHome(e.target.parentElement);
-						// }, 1000); // 'если вариант 2
+						goToPageHome(e.target.parentElement);
 					} else if (e.target.id === "idPageNextOn") { // (!) кн.Вперед
-						goToPageNext(e.target.parentElement); // (i) если вариант 1
-						// (i) если вариант 2 - при очень интенсивных кликах браузер может не успевать и будет срабатывать ошибка
-						// setTimeout(() => { // - без задержки стр.загружается с опозданием
-						// 	goToPageNext(e.target.parentElement);
-						// }, 1000); // 'если вариант 2
+						goToPageNext(e.target.parentElement);
 					}
 				}
 			}, false); // false - фаза "всплытие"
@@ -1386,23 +1342,13 @@ function setHideNavPane() {
 }
 // (!) установка перехода на страницу
 function setGoToPage(elem) {
-	// (i) если вариант 1
-	// *обновляем глобальную переменную в ifrmnavigation
-	if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
-		let msg = {
-			value: "setCollapse",
-			collapse: false
-		};
-		frames.ifrmnavigation.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-	} else {
-		document.getElementById('ifrmnavigation').contentWindow.setCollapse(false);
-	}
 	setHideNavPane(); // скрыть пан.нав.при размере окна браузера <= 500
 	// x // setHistoryState("push", elem.getAttribute('href')); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
 }
 // (!) перейти на текущую главу/раздел/подраздел темы
 function goToPageHome(elem) {
 	setGoToPage(elem); // установка перехода на страницу
+	// *обновляем глобальные переменные в variables.js
 	vrsTopic.currP = vrsNavigation.def = vrsNavigation.query = vrsTopic.homeP; // обновляем глобальные переменные в variables.js
 }
 // (!) перейти назад

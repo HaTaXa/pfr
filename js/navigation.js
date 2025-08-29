@@ -1,10 +1,10 @@
 // 'Инициализация переменных
-let isCollapse = true; // - переменная для хранения условия в функции setGoToWithOptionDefault // (i) если вариант 1
+let isCollapse = false; // - переменная для хранения условия в goToPage для ф.setGoToWithOptionDefault
 // document.addEventListener('DOMContentLoaded', function () { // - js. Дожидаемся, когда Объектная модель документа страницы (DOM) будет готова к выполнению кода JavaScript
-// }, false); // - false - фаза "всплытие"
+// }, false); // false - фаза "всплытие"
 // (!) *window
-// window.addEventListener('load', function () { // - js. Сработает, как только вся страница (изображения или встроенные фреймы), а не только DOM, будет готово
-// }, false); // - false - фаза "всплытие"
+// window.addEventListener('load', function () { // js. Сработает, как только вся страница (изображения или встроенные фреймы), а не только DOM, будет готово
+// }, false); // false - фаза "всплытие"
 // (!) *document
 $(document).ready(function () { // - jq
 	if (document !== null && typeof(document) === "object") {
@@ -14,18 +14,17 @@ $(document).ready(function () { // - jq
 			// console.log(`window.addEventListener('message', (event) window.name: ${window.name}):\n location.origin: "${location.origin}" <=> event.origin: "${event.origin}": ${location.origin === event.origin}\n event.origin === 0: ${event.origin === 0}\n event.data: ${JSON.stringify(event.data, null, 1)}`); // x -
 			if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
 				if (event.data.value === "goToPage") {
-					if ("collapse" in event.data) { // проверка наличия ключа в объекте
-						goToPage(null, event.data.href, event.data.collapse); // перейти на страницу
-					} else {
-						goToPage(null, event.data.href); // перейти на страницу
-					}
+					goToPage(null, event.data.href); // перейти на страницу
+					// if ("tocListCollapse" in event.data) { // проверка наличия ключа в объекте // x -
+					// 	goToPage(null, event.data.href, event.data.tocListCollapse); // перейти на страницу
+					// } else {
+					// 	goToPage(null, event.data.href); // перейти на страницу
+					// } // x -
 				} else if (event.data.value === "setVariables") {
 					let elem = document.getElementById('idToc-ul').querySelector('a[href="' + event.data.currP + '"]');
 					if (elem !== null && elem === Object(elem)) {
 						setVariables(elem, event.data.currP, event.data.hash); // обновление глобальных переменных в variables.js
 					}
-				} else if (event.data.value === "setCollapse") { // (i) если вариант 1
-					isCollapse = event.data.collapse;
 				} else if (event.data.value === "setTargetWindow") {
 					// *установить целевое окно ч.1
 					setTargetWindow(event.data.frmName);
@@ -83,13 +82,13 @@ $(document).ready(function () { // - jq
 			// }
 			// '
 			if (e.target.tagName === "INPUT" && e.target.type === "checkbox") {
-				if (e.target.id === "idTreeView") { // - переключатель режимов древовидного списка
+				if (e.target.id === "idTreeView") { // переключатель режимов древовидного списка
 					// для моб.вар.firefox отображаем всплывающую подсказку
 					if (getBrowser().toString().toLowerCase() === "firefox") {
 						e.target.parentElement.querySelector(`[for="${e.target.id}"]`).classList.add('treeview-tooltip-popup');
 					}
 				} else if (e.target.id === "idTocList") {
-					navigationListToggle(e.target); // - переключатель развернуть/свернуть все оглавление
+					navigationListToggle(e.target); // переключатель развернуть/свернуть все оглавление
 					// для моб.вар.firefox отображаем всплывающую подсказку
 					if (getBrowser().toString().toLowerCase() === "firefox") {
 						// e.target.parentElement.classList.add('toclist-tooltip-popup');
@@ -125,7 +124,7 @@ $(document).ready(function () { // - jq
 				}
 			} else if (e.target.tagName === "SPAN") {
 				if (e.target.parentElement.tagName === "A") {
-					isCollapse = true; // (i) если вариант 1
+					isCollapse = true;
 					if (window === top && window.name === "") {
 						goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // перейти на страницу
 					} else {
@@ -155,10 +154,6 @@ $(document).ready(function () { // - jq
 							// 		window.top.setHideNavPane(); // - скрыть пан.нав.
 							// 	}
 							// } // x -
-							// (i) если вариант 2 - при очень интенсивных кликах браузер может не успевать и будет срабатывать ошибка
-							// setTimeout(() => { // - без задержки стр.загружается с опозданием
-							// 	goToPage(e.target.parentElement); // перейти на страницу
-							// }, 1000); // 'если вариант 2
 						} else {
 							console.error(`(!) Косяк - не удалось установить имя текущего окна:\n e: ${e}, e.type: ${e.type}\n e.target: ${e.target}\n window.«${window.name}», location.origin: ${location.origin}`);
 							alert(`(!) Косяк - не удалось установить имя текущего окна, см.консоль.`);
@@ -179,15 +174,13 @@ $(document).ready(function () { // - jq
 		}, false); // false - фаза "всплытие"
 	}
 }); // ready end
-// (!) setCollapse - обновление глобальной переменной для кнопок Домой/Назад/Вперед в пан.инструментов и при переходах по списку оглавления в пан.нав., см.в функции goToPage переменную аргумента функции setGoToWithOptionDefault
-function setCollapse(value = true) { isCollapse = value; } // (i) если вариант 1
-// (!) setListExpandCollapse - развернуть/свернуть все оглавление
+// (!) развернуть/свернуть все оглавление
 function setListExpandCollapse (value) {
-	// let ulFirstLevel = document.querySelector('ul:first-child'); // - ul самый 1-ый родитель - предок всех потомков
-	// let list = document.querySelectorAll('ul:not(:first-child)'); // - ul все предки, кроме 1-го
-	let list = document.querySelectorAll('ul'); // - ul все предки
+	// let ulFirstLevel = document.querySelector('ul:first-child'); // ul самый 1-ый родитель - предок всех потомков
+	// let list = document.querySelectorAll('ul:not(:first-child)'); // ul все предки, кроме 1-го
+	let list = document.querySelectorAll('ul'); // ul все предки
 	if (list !== null && typeof(list) === "object") {
-		if (value) { // - expand - развернуть все оглавление
+		if (value) { // - развернуть все оглавление
 			for (let ul of list) {
 				if (ul.hasAttribute('class')) {
 					if (ul.classList.contains('icon-expand')) {
@@ -197,7 +190,7 @@ function setListExpandCollapse (value) {
 				}
 				if (ul.style.display === "none") { ul.removeAttribute('style'); }
 			}
-		} else { // - collapse - свернуть все оглавление
+		} else { // - свернуть все оглавление
 			for (let ul of list) {
 				if (ul.hasAttribute('class')) {
 					if (ul.classList.contains('icon-collapse')) {
@@ -213,7 +206,7 @@ function setListExpandCollapse (value) {
 	}
 	setSwitchTocIcon(document.querySelectorAll('li.toc-list'), value); // - переключение иконки в оглавлении
 }
-// (!) navigationListToggle - переключатель развернуть/свернуть все оглавление
+// (!) переключатель развернуть/свернуть все оглавление
 function navigationListToggle(elem) {
 	let idNavIcon = document.getElementById('idNavIcon');
 	setListExpandCollapse(elem.checked); // - true - развернуть/свернуть - false, все оглавление
@@ -236,17 +229,17 @@ function setHighlightsOnElement(elem) {
 	}
 	elem.classList.add('highlight');
 }
-// (!) setStatusTocListMenuSwitch - изменение состояния кнопки-переключателя развернуть/свернуть все оглавлениеи при переходах по страницам
+// (!) изменение состояния кнопки-переключателя развернуть/свернуть все оглавлениеи при переходах по страницам
 function setStatusTocListMenuSwitch() {
-	let inputCheckboxNode = document.getElementById('idTocList');
+	let btn = document.getElementById('idTocList');
 	let toc = document.getElementById('idToc-ul');
 	if (toc.classList.contains('icon-collapse')) {
-		inputCheckboxNode.checked = true;
+		btn.checked = true;
 	} else if (toc.classList.contains('icon-expand')) {
-		inputCheckboxNode.checked = false;
+		btn.checked = false;
 	}
 }
-// (!) setSwitchTocIcon - переключение иконки в оглавлении
+// (!) переключение иконки в оглавлении
 function setSwitchTocIcon(elem, value = true) {
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк: не удалось выполнить изменение иконки переключателя - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setSwitchTocIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, value = ${value})`);
@@ -424,8 +417,8 @@ function setTreeViewListCurrent(elem) {
 	}
 }
 function setGoToWithOptionCurrent(elem) {
-	setListExpandCollapse(false); // - сворачиваем все оглавление
-	setHighlightsOnElement(elem); // - устанавливаем подсветку на выбранном элементе
+	setListExpandCollapse(false); // сворачиваем все оглавление
+	setHighlightsOnElement(elem); // устанавливаем подсветку на выбранном элементе
 	// *первоначально проникаем внутрь
 	e = elem.parentElement; // - li
 	for (let i = 0; i < e.children.length; i++) {
@@ -443,7 +436,7 @@ function setGoToWithOptionCurrent(elem) {
 	// *переключаем иконку
 	if (e.hasAttribute('class')) {
 		if (e.classList.contains('toc-list')) {
-			setSwitchTocIcon(e, true); // - переключение иконки в оглавлении
+			setSwitchTocIcon(e, true); // переключение иконки в оглавлении
 		}
 	}
 	// *поднимаемся на верх до самой последней ul
@@ -454,7 +447,7 @@ function setGoToWithOptionCurrent(elem) {
 		if (e.id === "idToc-ul") {
 			if (e.classList.contains('icon-expand')) {
 				e.classList.replace('icon-expand', 'icon-collapse');
-				setStatusTocListMenuSwitch(); // - меняем состояние кнопки-переключателя развернуть/свернуть все оглавление
+				setStatusTocListMenuSwitch(); // меняем состояние кнопки-переключателя развернуть/свернуть все оглавление
 				// return;
 			}
 		} else {
@@ -463,7 +456,7 @@ function setGoToWithOptionCurrent(elem) {
 					e.classList.replace('icon-expand', 'icon-collapse');
 					// *переключаем иконку
 					if (e.firstElementChild.classList.contains('toc-list')) {
-						setSwitchTocIcon(e.firstElementChild, true); // - переключение иконки в оглавлении
+						setSwitchTocIcon(e.firstElementChild, true); // переключение иконки в оглавлении
 					}
 				}
 				for (let i = 0; i < e.parentElement.children.length; i++) {
@@ -558,16 +551,17 @@ function setTreeViewListDefault(elem) {
 		}
 	}
 }
-function setGoToWithOptionDefault(elem, collapse = true) {
-	setHighlightsOnElement(elem); // - устанавливаем подсветку на выбранном элементе
-	e = elem.parentElement; // - li
+function setGoToWithOptionDefault(elem, tocListCollapse = false) {
+	// elem - tagName a
+	setHighlightsOnElement(elem); // устанавливаем подсветку на выбранном элементе
+	let e = elem.parentElement; // - li
 	// *переключаем иконку
 	if (e.hasAttribute('class')) {
 		if (e.classList.contains('toc-list')) {
-			setSwitchTocIcon(e, true); // - переключение иконки в оглавлении
+			setSwitchTocIcon(e, true); // переключение иконки в оглавлении
 		}
 	}
-	if (collapse) {
+	if (tocListCollapse) {
 		if (e.parentElement.hasAttribute('class')) { // - ul
 			if (e.parentElement.classList.contains('icon-expand')) {
 				e.parentElement.classList.replace('icon-expand', 'icon-collapse');
@@ -586,7 +580,7 @@ function setGoToWithOptionDefault(elem, collapse = true) {
 				// *переключаем иконку
 				if (e.hasAttribute('class')) {
 					if (e.classList.contains('toc-list')) {
-						setSwitchTocIcon(e, true); // - переключение иконки в оглавлении
+						setSwitchTocIcon(e, true); // переключение иконки в оглавлении
 					}
 				}
 			} else if (e.parentElement.classList.contains('icon-collapse')) {
@@ -601,7 +595,7 @@ function setGoToWithOptionDefault(elem, collapse = true) {
 				// *переключаем иконку
 				if (e.hasAttribute('class')) {
 					if (e.classList.contains('toc-list')) {
-						setSwitchTocIcon(e, false); // - переключение иконки в оглавлении
+						setSwitchTocIcon(e, false); // переключение иконки в оглавлении
 					}
 				}
 			}
@@ -661,7 +655,8 @@ function setGoToWithOptionDefault(elem, collapse = true) {
 			}
 		}
 	}
-	setStatusTocListMenuSwitch(); // - меняем состояние кнопки-переключателя развернуть/свернуть все оглавление
+	isCollapse = false;
+	setStatusTocListMenuSwitch(); // меняем состояние кнопки-переключателя развернуть/свернуть все оглавление
 }
 // (!) getPageHome - получение ссылки на страницу текущего раздела/подраздела
 function getPageHome(elem) {
@@ -923,10 +918,10 @@ function setVariables(elem, currP = "", hash = "") {
 	}
 }
 // (!) перейти на страницу
-function goToPage(elem, href = "", collapse = true) {
+function goToPage(elem, href = "") {
 	// 'проверяем и исключаем наличие hash href
 	if (href === "" && typeof(href) === "string") {
-		console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+		console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", tocListCollapse = ${tocListCollapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
 		alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	}
@@ -949,14 +944,14 @@ function goToPage(elem, href = "", collapse = true) {
 				if (arr.length === 1) {
 					elem = arr[0];
 				} else {
-					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", tocListCollapse = ${tocListCollapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
 					alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
 			}
 		} else { // - стремимся все равно получить текущий элемент и/или его значение
 			if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-				console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+				console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", tocListCollapse = ${tocListCollapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
 				alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 				return;
 			} else {
@@ -964,7 +959,7 @@ function goToPage(elem, href = "", collapse = true) {
 					currP = window.top.location.search.substring(1).replace(/:/g, "");
 					elem = document.getElementById('idTocBody').querySelector('a[href="' + currP + '"]');
 				} else {
-					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
+					console.error(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", tocListCollapse = ${tocListCollapse}):\n 1) Object(${Object(elem)}): ${elem === Object(elem)}\n 2) elem === null: ${elem === null}\n 3) isEmptyObject(${isEmptyObject(elem)})`);
 					alert(`(!) Косяк - не удалось выполнить переход на страницу - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 					return;
 				}
@@ -975,15 +970,15 @@ function goToPage(elem, href = "", collapse = true) {
 		let inputCheckboxNode = document.getElementById('idTreeView');
 		if (inputCheckboxNode !== null && typeof(inputCheckboxNode) !== "undefined" && typeof(inputCheckboxNode) === "object") {
 			if (inputCheckboxNode.checked) {
-				setGoToWithOptionCurrent(elem); // - переход на страницу - опция древовидный вид списка в режиме "Текущий пункт"
 				// setTreeViewListCurrent(elem); // x не используется
+				setGoToWithOptionCurrent(elem); // - переход на страницу - опция древовидный вид списка в режиме "Текущий пункт"
 			} else {
-				collapse = isCollapse; // (i) если вариант 1
-				setGoToWithOptionDefault(elem, collapse); // - переход на страницу - опция древовидный вид списка в режиме "По умолчанию"
 				// setTreeViewListDefault(elem); // x не используется
+				// (?)~нет возможности вычислить tocListCollapse, т.к.goToPage всегда срабатывает из топика даже при кликах по кн.<-|-> из пан.нав., поэтому исп.глоб.переменная isCollapse
+				setGoToWithOptionDefault(elem, isCollapse); // переход на страницу - опция древовидный вид списка в режиме "По умолчанию"
 			}
 		} else { // *код оставлен для варианта классический
-			console.warn(`function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", collapse = ${collapse}):\n (i) сработало условие для варианта классический`);
+			console.warn(`function goToPage(elem: ${typeof(elem)} / ${elem}, href = "${href}", tocListCollapse = ${tocListCollapse}):\n (i) сработало условие для варианта классический`);
 			if (elem.tagName !== "INPUT") return; // 'если кликнули вне тега input
 			let inputRadioNodes = document.getElementsByTagName('INPUT');
 			if (inputRadioNodes.length > 0) {
