@@ -1999,6 +1999,12 @@ TODO: *переделать в псевдо не получится, см.спе
 	.toolbar_box-center span,
 	.txt-wrap {width: auto;}
 }
+/**диапазон < 440 */
+@media screen and (max-width: 440px) {
+	.banner img {height: 70%;}
+	.logo-ri {left: 0;}
+	.logo-fri {right: 0;}
+}
 /*
 'Landscape phones and smaller
 - Ландшафтные телефоны и меньшие
