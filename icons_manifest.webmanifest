@@ -1,5 +1,5 @@
 {
 	"icons": [
-		{ "src": "/icon/favicons/nataxa.png", "type": "image/png", "sizes": "200x200" }
+		{ "src": "./icon/favicons/favicon-200x200.png", "type": "image/png", "sizes": "200x200" }
 	]
 }
