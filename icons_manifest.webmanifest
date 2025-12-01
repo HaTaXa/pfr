@@ -1,7 +1,16 @@
 {
 	"icons": [
-		{ "src": "./icon/favicons/favicon-18x18.png", "type": "image/png", "sizes": "18x18" },
-		{ "src": "./icon/favicons/favicon-48x48.png", "type": "image/png", "sizes": "48x48" },
-		{ "src": "./icon/favicons/favicon-100x86.png", "type": "image/png", "sizes": "100x86" }
+		{
+			"src": "./icon/favicons/web-app-manifest-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "./icon/favicons/web-app-manifest-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
 	]
 }
