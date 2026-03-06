@@ -1103,8 +1103,9 @@ function setTabVisibility(elem, visibilityState = "", setGoTo = "") {
 }
 // (!) animationOffset - анимационное смещение для: 1) вкладок на панели тема топика, 2) слайдера изо в скрытом контенте
 function animationOffset(elem) {
-	// 'elem - tagName img.tabs-btns: idTabFirst/idTabPrevious/idTabNext/idTabLast
-	// ''elem - tagName div.slider-track
+	// 'elem - tagName div.toolbar-slider-track
+	// ''elem - tagName img.tabs-btns: idTabFirst/idTabPrevious/idTabNext/idTabLast
+	// '''elem - tagName div.slider-track
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		console.error(`(!) Косяк - не удалось воспроизвести анимацию - переменная аргумента не определена:\n function animationOffset(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}`);
 		alert(`(!) Косяк: не удалось воспроизвести анимацию - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
@@ -1138,6 +1139,17 @@ function animationOffset(elem) {
 		// topicTabs.style.animationFillMode = "both"; // Анимация будет вести себя так, как будто значения forwards и backwards заданы одновременно
 		// topicTabs.style.animationFillMode = "forwards"; // По окончании анимации элемент сохранит стили последнего ключевого кадра, который определяется значениями animation-direction и animation-iteration-count. Определяет, какие значения применяются анимацией вне времени ее выполнения. Когда анимация завершается, элемент возвращается к своим исходным стилям. По умолчанию анимация не влияет на значения свойств animation-name и animation-delay, когда анимация применяется к элементу. Кроме того, по умолчанию анимация не влияет на значения свойств animation-duration и animation-iteration-count после ее завершения. Свойство animation-fill-mode может переопределить это поведение
 		// topicTabs.style.willChange = "transform"; // (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
+	} else if (elem.classList.contains('toolbar_btn_slider-next') || elem.classList.contains('toolbar_btn_slider-prev')) { // *для слайдера кн.на пан.инстр.
+		const sldrTrack = elem.parentElement.querySelector('.toolbar-slider-track');
+		if (elem.classList.contains('toolbar_btn_slider-next')) {
+			sldrTrack.style.animation = "jumpToLeft"; // имя @keyframes в файле styles.css
+		} else if (elem.classList.contains('toolbar_btn_slider-prev')) {
+			sldrTrack.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css
+		}
+		sldrTrack.style.animationDuration = ".1s"; // продолжительность одного цикла анимации
+		sldrTrack.style.animationTimingFunction = "cubic-bezier(0.18, 0.89, 0.32, 1.28)"; // временнАя функция - описывает, как будет развиваться анимация между каждой парой ключевых кадров. *Во время задержки анимации временные функции не применяются
+		sldrTrack.style.animationIterationCount = 1; // кол-во повторов - ск-ко раз проигрывается цикл анимации
+		sldrTrack.style.animationDelay = "0ms"; // задержка - определяет, когда анимация начнется. *Задается в секундах s или миллисекундах ms
 	} else if (elem.classList.contains('slider-track')) { // *для слайдера изо.в скрытом контенте
 		if (elem.firstElementChild.classList.contains('slider-current')) {
 			elem.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css

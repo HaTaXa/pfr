@@ -14,8 +14,8 @@ body, html {
 	background-color: transparent;
 	font-family: Verdana, Tahoma, Helvetica, sans-serif;
 	text-indent: 0;
-	overflow: hidden hidden;
 }
+html {overflow: hidden hidden;}
 /* (!) Scrollbars
 *для Mozilla Firefox будет работать пока только общий стиль */
 *,
@@ -95,6 +95,10 @@ html *::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 }
 /* Scrollbars the end */
+body {
+	overflow: hidden auto;
+	scrollbar-width: none;
+}
 body {
 	display: flex;
 	flex-flow: column nowrap;
@@ -765,7 +769,7 @@ ul, li {
 	flex: 1 1 auto;
 	flex-flow: row wrap;
 	align-items: center;
-	align-content: space-between;
+	/* align-content: space-between; */
 	justify-content: center;
 	/* overflow: hidden hidden; *//* (!) влияет на размер, а так же отображение.feedback-tooltip/.email-feedback */
 }
@@ -785,11 +789,86 @@ ul, li {
 .toc-footer .footer-btn a:hover,
 .footer-btn:hover,
 .feedback_tooltip-title span,
-.feed-back:hover,
+.email:hover,
 .toc-footer p:hover a,
 .toc-footer p:hover {color: #fff;}
 .footer_btn-tooltip-popup, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
 .toc-footer a:hover {text-decoration: underline dotted;}
+
+.item-email a,
+.contacts-list *,
+.contacts-list {
+	border: 0;
+	box-sizing: border-box;
+}
+.contacts-list {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	margin: auto;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+	align-items: center;
+	/* justify-content: center; */
+	justify-content: space-around;
+}
+
+.contacts-item:hover:not(.item-email) {transform: scale(1.1);}
+.footer-btn,
+.contacts-item {
+	transition: all 0.6s ease;
+	-webkit-transition: all .6s ease;
+	-moz-transition: all .6s ease;
+	-o-transition: all .6s ease;
+	/* will-change: transition; */
+}
+.contacts-item {
+	width: 34px;
+	height: 34px;
+}
+.contacts-item {
+	position: relative;
+	left: 0; top: 0;
+	margin: 2px;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+}
+.contacts-item.item-email a.email, /* повышаем приоритет */
+.contacts-item a {
+	position: absolute;
+	margin: auto;
+	padding: 0;
+	display: flex;
+}
+
+a.email {
+	width: 35px;
+	height: 35px;
+}
+.item-email a {z-index: 1;}
+a.telegram,
+a.github {
+	width: 38px;
+	height: 38px;
+}
+/* .github img {height: 26px;} */
+/* .icon-github, *//* выс.svg уже и так 100% */
+.email img {height: 100%;}
+.telegram img {height: 34px;}
+
+.contacts-item img {
+	object-fit: contain; /* вписываем в область */
+	-o-object-fit: contain;
+	position: absolute;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+	margin: auto;
+}
 
 .footer-btn a,
 .footer-btn {
@@ -797,22 +876,28 @@ ul, li {
 	left: 0; top: 0;
 	width: auto;
 	height: auto;
-	margin: auto;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 }
 .footer-btn {
-	flex: 1 1 30%;
+	/* margin: 4px auto; */
+	margin: 4px;
+	/* flex: 1 1 30%; */
+	flex: 0 0 auto;
 	flex-flow: row wrap;
 }
+
 .item-0 {order: 0;}
 .item-1,
 .item-2 {order: 1;}
 .toc-footer a.feed-back,
-.footer-btn a {padding: 4px;}
-/**не выделять кн.при длительном нажатии */
-.toc-footer a.feed-back, /* повышаем приоритет, чтобы перебить св-ва правила.toc-footer a */
+.footer-btn a {
+	margin: auto;
+	padding: 4px;
+}
+/**Предотвращение выбора инструментов */
+.contacts-list,
 .footer-btn a {
 	user-select: none;
 	-webkit-user-select: none;
@@ -826,8 +911,8 @@ ul, li {
 .footer_btn-tooltip-popup .feed-back, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
 .feedback-tooltip,
 .footer-btn a,
-.feed-back:hover .feed-back,
-.feed-back {
+.feed-back,
+.email {
 	border: 1px solid transparent;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -838,10 +923,136 @@ ul, li {
 /* .toc-footer a.feed-back:hover, */ /* для повышения приоритета */
 .footer-btn a:hover {border-color: #fff;}
 .footer_btn-tooltip-popup .feed-back, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-.feed-back:hover {
+.feed-back:hover,
+.email:hover {
 	box-shadow: 2px 2px 20px 2px rgba(255,255,255,.9),
 				-2px -2px 20px 2px rgba(255,255,255,.9);
 }
+
+.telegram img:hover,
+a.telegram:hover,
+.github img:hover,
+a.github:hover,
+.item-telegram:hover,
+.item-github:hover,
+.telegram img,
+a.telegram,
+.github img,
+a.github,
+.item-telegram,
+.item-github {border-color: transparent;}
+/*
+анимационный бегунок-блестяшка
+*/
+.email:after,
+.github:after {
+	background: linear-gradient(45deg,
+				rgba(206, 135, 21, .01) 45%,
+				rgba(254, 224, 144, 1) 50%,
+				rgba(206, 135, 21, .01) 55%);
+}
+.item-github:hover a:after {
+	background: linear-gradient(45deg,
+				rgba(138, 43, 226, .01) 45%,
+				rgba(255, 255, 255, 1) 50%,
+				rgba(138, 43, 226, .01) 55%);
+}
+.item-email:hover a:after {
+	background: linear-gradient(45deg,
+				rgba(43, 158, 206, .01) 45%,
+				rgba(173, 216, 230, 1) 50%,
+				rgba(43, 158, 206, .01) 55%);
+
+	/* background: linear-gradient(45deg,
+				rgba(43, 158, 206, .01) 45%,
+				rgba(255, 255, 255, 1) 50%,
+				rgba(43, 158, 206, .01) 55%); */
+}
+.item-telegram:hover a:after,
+.telegram:after {
+	background: linear-gradient(45deg,
+				rgba(255, 255, 255, .01) 45%,
+				rgba(255, 255, 255, 1) 50%,
+				rgba(255, 255, 255, .01) 55%);
+}
+
+.item-telegram:hover a:after,
+.telegram:after,
+.item-email:hover a:after,
+.feed-back:after,
+.email:after,
+.item-github:hover a:after,
+.github:after {
+	content: "";
+	position: absolute;
+	left: 0; top: 0;
+	right: 0; bottom: 0;
+	background-size: 1000%;
+}
+.github:after {animation: bg-flashlight 8s linear infinite;}
+.email:after {animation: bg-flashlight 8s linear infinite;}
+.telegram:after {animation: bg-flashlight 8s linear infinite;}
+
+@keyframes bg-flashlight {
+	0% {background-position: 100% 0;}
+	20% {background-position: 0 0;}
+	100% {background-position: 0 0;}
+}
+/*
+анимационный фон
+*/
+.telegram:after,
+a.telegram,
+.item-telegram,
+.github:after,
+a.github,
+.item-github {border-radius: 100px;}
+.email:after,
+.item-email {border-radius: 5px;}
+.github img {border-radius: 3px;}
+
+.item-github:hover {
+	/* background-color: #000; */
+	background: linear-gradient(45deg,
+				rgba(138, 43, 226, .96) 25%,
+				rgba(255, 255, 255, 1) 45%,
+				rgba(255, 255, 255, 1) 50%,
+				rgba(138, 43, 226, .96) 75%);
+}
+.item-github {
+	/* background-color: darkviolet; */
+	background: linear-gradient(45deg,
+				rgba(206, 135, 21, .96) 25%,
+				rgba(254, 224, 144, 1) 45%,
+				rgba(254, 224, 144, 1) 55%,
+				rgba(206, 135, 21, .96) 75%);
+}
+
+.item-github:hover,
+.item-github {background-size: 1000%;}
+
+.item-github:hover,
+.item-github {animation: bg-contacts-item 10s ease infinite;}
+
+@keyframes bg-contacts-item {
+	0% {background-position: 0 0;}
+	50% {background-position: 100% 0;}
+	100% {background-position: 0 0;}
+}
+
+.item-github:hover svg {animation-name: github-gold;}
+@keyframes github-gold {
+	from {fill: rgba(206, 135, 21, 1);}
+	to {fill: #000;}
+}
+.icon-github {animation: github-blueviolet 2s infinite alternate;}
+@keyframes github-blueviolet {
+	from {fill: rgba(138, 43, 226, 1);}
+	to {fill: #000;}
+}
+/*
+старые кнопки
+*/
 .super-job,
 .hh-ru {font-weight: bold;}
 .footer-btn a.hh-ru, /* повышаем приоритет, чтобы перебить св-ва правила.toc-footer a */
@@ -872,7 +1083,7 @@ ul, li {
 	height: 100%;
 	border-radius: 5px;
 	z-index: -1;
-	animation: eff-line-gradient 2s ease infinite;
+	animation: eff-line-gradient 10s ease infinite;
 	-webkit-animation: eff-line-gradient 10s ease infinite;
 	-moz-animation: eff-line-gradient 10s ease infinite;
 	-o-animation: eff-line-gradient 10s ease infinite;
@@ -942,6 +1153,8 @@ x не используется
 	background-origin: content-box;
 	-webkit-background-origin: content-box;
 	-moz-background-origin: content-box;
+	background-position: center center;
+	box-sizing: initial; /* важно для выравнивания позиционирования фона */
 }
 /**текст подсказки */
 .feedback_tooltip-title {width: auto; height: auto;}
@@ -973,7 +1186,7 @@ x не используется
 .feedback-tooltip:after {
 	content: "";
 	position: absolute;
-	bottom: -52px;
+	top: 100%;
 	width: 0;
 	margin: auto;
 	background-color: transparent;
@@ -989,11 +1202,11 @@ x не используется
 	-moz-transform-origin: center center;
 	-o-transform-origin: center center;
 	-ms-transform-origin: center center;
-	transform: translate(-68px, 0) scale(0);
-	-webkit-transform: translate(-68px, 0) scale(0);
-	-moz-transform: translate(-68px, 0) scale(0);
-	-o-transform: translate(-68px, 0) scale(0);
-	-ms-transform: translate(-68px, 0) scale(0);
+	transform: translate(-63px, -96px) scale(0);
+	-webkit-transform: translate(-63px, -96px) scale(0);
+	-moz-transform: translate(-63px, -96px) scale(0);
+	-o-transform: translate(-63px, -96px) scale(0);
+	-ms-transform: translate(-63px, -96px) scale(0);
 	transition: all 2s ease;
 	-webkit-transition: all 2s ease;
 	-moz-transition: all 2s ease;
@@ -1001,18 +1214,20 @@ x не используется
 	/* will-change: transform transition; */ /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
 .footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-.feed-back:hover .feedback-tooltip {
+.feed-back:hover .feedback-tooltip,
+.email:hover .feedback-tooltip {
 	/* animation: tooltipToAppear ease 2s both;
 	-webkit-animation: tooltipToAppear ease 2s both;
 	-moz-animation: tooltipToAppear ease 2s both;
-	-o-animation: tooltipToAppear ease 2s both; */
-	transform: translate(-68px, -180px) scale(1);
-	-webkit-transform: translate(-68px, -180px) scale(1);
-	-moz-transform: translate(-68px, -180px) scale(1);
-	-o-transform: translate(-68px, -180px) scale(1);
-	-ms-transform: translate(-68px, -180px) scale(1);
+	-o-animation: tooltipToAppear ease 2s both;
+	will-change: animation; *//* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	transform: translate(-63px, -290px) scale(1);
+	-webkit-transform: translate(-63px, -290px) scale(1);
+	-moz-transform: translate(-63px, -290px) scale(1);
+	-o-transform: translate(-63px, -290px) scale(1);
+	-ms-transform: translate(-63px, -290px) scale(1);
 	opacity: 1;
-	/* will-change: animation; */ /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
+	/* will-change: transform; */ /* св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
 /* @keyframes tooltipToAppear {
 	0% {
@@ -1033,7 +1248,8 @@ x не используется
 	}
 } */
 .footer_btn-tooltip-popup .feedback-tooltip:after, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-.feed-back:hover .feedback-tooltip:after {
+.feed-back:hover .feedback-tooltip:after,
+.email:hover .feedback-tooltip:after {
 	animation: triangleFadeIn ease 2s both;
 	-webkit-animation: triangleFadeIn ease 2s both;
 	-moz-animation: triangleFadeIn ease 2s both;
@@ -1104,19 +1320,20 @@ x не используется
 	/**фон подсказки */
 	.feedback-tooltip {
 		width: 110px; height: 170px;
-		transform: translate(-48px, 0) scale(0);
-		-webkit-transform: translate(-48px, 0) scale(0);
-		-moz-transform: translate(-48px, 0) scale(0);
-		-o-transform: translate(-48px, 0) scale(0);
-		-ms-transform: translate(-48px, 0) scale(0);
+		transform: translate(-43px, -67px) scale(0);
+		-webkit-transform: translate(-43px, -67px) scale(0);
+		-moz-transform: translate(-43px, -67px) scale(0);
+		-o-transform: translate(-43px, -67px) scale(0);
+		-ms-transform: translate(-43px, -67px) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
-		transform: translate(-48px, -150px) scale(1);
-		-webkit-transform: translate(-48px, -150px) scale(1);
-		-moz-transform: translate(-48px, -150px) scale(1);
-		-o-transform: translate(-48px, -150px) scale(1);
-		-ms-transform: translate(-48px, -150px) scale(1);
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
+		transform: translate(-43px, -230px) scale(1);
+		-webkit-transform: translate(-43px, -230px) scale(1);
+		-moz-transform: translate(-43px, -230px) scale(1);
+		-o-transform: translate(-43px, -230px) scale(1);
+		-ms-transform: translate(-43px, -230px) scale(1);
 	}
 	.feedback-tooltip:after {
 		border-left: 56px solid transparent;
@@ -1133,7 +1350,8 @@ x не используется
 		-ms-transform: translate(-48px, 0) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
 		transform: translate(-48px, -120px) scale(1);
 		-webkit-transform: translate(-48px, -120px) scale(1);
 		-moz-transform: translate(-48px, -120px) scale(1);
@@ -1141,7 +1359,6 @@ x не используется
 		-ms-transform: translate(-48px, -120px) scale(1);
 	}
 	.feedback-tooltip:after {
-		bottom: -26px;
 		border-top: 24px solid rgba(255,255,255,.4);
 	}
 }
@@ -1156,19 +1373,20 @@ x не используется
 	/**фон подсказки */
 	.feedback-tooltip {
 		width: 100px; height: 153px;
-		transform: translate(-44px, 0) scale(0);
-		-webkit-transform: translate(-44px, 0) scale(0);
-		-moz-transform: translate(-44px, 0) scale(0);
-		-o-transform: translate(-44px, 0) scale(0);
-		-ms-transform: translate(-44px, 0) scale(0);
+		transform: translate(-38px, 58px) scale(0);
+		-webkit-transform: translate(-38px, 58px) scale(0);
+		-moz-transform: translate(-38px, 58px) scale(0);
+		-o-transform: translate(-38px, 58px) scale(0);
+		-ms-transform: translate(-38px, 58px) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
-		transform: translate(-44px, -140px) scale(1);
-		-webkit-transform: translate(-44px, -140px) scale(1);
-		-moz-transform: translate(-44px, -140px) scale(1);
-		-o-transform: translate(-44px, -140px) scale(1);
-		-ms-transform: translate(-44px, -140px) scale(1);
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
+		transform: translate(-38px, -200px) scale(1);
+		-webkit-transform: translate(-38px, -200px) scale(1);
+		-moz-transform: translate(-38px, -200px) scale(1);
+		-o-transform: translate(-38px, -200px) scale(1);
+		-ms-transform: translate(-38px, -200px) scale(1);
 	}
 	.feedback-tooltip:after {
 		border-left: 50px solid transparent;
@@ -1178,62 +1396,63 @@ x не используется
 /**диапазон < 320 по высоте и < 206 по ширине */
 @media screen and (max-height: 320px) and (max-width: 206px) {
 	.feedback-tooltip {
-		transform: translate(-44px, 0) scale(0);
-		-webkit-transform: translate(-44px, 0) scale(0);
-		-moz-transform: translate(-44px, 0) scale(0);
-		-o-transform: translate(-44px, 0) scale(0);
-		-ms-transform: translate(-44px, 0) scale(0);
+		transform: translate(-38px, 0) scale(0);
+		-webkit-transform: translate(-38px, 0) scale(0);
+		-moz-transform: translate(-38px, 0) scale(0);
+		-o-transform: translate(-38px, 0) scale(0);
+		-ms-transform: translate(-38px, 0) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
-		transform: translate(-44px, -106px) scale(1);
-		-webkit-transform: translate(-44px, -106px) scale(1);
-		-moz-transform: translate(-44px, -106px) scale(1);
-		-o-transform: translate(-44px, -106px) scale(1);
-		-ms-transform: translate(-44px, -106px) scale(1);
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
+		transform: translate(-38px, -106px) scale(1);
+		-webkit-transform: translate(-38px, -106px) scale(1);
+		-moz-transform: translate(-38px, -106px) scale(1);
+		-o-transform: translate(-38px, -106px) scale(1);
+		-ms-transform: translate(-38px, -106px) scale(1);
 	}
 }
 /** диапазон 295 или 293 по высоте */
 @media screen and (max-height: 295px), (max-height: 293px) {
 	.feedback-tooltip {
-		transform: translate(-44px, 0) scale(0);
-		-webkit-transform: translate(-44px, 0) scale(0);
-		-moz-transform: translate(-44px, 0) scale(0);
-		-o-transform: translate(-44px, 0) scale(0);
-		-ms-transform: translate(-44px, 0) scale(0);
+		transform: translate(-38px, -58px) scale(0);
+		-webkit-transform: translate(-38px, -58px) scale(0);
+		-moz-transform: translate(-38px, -58px) scale(0);
+		-o-transform: translate(-38px, -58px) scale(0);
+		-ms-transform: translate(-38px, -58px) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
-		transform: translate(-44px, -126px) scale(1);
-		-webkit-transform: translate(-44px, -126px) scale(1);
-		-moz-transform: translate(-44px, -126px) scale(1);
-		-o-transform: translate(-44px, -126px) scale(1);
-		-ms-transform: translate(-44px, -126px) scale(1);
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
+		transform: translate(-38px, -168px) scale(1);
+		-webkit-transform: translate(-38px, -168px) scale(1);
+		-moz-transform: translate(-38px, -168px) scale(1);
+		-o-transform: translate(-38px, -168px) scale(1);
+		-ms-transform: translate(-38px, -168px) scale(1);
 	}
 	.feedback-tooltip:after {
-		bottom: -36px;
 		border-top: 34px solid rgba(255,255,255,.4);
 	}
 }
 /** диапазон 267 или 265 по высоте */ /* firefox */
 @media screen and (max-height: 267px), (max-height: 265px) {
 	.feedback-tooltip {
-		transform: translate(-44px, 0) scale(0);
-		-webkit-transform: translate(-44px, 0) scale(0);
-		-moz-transform: translate(-44px, 0) scale(0);
-		-o-transform: translate(-44px, 0) scale(0);
-		-ms-transform: translate(-44px, 0) scale(0);
+		transform: translate(-38px, -58px) scale(0);
+		-webkit-transform: translate(-38px, -58px) scale(0);
+		-moz-transform: translate(-38px, -58px) scale(0);
+		-o-transform: translate(-38px, -58px) scale(0);
+		-ms-transform: translate(-38px, -58px) scale(0);
 	}
 	.footer_btn-tooltip-popup .feedback-tooltip, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
-	.feed-back:hover .feedback-tooltip {
-		transform: translate(-44px, -100px) scale(1);
-		-webkit-transform: translate(-44px, -100px) scale(1);
-		-moz-transform: translate(-44px, -100px) scale(1);
-		-o-transform: translate(-44px, -100px) scale(1);
-		-ms-transform: translate(-44px, -100px) scale(1);
+	.feed-back:hover .feedback-tooltip,
+	.email:hover .feedback-tooltip {
+		transform: translate(-38px, -166px) scale(1);
+		-webkit-transform: translate(-38px, -166px) scale(1);
+		-moz-transform: translate(-38px, -166px) scale(1);
+		-o-transform: translate(-38px, -166px) scale(1);
+		-ms-transform: translate(-38px, -166px) scale(1);
 	}
 	.feedback-tooltip:after {
-		bottom: -18px;
 		border-top: 16px solid rgba(255,255,255,.4);
 	}
 }

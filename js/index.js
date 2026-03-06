@@ -5,6 +5,7 @@ window.addEventListener('load', function () { // - js. Сработает, ка�
 	if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании
 		window.sessionStorage.setItem('webReadyState', document.readyState);
 	}
+	toggleToolbarSldrBtns(); // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
 }, false); // false - фаза "всплытие"
 // (!) popstate
 // window.addEventListener('popstate', (event) => {
@@ -15,10 +16,11 @@ window.addEventListener('load', function () { // - js. Сработает, ка�
 // 	}
 // }, false); // false - фаза "всплытие"
 // (!) resize
-// window.addEventListener('resize', function (e) {
-// работает, НО не используется в деле
-// 	setElemExclude(e); // исключение элементов, например контролы в пан.инстр.
-// }, false);
+window.addEventListener('resize', function (e) {
+	// работает, НО не используется в деле
+	// setElemExclude(e); // исключение элементов, например контролы в пан.инстр.
+	toggleToolbarSldrBtns(); // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
+}, false);
 // (!) document
 $(document).ready(function () { // - jq
 	if (document !== null && typeof(document) === "object") {
@@ -477,6 +479,12 @@ $(document).ready(function () { // - jq
 					} else if (e.target.id === "idPageNextOn") { // (!) кн.Вперед
 						goToPageNext(e.target.parentElement);
 					}
+				} else if (e.target.tagName === "SPAN") {
+					if (e.target.parentElement.hasAttribute('class')) {
+						if (e.target.parentElement.classList.contains('toolbar-btn-slider')) {
+							scrollToToolbarButton(e.target.parentElement);
+						}
+					}
 				}
 			}, false); // false - фаза "всплытие"
 		}
@@ -750,6 +758,57 @@ function setHistoryState(state = "replace", hrefPage = "") {
 		retVal = true;
 	}
 	return retVal;
+}
+// (!) // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
+function toggleToolbarSldrBtns() {
+	const listBtns = document.querySelectorAll('.toolbar-btn-slider span');
+	const sldrTrack = document.querySelector('.toolbar-slider-track');
+	if (listBtns.length > 0) {
+		listBtns.forEach(item => {
+			if (sldrTrack.scrollWidth > sldrTrack.clientWidth) {
+				item.removeAttribute('style');
+			} else {
+				item.style.display = "none";
+
+			}
+		});
+	}
+}
+// (!) перейти к кнопке на ианели инструментов
+function scrollToToolbarButton(elem) {
+	// 'elem - div.toolbar-btn-slider
+	if (elem === undefined || typeof(elem) === "undefined" || elem !== Object(elem) || (elem === null && elem === Object(elem))) {
+		console.error("(!) Косяк: не удалось осуществить прокрутку на нужный элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function scrollToToolbarButton():\n", elem);
+		alert("(!) Косяк: не удалось осуществить прокрутку на нужный элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.");
+		return;
+	}
+	//
+	const sldrTrack = elem.parentElement.querySelector('.toolbar-slider-track');
+	// const tSearch = elem.parentElement.querySelector('.toolbar-search');
+	// const tLeft = elem.parentElement.querySelector('.toolbar-left');
+	// const tCenter = elem.parentElement.querySelector('.toolbar-center');
+	// const tRight = elem.parentElement.querySelector('.toolbar-right');
+
+	// (!) удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться
+	function sldrTrack_onAnimationend(eVent) {
+		eVent.target.style.removeProperty('animation');
+		sldrTrack.removeEventListener('animationend', sldrTrack_onAnimationend, false);
+	}
+	if (elem.classList.contains('toolbar_btn_slider-next')) {
+		if (sldrTrack.scrollLeft === (sldrTrack.scrollWidth - sldrTrack.offsetWidth)) {
+			animationOffset(elem); // - анимационное смещение
+			sldrTrack.addEventListener('animationend', sldrTrack_onAnimationend, false);
+		} else {
+			sldrTrack.scrollLeft += 50; // - прокручиваем скроллбар // (???) как вычислить нужную кн.для получения.clientWidth
+		}
+	} else if (elem.classList.contains('toolbar_btn_slider-prev')) {
+		if (sldrTrack.scrollLeft === 0) {
+			animationOffset(elem); // - анимационное смещение
+			sldrTrack.addEventListener('animationend', sldrTrack_onAnimationend, false);
+		} else {
+			sldrTrack.scrollLeft -= 50; // - прокручиваем скроллбар // (???) как вычислить нужную кн.для получения.clientWidth
+		}
+	}
 }
 // (!) создание/удаление обработчиков событий для узла.tabs-list/idTabsList
 function setEventHandlersTabsList(elem, addOrRemove = "") {

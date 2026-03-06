@@ -176,9 +176,10 @@ $(document).ready(function () { // - jq
 }); // ready end
 // (!) развернуть/свернуть все оглавление
 function setListExpandCollapse (value) {
+	const elem = (document.querySelector('main') === null ? document.querySelectorAll('ul:not(.contacts-list)') : document.querySelector('main'));
 	// let ulFirstLevel = document.querySelector('ul:first-child'); // ul самый 1-ый родитель - предок всех потомков
 	// let list = document.querySelectorAll('ul:not(:first-child)'); // ul все предки, кроме 1-го
-	let list = document.querySelectorAll('ul'); // ul все предки
+	let list = elem.querySelectorAll('ul'); // ul все предки
 	if (list !== null && typeof(list) === "object") {
 		if (value) { // - развернуть все оглавление
 			for (let ul of list) {

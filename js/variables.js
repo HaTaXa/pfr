@@ -4,7 +4,7 @@ var setElemExclude = function (e) {
 	if (isMobile()) { // проверить устройство на кот.исп.браузер
 		if (e.type === "load") {
 			// кн.на пан.инстр.
-			let list = document.querySelectorAll('.toolbar_box-left');
+			let list = document.querySelectorAll('.toolbar_btn-left');
 			if (list.length > 0) {
 				list.forEach(elem => {
 					if (elem.id === "idUndockTabTool" || elem.id === "idNewTabTool") {
@@ -16,7 +16,7 @@ var setElemExclude = function (e) {
 			// console.log(`window.matchMedia("(orientation: portrait)").matches: ${window.matchMedia("(orientation: portrait)").matches}\n window.matchMedia("(orientation: landscape)").matches: ${window.matchMedia("(orientation: landscape)").matches}`); // x -
 			if (document.documentElement.clientWidth < 500) {
 				// кн.на пан.инстр.
-				let list = document.querySelectorAll('.toolbar_box-left');
+				let list = document.querySelectorAll('.toolbar_btn-left');
 				if (list.length > 0) {
 					list.forEach(elem => {
 						if (elem.id === "idUndockTabTool" || elem.id === "idNewTabTool") {
@@ -56,7 +56,8 @@ var vrsTopic = {
 	keys: "HaTaXa",
 	msgBox: "enable", // "disable",
 	msgBtn: true,
-	msgText: `<p>Уважаемый посетитель!<br>Сайт находится в разработке и поэтому некоторый функционал может пока что отсутствовать.</p>`,
+	// msgText: `<p>Уважаемый посетитель!<br>Сайт находится в разработке и поэтому некоторый функционал может пока что отсутствовать.</p>`,
+	msgText: `<p>Добро пожаловать!<br>Уважаемый посетитель,<br>информационное окно можно скрыть/отобразить следуя подсказкам слева и справа.</p>`,
 	msgEffect: "on", // "on"/"bgr"/"off"
 }
 // (!) Navigation pages

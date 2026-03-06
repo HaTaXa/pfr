@@ -561,8 +561,11 @@ x 'скорее всего не понадобится, т.к.при компи�
 img#button_off, /* (?) че за кнопки не пойму */
 img#social_off {border-color: transparent;}
 /* (!) Панель инструментов */
+.toolbar-banner,
+.toolbar {text-indent: 0;}
 /**Предотвращение выбора инструментов */
 .topic-controls *,
+.tabs-window,
 .nav-pane *,
 .toolbar * {
 	/* -webkit-touch-callout: none; */ /* (i) не рекомендуется */
@@ -578,10 +581,76 @@ img#social_off {border-color: transparent;}
 	position: relative;
 	left: 0; top: 0;
 	width: auto;
-	height: 48px; /* height: auto; */ /**test */
-	padding: 0px 4px 0px 4px;
-	/* flex: 1 1 auto; */ flex: 1 1 100%; /* flex: 1 1 48px; */ /**test */
-	flex-flow: row wrap;
+	height: auto;
+	/* height: 48px; */
+	/* padding: 0px 4px 0px 4px; */
+	/* flex: 1 1 auto; */ flex: 1 1 100%; /* flex: 1 1 48px; */ /**test */ /* когда сработает flex для container */
+	flex: 0 1 100%;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.toolbar-slider-track,
+.toolbar-slider {
+	width: auto;
+	height: auto;
+	flex: 1 1 auto;
+}
+.toolbar-slider-track,
+.toolbar-slider {
+	position: relative;
+	left: 0; top: 0;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+}
+.toolbar-slider {
+	justify-content: center;
+	overflow: hidden hidden;
+}
+.toolbar-slider-track {
+	justify-content: flex-start;
+	overflow: auto hidden;
+	scrollbar-width: none; /* без отображения позволит для моб.вар.двигать ленту */
+}
+
+.toolbar-btn-slider {
+	color: #fff;
+	cursor: pointer;
+}
+.toolbar-btn-slider {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: 100%;
+	/* margin: 0 2px; */
+	padding: 0 2px;
+	display: flex;
+	flex: 0 1 auto;
+	flex-flow: column nowrap;
+	align-items: center;
+}
+.toolbar_btn_slider-prev {
+	justify-content: flex-start;
+	border-radius: 5px 0 0 5px;
+}
+.toolbar_btn_slider-next {
+	justify-content: flex-end;
+	border-radius: 0 5px 5px 0;
+}
+.toolbar-btn-slider span {
+	position: relative;
+	left: 0; top: 0;
+	width: 20px;
+	height: auto;
+	/* line-height: 2; */
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 }
 /**Фон, границы и тень панели инструментов, навигации, баннера и других компонентов */
 .banner,
@@ -659,13 +728,16 @@ img#social_off {border-color: transparent;}
 
 .toolbar-search {
 	order: 1; /* порядок появления в flex-контейнере */
-	min-width: 160px;
-	/* flex-grow: 0; *//* растягивание flex-элемента при необходимости. */
-	/* flex-shrink: 1; *//* способность гибкого элемента сжиматься при необходимости. */
-	/* flex-basis: 150px; *//* размер элемента по умолчанию ПЕРЕД распределением оставшегося пространства. */
-	flex: 0 1 16vw; /* - вьюпорт 16vw, изменение ширины элемента относительно ширины видимой области браузера. */
+	/* min-width: 160px; */
+	/* flex: 0 1 14vw; */ /* - вьюпорт 16vw, изменение ширины элемента относительно ширины видимой области браузера. */
+	/*
+	flex-grow: 0; - растягивание flex-элемента при необходимости.
+	flex-shrink: 1; - способность гибкого элемента сжиматься при необходимости.
+	flex-basis: 150px; - размер элемента по умолчанию ПЕРЕД распределением оставшегося пространства.
+	*/
 }
 
+.toolbar-search,
 .toolbar-right,
 .toolbar-center,
 .toolbar-left {
@@ -684,23 +756,29 @@ img#social_off {border-color: transparent;}
 	justify-content: flex-end; /* выравнивание вдоль главной оси. Не для всех браузеров */
 }
 
-.toolbar-box {
+.toolbar-btn-slider span,
+.toolbar-btns {padding: 2px 1px 2px 1px;}
+.toolbar-btns {
 	position: relative;
 	width: auto;
 	height: auto;
-	padding: 2px 1px 2px 1px;
 	display: flex;
-	flex-flow: row wrap; /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
+	flex-flow: column nowrap; /* - св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
 	align-items: center;
 	justify-content: center; /* - выравнивание вдоль главной оси. Не для всех браузеров */
+}
+.toolbar-btns {
 	font-family: Tahoma, Verdana, Arial, sans-serif, Helvetica;
 	font-size: 9px;
 	font-weight: normal;
-	text-indent: 0;
-	line-height: 1em;
+	/* line-height: 1em; */
 }
 /* (!) Quick search box */
-.toolbar_box-search {flex: 1 1 auto;}
+.toolbar_btn-search {
+	flex: 1 1 auto;
+	flex-flow: row nowrap;
+	align-items: flex-start;
+}
 /* (!) checkboxes */
 [for="idBannerShowHide"] {display: contents;}
 #idBannerShowHide,
@@ -745,7 +823,8 @@ img#social_off {border-color: transparent;}
 }
 
 .quick-search input {
-	width: 60px;
+	/* width: 60px; */
+	width: 22px;
 	height: 20px;
 	padding-right: 16px;
 	flex: 1 1 auto;
@@ -791,15 +870,11 @@ img#social_off {border-color: transparent;}
 	display: none;
 }
 
-.toolbar_box-search span {
-	top: 0;
-	flex: 1 1 100%;
-	font-weight: bold;
-}
+.toolbar_btn-search span {font-weight: bold;}
 /* the end Quick search box */
-.toolbar_box-right,
-.toolbar_box-center,
-.toolbar_box-left {flex: 0 1 auto;}
+.toolbar_btn-right,
+.toolbar_btn-center,
+.toolbar_btn-left {flex: 0 1 auto;}
 /*
 (!).permalink - вплывающее окно "Постоянная ссылка"
 */
@@ -1093,18 +1168,21 @@ img#social_off {border-color: transparent;}
 /*
 (!) Позиционирование для всех компонентов: и ссылок, и иконок
 */
-.btn-icon,
-.btn_icon-off,
-.toolbar_box-right a {
+.btn-icon {
+	position: relative;
+	left: 0; top: 0;
+	margin: auto;
+}
+.toolbar_btn-right a { display: flex;}
+.btn_icon-off {
 	position: absolute;
 	left: 0; right: 0;
-	top: 0;
-	margin: 0 auto;
+	top: 0; bottom: 0;
 }
 /* (i) имя класса так же присутствует в стилях topic.css и navigation.css, но правила разные */
 .feedback_tooltip-title,
 .feedback-tooltip,
-.btn_icon-off,
+/* .btn_icon-off, */
 .btn-icon {padding: 2px 4px 2px 4px;}
 .feedback-tooltip,
 .btn_icon-off,
@@ -1309,12 +1387,18 @@ x не используется
 	/* 100% {opacity: 1;}
 } */ /* x */
 
+#idFeedBackText {width: 100%;}
 .btn_text-off,
 .btn_text-on {
 	position: relative;
-	top: 12px;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
 	margin: 1px;
-	text-indent: 0;
+	display: flex;
+	flex: 0 1 100%;
+	align-items: center;
+	justify-content: center;
 	text-align: center;
 	text-transform: capitalize; /* преобразование текста элемента в заглавные или прописные символы */
 	cursor: default;
@@ -1338,9 +1422,9 @@ x не используется
 	/* min-width: 14vw; */ /* - вьюпорт, изменение ширины элемента относительно ширины видимой области браузера */
 }
 .topic-pane,
-.nav-pane {top: 54px;}
+.nav-pane {top: 50px;}
 .topic-pane-banner,
-.nav-pane-banner {top: 170px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
+.nav-pane-banner {top: 166px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
 /*
 (!).splitter-right - боковой разделитель между боковой панелью навигации и текстовым топиком
 */
@@ -1415,13 +1499,15 @@ x не используется
 	margin-top: 4px;
 }
 /* (!).topic-controls - компоненты вкладок */
+.tabs-window,
+.topic-controls {height: 32px;}
 .topic-controls {
 	position: relative;
 	/* left: 8px; */
 	left: 0; top: 0;
 	width: auto;
-	height: 32px;
-	margin: 0 8px;
+	/* margin: 0 8px; */
+	margin-left: 8px;
 	display: flex;
 	flex-flow: row nowrap;
 	flex: 1 1 auto;
@@ -1661,12 +1747,13 @@ TODO: *переделать в псевдо не получится, см.спе
 /*
 (!).tabs-window - вкладки панели тем - топиков
 */
+.tabs-window {margin-right: 8px;}
 .tab_slider-track,
 .tab-slider,
 .tabs-window {
 	position: relative;
 	left: 0; top: 0;
-	height: auto;
+	/* height: auto; */
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: flex-start;
@@ -1857,6 +1944,13 @@ TODO: *переделать в псевдо не получится, см.спе
 /* @media (min-width: 992px) and (max-width: 1199px) {} */
 /**диапазон < 960px */
 /* @media screen and (max-width: 960px) {} */
+/**диапазон < 668px */
+@media screen and (max-width: 668px) {
+	/* .toolbar_btn-center span, */
+	.btn_text-off, .btn_text-on {width: min-content;}
+	.topic-pane, .nav-pane {top: 60px;}
+	.topic-pane-banner, .nav-pane-banner {top: 176px;}
+}
 /*
 'Portrait tablets and small desktops
 - Портретные планшеты и небольшие настольные компьютеры
@@ -1868,56 +1962,11 @@ TODO: *переделать в псевдо не получится, см.спе
 - Альбомные телефоны и планшеты с портретом
 */
 /**диапазон < 757px */
-/* (?) в firefox в.toolbar span's не знаю как заставить переносить текст со слешем */
+/* (?) в firefox в.toolbar span's не знаю как заставить переносить текст со слещем */
 /* @media screen and (max-width: 757px) {} */
 /**диапазон < 740px */
 /* @media screen and (max-width: 740px) {} */ /* HACK: 'граница, когда после вкладки Поиск почти не остается места для др.вкладок чтобы не уходить за пределы видимости экрана */
-/**диапазон < 715px firefox/chrome < 668 */
-@media screen and (max-width: 715px) {
-	.toolbar_box-center span,
-	.txt-wrap {width: min-content;}
-}
-/**диапазон < 647px */
-@media screen and (max-width: 647px) {
-	.toolbar {height: 98px;}
-	.toolbar-banner {height: 99px;}
 
-	.toolbar-search {
-		flex: 1 1 100%;
-		flex-wrap: wrap;
-	}
-	.toolbar_box-search {align-items: flex-end;}
-	.toolbar_box-search span {
-		position: absolute;
-		top: 12px;
-	}
-
-	.toolbar_box-center span,
-	.txt-wrap {width: auto;}
-
-	.topic-pane,
-	.nav-pane {top: 104px;}
-	.topic-pane-banner,
-	.nav-pane-banner {top: 220px;} /* [nav-pane, topic-pane] top: banner height: 120px + toolbar (height + margin-top): (100px + 4px) */
-}
-/**диапазон < 565px */
-@media screen and (max-width: 565px) {
-	.toolbar_box-search span {top: 8px;}
-	.toolbar_box-center span,
-	.txt-wrap {width: min-content;}
-}
-/**диапазон < 500px по высоте */
-/* @media screen and (max-height: 500px) { */ /* (?) */
-	/**lightbox-клон */
-	/* .btn-slider,
-	.lightbox-btn-close,
-	.btn-box {font-size: 1.5em;}
-	.zoom-out, .zoom-in {
-		width: 25px;
-		height: 25px;
-	}
-	.slider-item, .btn-slider {height: 25px;}
-} */
 /**диапазон < 500px по ширине */
 @media screen and (max-width: 500px) {
 	.permalink {
@@ -1941,16 +1990,19 @@ TODO: *переделать в псевдо не получится, см.спе
 		box-shadow: none;
 		-webkit-box-shadow: none;
 		-moz-box-shadow: 0 0 0;
-	}/* 'убираем тень */
+	} /* 'убираем тень */
 	.toolbar-banner,
-	.toolbar {flex: 0 0 auto;}
-
+	.toolbar {
+		width: auto;
+		flex: 0 0 auto;
+	}
 	.topic-pane,
 	.nav-pane {
 		position: relative;
 		top: 0;
 		width: auto;
 		height: auto;
+		margin-top: 0;
 		display: flex; /* создает переполнение и вылезает за пределы видимости */
 		flex: 1 1 auto;
 		flex-wrap: nowrap;
@@ -1984,21 +2036,6 @@ TODO: *переделать в псевдо не получится, см.спе
 		/* will-change: transform; */
 	}
 }
-/**диапазон < 470 */
-@media screen and (max-width: 470px) {
-	.toolbar {height: 148px;}
-	.toolbar-banner {height: 149px;}
-
-	.toolbar-right {order: 3;}
-	.toolbar-center {order: 4;}
-	.toolbar-left,
-	.toolbar-center,
-	.toolbar-right {justify-content: space-around;}
-
-	.toolbar_box-search span {top: 10px;}
-	.toolbar_box-center span,
-	.txt-wrap {width: auto;}
-}
 /**диапазон < 440 */
 @media screen and (max-width: 440px) {
 	.banner img {height: 70%;}
@@ -2011,16 +2048,16 @@ TODO: *переделать в псевдо не получится, см.спе
 */
 /**диапазон < 398 */
 @media screen and (max-width: 398px) {
-	.toolbar {height: 198px;}
-	.toolbar-banner {height: 199px;}
+	/* .toolbar {height: 198px;}
+	.toolbar-banner {height: 199px;} */
 
-	.toolbar_box-right,
-	.toolbar_box-center,
-	.toolbar_box-left,
+	.toolbar_btn-right,
+	.toolbar_btn-center,
+	.toolbar_btn-left,
 	.toolbar-left,
 	.toolbar-right,
 	.toolbar-center {flex-basis: 100%;}
-	/* .toolbar_box-search span {top: 14px;} */ /* x */
+	/* .toolbar_btn-search span {top: 14px;} */ /* x */
 	/**анимация подсказки для кн.e-mail */
 	.feedback-tooltip {
 		transform: translate(-40px, -40px) scale(0);
@@ -2062,24 +2099,13 @@ TODO: *переделать в псевдо не получится, см.спе
 	} */ /* x */
 }
 /**диапазон < 346px */
-/* @media screen and (max-width: 346px) {.toolbar_box-search span {top: 10px;}} */ /* x */
+/* @media screen and (max-width: 346px) {.toolbar_btn-search span {top: 10px;}} */ /* x */
 /**диапазон < 226px */
 @media screen and (max-width: 226px) {
-	.toolbar {height: 98px;}
-	.toolbar-banner {height: 99px;}
-
-	.toolbar-left,
-	.toolbar-right,
-	.toolbar-center {height: 18px;}
-	.toolbar-center {padding: 0 0 6px 0;}
-
-	.toolbar_box-search {align-items: center;}
-
-	.toolbar-box span {display: none;}
+	.toolbar-btns span {display: none;}
 }
 /**диапазон < 220px */
 @media screen and (max-width: 220px) {
-	.toolbar-search {min-width: max-content;}
 	/**анимация подсказки для кнопки e-mail */
 	.feedback-tooltip {
 		transform: translate(-34px, -40px) scale(0);

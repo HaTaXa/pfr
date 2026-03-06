@@ -154,16 +154,19 @@ $(document).ready(function () { // - jq
 				}
 			}
 		}, false); // false - фаза "всплытие"
+
+
 		// (!) hashchange
-		window.addEventListener('hashchange', (e) => {
+		// window.addEventListener('hashchange', (e) => {
 
-			// console.log(e.type, ": window.«", window.name, "», location.origin: ", location.origin, "\n e.oldURL: ", e.oldURL, "\n e.newURL: ", e.newURL);
+		// 	// console.log(e.type, ": window.«", window.name, "», location.origin: ", location.origin, "\n e.oldURL: ", e.oldURL, "\n e.newURL: ", e.newURL);
 
-		}, false); // false - фаза "всплытие"
+		// }, false); // false - фаза "всплытие"
+
+
 		// 'focusIn
 		document.addEventListener('focusin', function (event) {
 			// console.log("«", event.type, "», window.«", window.name, "»", "\n document.activeElement: ", document.activeElement, "\n event.target: ", event.target);
-
 			if (event.target.hasAttribute('class')) {
 				if (event.target.classList.contains('lightbox')) {
 					setEventHandlersLightbox(event.target, "add"); // создание/удаление обработчиков событий для узла.lightbox
@@ -173,10 +176,11 @@ $(document).ready(function () { // - jq
 		// 'focusOut
 		document.addEventListener('focusout', function (event) {
 			// console.log("«", event.type, "», window.«", window.name, "»", "\n document.activeElement: ", document.activeElement, "\n event.target: ", event.target);
-
 			if (event.target.hasAttribute('class')) {
 				if (event.target.classList.contains('lightbox')) {
-					setEventHandlersLightbox(event.target, "remove"); // создание/удаление обработчиков событий для узла.lightbox
+					if (event.target.tabIndex !== 0) {
+						setEventHandlersLightbox(event.target, "remove"); // создание/удаление обработчиков событий для узла.lightbox
+					}
 				}
 			}
 		}, false);
@@ -745,7 +749,7 @@ function writeMsgBox(msgBox = "enable", msgBtn = false, msgText = "") {
 }
 // (!) переключатель скрытого контента
 function setToggleContent(elem) {
-	// elem - tagName a/img //~null (для кн.div.toolbar_box-center>img: idExpandOn/idExpandOff)
+	// elem - tagName a/img //~null (для кн.div.toolbar_btn-center>img: idExpandOn/idExpandOff)
 	if (!elem === null && !elem.classList.contains('toggle-icon') && !elem.classList.contains('toggle-inline') && !elem.classList.contains('toggle-dropdown')) {
 		console.error("(!) Косяк - не удалось переключить скрытый контент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleContent(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
 		alert(`(!) Косяк - не удалось переключить скрытый контент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);

@@ -554,7 +554,7 @@ function setCursorIcon(elem) {
 // (!) переключатель иконки/списка для скрытого контента в теме топика
 function setToggleIcon(elem = null, btnValue = null) {
 	// 'elem - tagName: img/a/any elem (UL/LI/p)..?
-	// ''btnValue - boolean tagName div.toolbar_box-center>img: idExpandOn/idExpandOff
+	// ''btnValue - boolean tagName div.toolbar_btn-center>img: idExpandOn/idExpandOff
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
 		if (btnValue === null || typeof(btnValue) !== "boolean" || btnValue !== Boolean(btnValue)) {
 			console.error(`(!) Косяк: не удалось выполнить изменение иконки-переключателя - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleIcon(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}, btnValue = ${btnValue})`);
@@ -988,7 +988,7 @@ function toggleDropdownElement(elem) {
 // (!) установить элемент переключения скрытого контента - развернуть/свернуть скрытый контент
 function setToggleElement(elem) {
 	// (i)(!) для неск-их сгруппированных скрытых контентов в одном текущем абзаце работает принцип переключателя
-	// elem - tagName a/img //~null (для кн.div.toolbar_box-center>img: idExpandOn/idExpandOff)
+	// elem - tagName a/img //~null (для кн.div.toolbar_btn-center>img: idExpandOn/idExpandOff)
 	if (!elem === null && !elem.classList.contains('toggle-icon') && !elem.classList.contains('toggle-inline') && !elem.classList.contains('toggle-dropdown')) {
 		console.error("(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setToggleElement(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin);
 		alert(`(!) Косяк: не удалось выполнить переключение элементов скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
@@ -1054,7 +1054,7 @@ function setToggleElement(elem) {
 					alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - не найден элемент, см.консоль.`);
 					return lbx;
 				}
-			} else if (hash === "" && hash.length === 0) { // заглушка
+			} else if (hash === "" && hash.length === 0) { // ~заглушка
 				// потомок.toggle-content:.footnote/...
 				let tgl = getToggleNode(item);
 				if (tgl !== null && tgl === Object(tgl)) {
@@ -1231,7 +1231,7 @@ function setToggleElement(elem) {
 			alert(`(!) Косяк: не удалось выполнить переключение элемента(-ов) скрытого контента - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 			return;
 		}
-		let arr = [];
+		let arr = []; // текущ.lbx
 		if (elem.tagName === "A") {
 			if (elem.classList.contains('toggle-inline')) { // - встроенный переключатель
 				toggleInlineElement(elem); // переключить встроенный элемент
@@ -1704,9 +1704,9 @@ function goToImage(elem, keyEvent = "") {
 		// img.setAttribute('style', 'animation: img-item-left');
 	} else {
 		if (keyEvent === "ArrowUp") {
-		img.style.setProperty('animation-name', 'img-item-up'); // или так
-		// img.style.animationName = "img-item-up"; // или так
-		// img.setAttribute('style', 'animation: img-item-up');
+			img.style.setProperty('animation-name', 'img-item-up'); // или так
+			// img.style.animationName = "img-item-up"; // или так
+			// img.setAttribute('style', 'animation: img-item-up');
 		} else if (keyEvent === "ArrowDown") {
 			img.style.setProperty('animation-name', 'img-item-down'); // или так
 			// img.style.animationName = "img-item-down"; // или так

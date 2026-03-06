@@ -156,7 +156,10 @@ html *::-webkit-scrollbar-thumb {
 	flex-flow: column nowrap;
 	/* align-items: center; */
 	/* justify-content: space-between; */
-	overflow: hidden hidden;
+}
+.topic-box {
+	overflow: hidden auto;
+	scrollbar-width: none;
 }
 .topic-header {
 	position: relative;
@@ -1426,6 +1429,7 @@ li.unic-check-mark:before,
 	/* outline: 1px solid white; */ /* без влияния на размерность */
 	box-shadow: 5px 5px 5px #888;
 	overflow: auto;
+	/* scrollbar-width: none; *//* без отображения позволит для моб.вар.двигать ленту */
 }
 
 .img-item {
@@ -2071,11 +2075,16 @@ span#sbuttontext {
 @media screen and (max-width: 500px) {
 	/* .topic-footer, .topic-body {flex: 1 1 70%;} */
 	.topic-footer {
+		/* height: 10%; */
 		max-height: 10vh;
 		padding: 2px;
 		flex: 1 1 70%; /* (?)~transition работает хорошо, overflow: hidden hidden в замене не нуждается и косяка при переполнении не возникает */
 		overflow: hidden hidden; /* ~при увеличении выс.предотвратит задирание вверх из-за большого объема текта */
 	}
+	/* .topic-footer:hover {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	} */
 	.footer-max,
 	.topic-footer {
 		transition: all 3s 3s ease, max-height 3s 0s ease;
@@ -2085,13 +2094,11 @@ span#sbuttontext {
 	}
 	.footer-max,
 	.topic-footer:hover {
-		/* position: absolute; */
+		/* position: absolute; */ /* в обратном порядке получается изменить на relative */
 		right: 0;
+		/* height: 100%; */
 		max-height: 100%;
-		/* padding: 2px 2px 6px 2px; */
-		/* flex: 1 1 100%; */
 		z-index: 1;
-		/* overflow: initial; */ /* ~косяк при переполнении-задирает футтер на выс.максимально заполненного текстом блока в футтере */
 	}
 
 	.topic-footer-left {padding: 1px 1px 1px 4px;}
@@ -2105,18 +2112,24 @@ span#sbuttontext {
 	.footer-max .topic-footer-left,
 	.footer-max .topic-footer-right,
 	.topic-footer:hover .topic-footer-left,
-	.topic-footer:hover .topic-footer-right {overflow: hidden auto;}
+	.topic-footer:hover .topic-footer-right {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	}
 	/* truncate - усечение длинного текста */
+	.topic-footer p {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	}
 	.topic-footer p {
 		/* max-width: 102px; */
 		text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
 		-ms-text-overflow: ellipsis;
-		overflow: hidden auto;
 	}
-	.topic-footer a,
 	.footer-max p,
-	.topic-footer:hover p {
+	.topic-footer:hover p,
+	.topic-footer a {
 		overflow-wrap: anywhere;
 		word-break: break-word;
 	} /* усечение длинного текста */
