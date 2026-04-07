@@ -461,11 +461,6 @@ html *::-webkit-scrollbar-thumb {
 	height: 100%;
 }
 /* (!).banner - баннер */
-.topic-pane,
-.nav-pane,
-.toolbar-banner,
-.toolbar,
-.banner {display: flex;}
 .banner {order: 1;}
 .toolbar-banner,
 .toolbar {order: 2;}
@@ -477,6 +472,7 @@ html *::-webkit-scrollbar-thumb {
 	width: 100%;
 	height: 120px;
 	margin: auto;
+	display: flex;
 	flex: 0 0 auto;
 	flex-flow: row wrap;
 	align-items: center;
@@ -582,9 +578,7 @@ img#social_off {border-color: transparent;}
 	left: 0; top: 0;
 	width: auto;
 	height: auto;
-	/* height: 48px; */
-	/* padding: 0px 4px 0px 4px; */
-	/* flex: 1 1 auto; */ flex: 1 1 100%; /* flex: 1 1 48px; */ /**test */ /* когда сработает flex для container */
+	display: flex;
 	flex: 0 1 100%;
 	flex-flow: row nowrap;
 	align-items: center;
@@ -624,21 +618,24 @@ img#social_off {border-color: transparent;}
 	left: 0; top: 0;
 	width: auto;
 	height: 100%;
-	/* margin: 0 2px; */
-	padding: 0 2px;
 	display: flex;
 	flex: 0 1 auto;
 	flex-flow: column nowrap;
 	align-items: center;
 }
 .toolbar_btn_slider-prev {
+	margin: 0 2px 0 0;
+	padding: 0 0 0 2px;
 	justify-content: flex-start;
 	border-radius: 5px 0 0 5px;
 }
 .toolbar_btn_slider-next {
+	margin: 0 0 0 2px;
+	padding: 0 2px 0 0;
 	justify-content: flex-end;
 	border-radius: 0 5px 5px 0;
 }
+
 .toolbar-btn-slider span {
 	position: relative;
 	left: 0; top: 0;
@@ -711,7 +708,6 @@ img#social_off {border-color: transparent;}
 }
 
 .toolbar-banner {
-	/* height: 49px; */ /**test */
 	margin: 0 4px 4px 4px;
 	border-top-style: none;
 }
@@ -719,12 +715,16 @@ img#social_off {border-color: transparent;}
 .toolbar-right,
 .toolbar-center,
 .toolbar-left,
-.toolbar-search {
+.toolbar-search,
+.navpane-toolbar {
 	position: relative;
 	padding: 2px 0;
 	display: flex;
 	flex-flow: row nowrap; /* св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
+	align-items: center;
 }
+.toolbar-slider-track,
+.navpane-toolbar {margin: 0 2px;}
 
 .toolbar-search {
 	order: 1; /* порядок появления в flex-контейнере */
@@ -757,9 +757,12 @@ img#social_off {border-color: transparent;}
 }
 
 .toolbar-btn-slider span,
+.btn-navpane-handle,
 .toolbar-btns {padding: 2px 1px 2px 1px;}
+.btn-navpane-handle,
 .toolbar-btns {
 	position: relative;
+	left: 0; top: 0;
 	width: auto;
 	height: auto;
 	display: flex;
@@ -773,6 +776,123 @@ img#social_off {border-color: transparent;}
 	font-weight: normal;
 	/* line-height: 1em; */
 }
+/* анимация *//* (i).icon-bgr пока нигде не используется */
+.icon-bgr {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 0 0;
+	align-items: center;
+	justify-content: center;
+}
+.icon-bgr,
+.btn-navpane-handle {box-shadow: 0 0 3px 0px rgba(0, 0, 0, .6);}
+.feedback-tooltip,
+.btn_icon-off,
+.btn-icon,
+.icon-bgr:before,
+.icon-bgr,
+.navpane-handle-icon,
+.btn-navpane-handle:before,
+.btn-navpane-handle {
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+.btn-navpane-handle:hover:before {border: 1px solid #fff;}
+.icon-bgr:before,
+.btn-navpane-handle:before {
+	content: "";
+	position: absolute;
+	left: 0; top: 0;
+	right: 0; bottom: 0;
+	/* z-index: -1; */
+}
+.btn-navpane-handle:before {
+	background: rgb(0,0,0);
+	background: linear-gradient(45deg,
+		rgba(0,0,0,1) 0%,
+		rgba(136,136,136,1) 25%,
+		rgba(136,136,136,1) 35%,
+		rgba(0,0,0,1) 50%,
+		rgba(136,136,136,1) 70%,
+		rgba(0,0,0,1) 100%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(0,0,0,1) 0%,
+		rgba(136,136,136,1) 25%,
+		rgba(136,136,136,1) 35%,
+		rgba(0,0,0,1) 50%,
+		rgba(136,136,136,1) 70%,
+		rgba(0,0,0,1) 100%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(0,0,0,1) 0%,
+		rgba(136,136,136,1) 25%,
+		rgba(136,136,136,1) 35%,
+		rgba(0,0,0,1) 50%,
+		rgba(136,136,136,1) 70%,
+		rgba(0,0,0,1) 100%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(0,0,0,1) 0%,
+		rgba(136,136,136,1) 25%,
+		rgba(136,136,136,1) 35%,
+		rgba(0,0,0,1) 50%,
+		rgba(136,136,136,1) 70%,
+		rgba(0,0,0,1) 100%
+	);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#000000",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #888888);
+	background-size: 1000%;
+}
+.icon-bgr:before {
+	background: rgb(136,136,136);
+	background: linear-gradient(45deg,
+		rgba(136,136,136,1) 0%,
+		rgba(0,0,0,1) 25%,
+		rgba(0,0,0,1) 35%,
+		rgba(136,136,136,1) 50%,
+		rgba(0,0,0,1) 70%,
+		rgba(136,136,136,1) 100%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(136,136,136,1) 0%,
+		rgba(0,0,0,1) 25%,
+		rgba(0,0,0,1) 35%,
+		rgba(136,136,136,1) 50%,
+		rgba(0,0,0,1) 70%,
+		rgba(136,136,136,1) 100%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(136,136,136,1) 0%,
+		rgba(0,0,0,1) 25%,
+		rgba(0,0,0,1) 35%,
+		rgba(136,136,136,1) 50%,
+		rgba(0,0,0,1) 70%,
+		rgba(136,136,136,1) 100%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(136,136,136,1) 0%,
+		rgba(0,0,0,1) 25%,
+		rgba(0,0,0,1) 35%,
+		rgba(136,136,136,1) 50%,
+		rgba(0,0,0,1) 70%,
+		rgba(136,136,136,1) 100%
+	);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#888888",endColorstr="#888888",GradientType=1);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #888888, endColorstr = #000000);
+	background-size: 1000%;
+}
+.icon-bgr:before,
+.btn-navpane-handle:before {
+	animation: eff-line-gradient 10s ease infinite;
+	-webkit-animation: eff-line-gradient 10s ease infinite;
+	-moz-animation: eff-line-gradient 10s ease infinite;
+	-o-animation: eff-line-gradient 10s ease infinite;
+}
 /* (!) Quick search box */
 .toolbar_btn-search {
 	flex: 1 1 auto;
@@ -783,23 +903,27 @@ img#social_off {border-color: transparent;}
 [for="idBannerShowHide"] {display: contents;}
 #idBannerShowHide,
 #idNavPaneToggle {display: none;} /* - скрываем "квадратик" checkbox */
-/* (!).nav_pane-handle - иконка Скрыть/Показать панель навигации */
+
+.btn-navpane-handle,
+.btn_icon-index_off,
+.btn_icon-index_on,
 .btn_icon-search_off,
-.btn_icon-search_on,
-.nav_pane-handle {
+.btn_icon-search_on {cursor: pointer;}
+/* .navpane-handle, *//* (!) div Скрыть/Показать панель навигации */
+.btn_icon-search_off, .btn_icon-search_on,
+.btn_icon-index_off, .btn_icon-index_on {
 	position: relative;
-	border: 1px solid;
-	cursor: pointer;
+	padding: 2px;
+	background-color: #dedede;
+	border: 1px solid #dedede;
 }
-.nav_pane-handle {
+/* (i) вариант div.navpane-handle (burger), только через css */
+/* .navpane-handle {
 	height: 20px;
-	border-color: #fff;
-	border-radius: 8px 0 0 8px;
 	background-color: transparent;
 }
-.nav_pane-handle:hover {background-color: #dedede;}
-
-.btn-nav_pane {
+.navpane-handle:hover {background-color: #dedede;}
+	.navpane-handle-icon {
 	width: 16px;
 	height: 2px;
 	margin: 3px 1px 3px 3px;
@@ -808,8 +932,27 @@ img#social_off {border-color: transparent;}
 	border-bottom: 8px double #fff;
 	box-sizing: unset;
 }
-.btn-nav_pane:hover {border-color: #000;}
-/* 'the end .nav_pane-handle - Иконка Скрыть/Показать панель навигации */
+.navpane-handle-icon:hover {border-color: #000;} */
+/* 'the end div.navpane-handle - Скрыть/Показать панель навигации *//* (i) вариант div.navpane-handle (burger), только через css */
+.btn_icon-search_off:hover,
+.btn_icon-search_on:hover,
+.btn_icon-index_off:hover,
+.btn_icon-index_on:hover {
+	border-color: #fff;
+	background-color: transparent;
+}
+.btn_icon-index_off,
+.btn_icon-index_on {border-radius: 8px 0 0 8px;}
+.btn_icon-search_off,
+.btn_icon-search_on {border-radius: 0 8px 8px 0;}
+
+.btn_icon-off,
+.btn_icon-index_off,
+.btn_icon-search_off {
+	cursor: default;
+	display: none;
+}
+
 .quick-search {
 	position: relative;
 	left: 0; top: 0;
@@ -824,7 +967,7 @@ img#social_off {border-color: transparent;}
 
 .quick-search input {
 	/* width: 60px; */
-	width: 22px;
+	width: 26px;
 	height: 20px;
 	padding-right: 16px;
 	flex: 1 1 auto;
@@ -836,10 +979,10 @@ img#social_off {border-color: transparent;}
 	width: auto;
 	height: auto;
 	/* font-size: 1rem; */
-	font-size: 1.04rem;
+	font-size: 1.10rem;
 	text-align: center;
 	line-height: normal;
-	border: 1px solid transparent;
+	/* border: 1px solid transparent; */
 	/* border-radius: 100px; */
 	/* background: #dedede; */
 	transition: .3s;
@@ -850,27 +993,12 @@ img#social_off {border-color: transparent;}
 [for="idInputSearch"]:hover {
 	display: inline-block;
 	font-weight: bold;
-	top: 3px;
+	top: 2px;
+	transform-origin: center center;
 	transform: rotateZ(180deg);
 }
-
-.btn_icon-search_off,
-.btn_icon-search_on {
-	padding: 2px;
-	background-color: #dedede;
-	border-color: #dedede;
-	border-radius: 0 8px 8px 0;
-}
-.btn_icon-search_off:hover,
-.btn_icon-search_on:hover {background-color: transparent;}
-
-.btn_icon-off,
-.btn_icon-search_off {
-	cursor: default;
-	display: none;
-}
-
-.toolbar_btn-search span {font-weight: bold;}
+/* .toolbar_btn-search span, */
+.quick-search span {font-weight: bold;}
 /* the end Quick search box */
 .toolbar_btn-right,
 .toolbar_btn-center,
@@ -1168,6 +1296,9 @@ img#social_off {border-color: transparent;}
 /*
 (!) Позиционирование для всех компонентов: и ссылок, и иконок
 */
+/* .navpane-handle-icon:hover {fill: #000;} */
+.navpane-handle-icon {fill: #fff;}
+.navpane-handle-icon,
 .btn-icon {
 	position: relative;
 	left: 0; top: 0;
@@ -1182,16 +1313,15 @@ img#social_off {border-color: transparent;}
 /* (i) имя класса так же присутствует в стилях topic.css и navigation.css, но правила разные */
 .feedback_tooltip-title,
 .feedback-tooltip,
+.navpane-handle-icon,
 /* .btn_icon-off, */
 .btn-icon {padding: 2px 4px 2px 4px;}
+
 .feedback-tooltip,
+/* .navpane-handle-icon, */
+/* .btn-navpane-handle, */
 .btn_icon-off,
-.btn-icon {
-	border: 1px solid transparent;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-}
+.btn-icon {border: 1px solid transparent;}
 /* .nav-pane:target .nav-box, */ /* :active/:target в firefox не срабатывает */
 .nav-pane:active .nav-box, /* only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
 .nav-pane:hover .nav-box,
@@ -1199,6 +1329,8 @@ img#social_off {border-color: transparent;}
 .toolbar-banner:hover,
 .toolbar:hover,
 .feedback-tooltip,
+/* .navpane-handle-icon:hover, */
+/* .btn-navpane-handle:hover, */
 .btn_icon-off:active, /* only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
 .btn_icon-off:hover,
 .btn-icon:active, /* only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
@@ -1262,27 +1394,26 @@ x не используется
 	/* word-break: normal; */ /* normal, чтобы игнорировался разного вида перенос текста */
 	/* line-break: anywhere; */
 	/* text-wrap-style: pretty; */
-	hyphens: auto; /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
+	hyphens: none; /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
 	-moz-hyphens: auto; /* - все равно не работает */
 	-ms-hyphens: auto;
-
 }
-.title_txt-top {
+.title-top {
 	top: 0;
 	align-items: flex-start;
 	align-content: flex-start;
 }
-.title_txt-center {
+.title-center {
 	top: 0; bottom: 0;
 	align-items: center; /* выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении */
 	align-content: center; /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 }
-.title_txt-bottom {
+.title-bottom {
 	bottom: 0;
 	align-items: flex-end;
 	align-content: flex-end;
 }
-.title_txt-custom {bottom: 30px;}
+.title-custom {bottom: 30px;}
 /**треугольник */
 .feedback-tooltip:before {
 	content: "";
@@ -1393,8 +1524,9 @@ x не используется
 	position: relative;
 	left: 0; top: 0;
 	width: auto;
+	/* width: min-content; */
 	height: auto;
-	margin: 1px;
+	margin: 1px auto 1px auto;
 	display: flex;
 	flex: 0 1 100%;
 	align-items: center;
@@ -1405,12 +1537,6 @@ x не используется
 }
 .btn_text-on {color: #dedede; /* color: #f1f1f1; */}
 .btn_text-off {color: #a1a1a1;}
-.btn_text-off,
-.btn_text-on {
-	hyphens: none; /* - чтобы браузер не обращал внимания на мягкий дефис, вставляем hyphens: none для Chrome, с Firefox все сложнее */
-	-moz-hyphens: auto; /* - все равно не работает */
-	-ms-hyphens: auto;
-}
 /*
 (!).nav-pane - панель навигации
 */
@@ -1422,9 +1548,12 @@ x не используется
 	/* min-width: 14vw; */ /* - вьюпорт, изменение ширины элемента относительно ширины видимой области браузера */
 }
 .topic-pane,
-.nav-pane {top: 50px;}
-.topic-pane-banner,
-.nav-pane-banner {top: 166px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
+.nav-pane {
+	top: 50px;
+	display: flex;
+}
+.topicpane-banner,
+.navpane-banner {top: 166px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
 /*
 (!).splitter-right - боковой разделитель между боковой панелью навигации и текстовым топиком
 */
@@ -1442,9 +1571,12 @@ x не используется
 */
 .splitter-bottom {
 	position: absolute;
-	left: 0; right: 0; bottom: -6px;
+	left: 0; right: 0;
+	/* bottom: -6px; */
+	bottom: 0;
 	height: 4px;
 	padding: 3px; /* (i) для возможности предотвратить потерю захвата splitterBottom */
+	/* padding: 6px 3px 0px 3px; */ /* (i) для возможности предотвратить потерю захвата splitterBottom */
 	/* z-index: 2; */
 	cursor: move; /* (i) Указывает на то, что что-то должно быть перемещено - резервный вариант, если курсор захвата не поддерживается, как в IE */
 	cursor: row-resize;
@@ -1509,15 +1641,11 @@ x не используется
 	/* margin: 0 8px; */
 	margin-left: 8px;
 	display: flex;
+	flex: 0 1 auto;
 	flex-flow: row nowrap;
-	flex: 1 1 auto;
 	justify-content: flex-start;
 	background-color: transparent;
 }
-/* .topic-controls, */ /**не дает вывести idTabsList поверх себя */
-.tab_slider-track,
-.tab-slider,
-.tabs-window {overflow: hidden hidden;}
 /* (!).nav-handle - кнопка скрыть/показать панель навигации */
 .nav-handle {
 	position: relative;
@@ -1574,7 +1702,7 @@ x не используется
 	height: auto;
 }
 
-.navpane-handle-icon {
+.nav-handle-icon {
 	position: relative;
 	width: auto;
 	height: auto;
@@ -1586,10 +1714,10 @@ x не используется
 	justify-content: center;
 	cursor: pointer;
 }
-/* (!).navpane-show-трансформация иконки на кнопке в панеле топика
+/* (!) трансформация иконки на кнопке в панеле топика
 TODO: *переделать в псевдо не получится, см.спецификацию:
 'Псевдоэлементы, созданные с помощью ::before и ::after содержатся в блоке форматирования элемента, и поэтому не применяются к замещаемым элементам, таким как <img> или <br> */
-.navpane-show {
+#idNavPaneToggle:checked~.nav-handle-icon {
 	transform: rotate(0deg) scale(1, 1);
 	-webkit-transform: rotate(0deg) scale(1, 1);
 	-moz-transform: rotate(0deg) scale(1, 1);
@@ -1597,7 +1725,7 @@ TODO: *переделать в псевдо не получится, см.спе
 	-ms-transform: rotate(0deg) scale(1, 1);
 	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
-.navpane-hide {
+.nav-handle-icon {
 	transform: rotate(0deg) scale(-1, 1);
 	-webkit-transform: rotate(0deg) scale(-1, 1);
 	-moz-transform: rotate(0deg) scale(-1, 1);
@@ -1747,25 +1875,23 @@ TODO: *переделать в псевдо не получится, см.спе
 /*
 (!).tabs-window - вкладки панели тем - топиков
 */
+.tabs-window {
+	font-family: 'Lucida Grande', 'Trebuchet MS', Arial, Verdana, sans-serif;
+	text-indent: 0;
+}
 .tabs-window {margin-right: 8px;}
 .tab_slider-track,
 .tab-slider,
 .tabs-window {
 	position: relative;
 	left: 0; top: 0;
-	/* height: auto; */
+	width: auto;
 	display: flex;
+	flex: 1 1 auto;
 	flex-flow: row nowrap;
-	justify-content: flex-start;
 }
-/* .tabs-window {width: 92px;} */
-.tab-slider,
-.tabs-window {
-	width: 92px;
-	flex: 1 1 100%;
-	font-family: 'Lucida Grande', 'Trebuchet MS', Arial, Verdana, sans-serif;
-	text-indent: 0;
-}
+.tab_slider-track,
+.tab-slider {height: auto;}
 /**TODO: сделать тень по бокам */
 /* .tab-slider {
 	box-shadow: 35px 0 30px -20px #000 inset,
@@ -1774,11 +1900,15 @@ TODO: *переделать в псевдо не получится, см.спе
 /*
 (!).tab_slider-track - вкладки
 */
+/* иначе не будет прокрутки для моб.версий и скрытый контент вылезает за пределы видимости окна что так же влияет на смещение всего в лево, НО если.tabs-window располжить внутри.topic-controls, тогда overflow не дает вывести список меню idTabsList поверх себя */
+.tabs-window,
+.tab-slider {overflow: hidden hidden;}
 .tab_slider-track {
-	width: auto;
-	min-width: 50px;
-	list-style:none;
+	justify-content: flex-start;
+	overflow: auto hidden;
+	scrollbar-width: none;
 }
+.tab_slider-track {list-style:none;}
 /**Одиночная вкладка */
 .tabs span,
 .tabs a,
@@ -1944,19 +2074,22 @@ TODO: *переделать в псевдо не получится, см.спе
 /* @media (min-width: 992px) and (max-width: 1199px) {} */
 /**диапазон < 960px */
 /* @media screen and (max-width: 960px) {} */
-/**диапазон < 668px */
-@media screen and (max-width: 668px) {
-	/* .toolbar_btn-center span, */
-	.btn_text-off, .btn_text-on {width: min-content;}
-	.topic-pane, .nav-pane {top: 60px;}
-	.topic-pane-banner, .nav-pane-banner {top: 176px;}
-}
 /*
 'Portrait tablets and small desktops
 - Портретные планшеты и небольшие настольные компьютеры
 */
 /**диапазон от 768px до 991px */
 /* @media (min-width: 768px) and (max-width: 991px) {} */
+/**диапазон < 768px по ширине */
+@media screen and (max-width: 768px) {
+	.tabs span {max-width: 10vw;}
+}
+/**диапазон < 660px по ширине */
+@media screen and (max-width: 660px) {
+	.btn_text-off, .btn_text-on {width: min-content;} /* только так.toolbar_btn-right, .toolbar_btn-center, .toolbar_btn-left будут строго внутри себя не расходиться между собой по разным сторонам */
+	.topic-pane, .nav-pane {top: 60px;}
+	.topicpane-banner, .navpane-banner {top: 176px;}
+}
 /*
 'Landscape phones and portrait tablets
 - Альбомные телефоны и планшеты с портретом
@@ -2012,8 +2145,8 @@ TODO: *переделать в псевдо не получится, см.спе
 
 	.splitter-right {display: none;}
 	.splitter-bottom {display: block;}
-	/*(!).navpane-show/hide - трансформация иконки на кнопке в панеле топика */
-	.navpane-show {
+	/*(!) трансформация иконки на кнопке в панеле топика */
+	#idNavPaneToggle:checked~.nav-handle-icon {
 		transform: rotate(90deg) scale(1, 1);
 		-webkit-transform: rotate(90deg) scale(1, 1);
 		-moz-transform: rotate(90deg) scale(1, 1);
@@ -2024,7 +2157,7 @@ TODO: *переделать в псевдо не получится, см.спе
 		*/
 		/* will-change: transform; */
 	}
-	.navpane-hide {
+	.nav-handle-icon {
 		transform: rotate(90deg) scale(-1, 1);
 		-webkit-transform: rotate(90deg) scale(-1, 1);
 		-moz-transform: rotate(90deg) scale(-1, 1);
@@ -2098,11 +2231,22 @@ TODO: *переделать в псевдо не получится, см.спе
 		}
 	} */ /* x */
 }
-/**диапазон < 346px */
-/* @media screen and (max-width: 346px) {.toolbar_btn-search span {top: 10px;}} */ /* x */
-/**диапазон < 226px */
-@media screen and (max-width: 226px) {
+/**диапазон < 230px */
+@media screen and (max-width: 230px) {
+	.quick-search,
 	.toolbar-btns span {display: none;}
+
+	.btn_icon-search_on, .btn_icon-search_off,
+	.btn_icon-index_on, .btn_icon-index_off {
+		padding: 2px 4px 2px 4px;
+		background-color: transparent;
+		border-color: transparent;
+		border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+	}
+	.btn_icon-index_on, .btn_icon-index_off {margin: 0 1px 0 0;}
+	.btn_icon-search_on, .btn_icon-search_off {margin: 0 0 0 1px;}
 }
 /**диапазон < 220px */
 @media screen and (max-width: 220px) {

@@ -1,6 +1,6 @@
 const msgBox = document.getElementById('idMsgBox');
 const msgContent = document.getElementById('idMsgContent');
-const btnFT = msgBox.querySelector('.msg-btn'); // idBtnToggleMsgBox
+const btnMT = msgBox.querySelector('.msg-btn'); // idBtnToggleMsgBox
 const btnLS = msgBox.querySelector('.light-switch'); // idBtnLightSwitch
 let RAF_RESET = false; // флаг для определения прерывания воспроизведения цикла анимации в ф.setSwing()
 // 'ended - завершение воспроизведения
@@ -21,144 +21,184 @@ let audioElements = {
 	objBellSound: {
 		bellSound: ({}) ? null : new Audio(),
 		rustleChain: ({}) ? null : new Audio(),
+		// должен быть класс и функции создания звуков приватными
+		// setBellSound (elem = new Audio()) {
+		// 	elem = new Audio("audio/bell-sound.mp3");
+		// 	elem.loop = false; // автоповтор
+		// 	elem.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+		// 	return this.bellSound = elem;
+		// },
+		// setRustleChain (elem = new Audio()) {
+		// 	new Audio("audio/rustle-chain.mp3");
+		// 	elem.loop = true; // автоповтор
+		// 	elem.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+		// 	return this.rustleChain = elem;
+		// },
 	},
 	objBallDragg: {
 		ratchetSound: ({}) ? null : new Audio(),
 		floorClockMechanism: ({}) ? null : new Audio(),
 		rustleChain: ({}) ? null : new Audio(),
 	},
+	// setObjBellSound () {
+	// 	this.objBellSound.setBellSound();
+	// 	this.objBellSound.setRustleChain();
+	// },
 };
-// (!) получить/создать элем.аудио воспроизведения
-function handleAudioElement(keyRefName = "", srcPath = "") {
-	if (typeof(srcPath) !== "string" && srcPath === "") {
-		console.error(`(!) Косяк - не удалось получить элемент аудио воспроизведения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function getAudioElement(srcPath: typeof(${srcPath}) = ${srcPath}): window.«${window.name}»`);
-		alert(`(!) Косяк - не удалось получить элемент аудио воспроизведения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
-		return false;
-	}
-	function getAudioElement(keyRefName = "", srcPath = "") {
-		for (const key in audioElements) {
-			if (key === keyRefName) {
-				for (let i = 0; i < audioElements[key].length; i++) {
-					if (audioElements[key][i].getAttribute('src') === srcPath) { // св-во src яв-ся ссылкой (http://...), поэтому сравнивать можно через getAttribute()
-						// return audioElements[key][i];
-						return true;
-					}
-				}
-				break;
+function createNewAudio(eVent) {
+	// objRustleChain:
+	// 1) rustleChain - "audio/rustle-chain.mp3" - шуршание цепочкой
+	// objBellSound:
+	// 1) bellSound - "audio/bell-sound.mp3" - колокольчики
+	// 2) rustleChain - "audio/rustle-chain.mp3" - шуршание цепочкой
+	// objBallDragg:
+	// 1) ratchetSound - "audio/ratchet-sound.mp3" - щелчки велосипедной цепи
+	// 2) floorClockMechanism - "audio/floor-clock-mechanism.mp3" - механический завод напольных часов
+	// 3) rustleChain - "audio/rustle-chain.mp3" - шуршание цепочкой
+
+	const getPath = (keyName = "") => {
+		switch (keyName) {
+			case 'rustleChain':
+				return src = "audio/rustle-chain.mp3";
+			case 'bellSound':
+				return src = "audio/bell-sound.mp3";
+			case 'ratchetSound':
+				return src = "audio/ratchet-sound.mp3";
+			case 'floorClockMechanism':
+				return src = "audio/floor-clock-mechanism.mp3";
+			default:
+				"";
+		}
+	};
+	if (eVent.type === "mouseover") {
+		for (let key in audioElements.objRustleChain) {
+			if (audioElements.objRustleChain[key] === null) {
+				audioElements.objRustleChain[key] = new Audio(getPath(key));
+				audioElements.objRustleChain[key].loop = false;
+				audioElements.objRustleChain[key].preload = "auto";
 			}
 		}
-		return false;
-	}
-	function setAudioElement(keyRefName = "", srcPath = "") {
-		for (const key in audioElements) {
-			if (key === keyRefName) {
-				audioElements[key].push(new Audio(srcPath)); // доб.в конец
-				audioElements[key][audioElements[key].length - 1].preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
-				if (srcPath === "audio/bell-sound.mp3") { // колокольчики
-					// 'ended - завершение воспроизведения
-					if (btnLS.classList.contains('lightswitch-shake')) {
-						function bellSound_onEnded(eVent) {
-							btnLS.classList.remove('lightswitch-shake'); // прекращение эфф.покачивания светового переключателя
-							// eVent.target.removeEventListener('ended', bellSound_onEnded, false);
-						}
-						audioElements[key][audioElements[key].length - 1].addEventListener('ended', bellSound_onEnded, false);
-					}
-				} else if (srcPath === "audio/rustle-chain.mp3") { // шуршание цепочкой
-					audioElements[key][audioElements[key].length - 1].loop = true;
-				} else if (srcPath === "audio/ratchet-sound.mp3") { // щелчки велосипедной цепи
-					audioElements[key][audioElements[key].length - 1].loop = true;
-				} else if (srcPath === "audio/floor-clock-mechanism.mp3") { // механический завод напольных часов
-					audioElements[key][audioElements[key].length - 1].loop = true;
-				}
-				// return audioElements[key][audioElements[key].length - 1];
-				return true;
+	} else if (eVent.type === "pointerdown") {
+		for (let key in audioElements.objBallDragg) {
+			if (audioElements.objBallDragg[key] === null) {
+				audioElements.objBallDragg[key] = new Audio(getPath(key));
+				audioElements.objBallDragg[key].loop = true;
+				audioElements.objBallDragg[key].preload = "auto";
+				audioElements.objBallDragg[key].currentTime = 0; // обнуляем продолжительность воспроизведения
 			}
 		}
-		return false;
-	}
-	// let elem = getAudioElement(keyRefName, srcPath);
-	// if (elem === null) return setAudioElement(keyRefName, srcPath);
-	// return elem;
-	if (getAudioElement(keyRefName, srcPath)) return true;
-	return setAudioElement(keyRefName, srcPath);
-}
-// (!) установить всплывающую подсказку к элементу в MsgBox
-function setMsgBoxItemTooltip(eVent, nameClass = "") {
-	// 'для idIconFingerToggle
-	// ''для idIconLightSwitch над.lightswitch-ball:
-	// *при наведении на иконку (версия desktop - Windows NT...)
-	// **при кликах в мобильной версии firefox
-	if (nameClass === "" && typeof(nameClass) !== "string") {
-		console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}», location.origin: ${location.origin}\n`);
-		alert(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
-		return false;
-	}
-	if (eVent.target.id === "idIconFingerToggle") {
-		// if (isMobile()) { // проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-			if (getBrowser().toString().toLowerCase() === "firefox") {
-				const tooltip = msgBox.querySelector('.tooltip-finger_toggle');
-				if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
-					if (nameClass === "tooltip_finger_toggle-popup") {
-						// setShowOrHide(tooltip,"", "", "", "tooltip_finger_toggle-popup"); // или так
-						tooltip.classList.toggle('tooltip_finger_toggle-popup');
-						eVent.target.classList.toggle('msg_icon-finger_toggle-popup');
-						if (tooltip.classList.contains('tooltip_finger_toggle-popup') || eVent.target.classList.contains('msg_icon-finger_toggle-popup')) {
-							document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
-						}
-						return true;
+	} else if (eVent.type === "click") {
+		for (let key in audioElements.objBellSound) {
+			if (audioElements.objBellSound[key] === null) {
+				if (getSwing(eVent)) {
+					audioElements.objBellSound[key] = new Audio(getPath(key));
+					audioElements.objBellSound[key].preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+					if (key === "bellSound") {
+						audioElements.objBellSound[key].loop = false; // автоповтор
+					} else if (key === "rustleChain") {
+						audioElements.objBellSound[key].loop = true; // автоповтор
 					}
 				} else {
-					console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
-					alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
-					return false;
-				}
-			}
-		// }
-	} else if (eVent.target.id === "idIconLightSwitch") {
-		const tooltip = msgBox.querySelector('.tooltip-lightswitch');
-		if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
-			if (nameClass === "tooltip_lightswitch-show") {
-				if (eVent.type === "mouseover") {
-					tooltip.classList.add(nameClass);
-					// setShowOrHide(tooltip, "", "", "", "tooltip_lightswitch-show"); // или так
-					// setShowOrHide(tooltip, "", "tooltip_lightswitch-show", "", ""); // установить отображение или скрытие
-					return true;
-				} else if (eVent.type === "mouseout") {
-					tooltip.classList.remove(nameClass);
-					// setShowOrHide(tooltip, "", "", "", "tooltip_lightswitch-show"); // или так
-					// setShowOrHide(tooltip, "", "", "tooltip_lightswitch-show", ""); // установить отображение или скрытие
-					return true;
-				} else { // click...
-					if (getBrowser().toString().toLowerCase() === "firefox") {
-						if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
-							// setShowOrHide(tooltip,"", "", "", "tooltip_lightswitch-show"); // или так
-							tooltip.classList.toggle(nameClass);
-							if (tooltip.classList.contains(nameClass)) {
-								document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
-							}
-							return true;
-						}
+					if (key === "bellSound") {
+						audioElements.objBellSound[key] = new Audio(getPath(key));
+						audioElements.objBellSound[key].preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+						audioElements.objBellSound[key].loop = false; // автоповтор
 					}
-				}
-			}
-		} else {
-			console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
-			alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
-			return false;
-		}
-	} else if (eVent.target.hasAttribute('class')) {
-		if (eVent.target.classList.contains('lightswitch-ball')) {
-			if (getBrowser().toString().toLowerCase() === "firefox") {
-				const tooltip = msgBox.querySelector('.tooltip-lightswitch');
-				if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
-					// setShowOrHide(tooltip,"", "", "tooltip_lightswitch-show", ""); // или так
-					tooltip.classList.add('tooltip_lightswitch-show');
-					document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
-					return true;
 				}
 			}
 		}
 	}
+}
+// (!) получить/создать элем.аудио воспроизведения
+function handleAudioElement(
+	keyObj = {'objBallDragg': {}, 'objBellSound': {}, 'objRustleChain': {}},
+	keyName = {'objBallDragg': 'objBallDragg', 'objBellSound': 'objBellSound', 'objRustleChain': 'objRustleChain'}
+) {
+
+	// console.log(keyObj);
+	// if (keyObj === null || keyObj !== Object(keyObj)) {
+	// 	console.log("keyObj === null: ", keyObj === null);
+	// 	console.log("keyObj !== Object(keyObj): ", keyObj !== Object(keyObj));
+	// 	console.log("keyObj === null && keyObj === Object(keyObj): ", keyObj === null && keyObj === Object(keyObj));
+	// } else {
+	// 	console.log("keyObj === null && keyObj === Object(keyObj): ", keyObj === null && keyObj === Object(keyObj));
+	// 	if (keyObj !== null && keyObj === Object(keyObj)) {
+	// 		// console.log("Object.keys(keyObj).length === 0 && keyObj === Object(keyObj): ", Object.keys(keyObj).length === 0 && keyObj === Object(keyObj));
+	// 		if (Object.keys(keyObj).length === 0) { // наличие самого аудио - ссылка на конкретный объект эл./объект пустой!!!
+	// 			console.log("Object.keys(keyObj).length === 0: ", Object.keys(keyObj).length === 0);
+				// (???) когда объект пустой, то как тогда установить для какого ключа в объекте audioElements требуется создание new Audio()
+	// 		} else { // есть наличие ключей в объекте
+	// 			console.log(Object.keys(keyObj).length);
+				// (???) нужно вначале в объекте audioElements искать ключи в ключах и сравнивать с текущими ключами
+	// 		}
+	// 		// if (keyName === null || keyName === "") {
+	// 		// 	console.log(keyName);
+	// 		// } else {
+	// 		// 	console.log("keyName.length > 0: ", keyName.length > 0);
+	// 		// }
+	// 	} else {
+	// 		console.log(`test`);
+	// 	}
+	// }
+	// // if (keyName === null) keyName = "";
+	// // console.log(keyName.length);
+
+	return false;
+
+
+
+	// if (typeof(srcPath) !== "string" && srcPath === "") {
+	// 	console.error(`(!) Косяк - не удалось получить элемент аудио воспроизведения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function getAudioElement(srcPath: typeof(${srcPath}) = ${srcPath}): window.«${window.name}»`);
+	// 	alert(`(!) Косяк - не удалось получить элемент аудио воспроизведения - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+	// 	return false;
+	// }
+
+	// function getAudioElement(keyRefName = "", srcPath = "") {
+	// 	for (const key in audioElements) {
+	// 		if (key === keyRefName) {
+	// 			for (let i = 0; i < audioElements[key].length; i++) {
+	// 				if (audioElements[key][i].getAttribute('src') === srcPath) { // св-во src яв-ся ссылкой (http://...), поэтому сравнивать можно через getAttribute()
+	// 					// return audioElements[key][i];
+	// 					return true;
+	// 				}
+	// 			}
+	// 			break;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
+	// function setAudioElement(keyRefName = "", srcPath = "") {
+	// 	for (const key in audioElements) {
+	// 		if (key === keyRefName) {
+	// 			audioElements[key].push(new Audio(srcPath)); // доб.в конец
+	// 			audioElements[key][audioElements[key].length - 1].preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+	// 			if (srcPath === "audio/bell-sound.mp3") { // колокольчики
+	// 				// 'ended - завершение воспроизведения
+	// 				if (btnLS.classList.contains('lightswitch-shake')) {
+	// 					function bellSound_onEnded(eVent) {
+	// 						btnLS.classList.remove('lightswitch-shake'); // прекращение эфф.покачивания светового переключателя
+	// 						// eVent.target.removeEventListener('ended', bellSound_onEnded, false);
+	// 					}
+	// 					audioElements[key][audioElements[key].length - 1].addEventListener('ended', bellSound_onEnded, false);
+	// 				}
+	// 			} else if (srcPath === "audio/rustle-chain.mp3") { // шуршание цепочкой
+	// 				audioElements[key][audioElements[key].length - 1].loop = true;
+	// 			} else if (srcPath === "audio/ratchet-sound.mp3") { // щелчки велосипедной цепи
+	// 				audioElements[key][audioElements[key].length - 1].loop = true;
+	// 			} else if (srcPath === "audio/floor-clock-mechanism.mp3") { // механический завод напольных часов
+	// 				audioElements[key][audioElements[key].length - 1].loop = true;
+	// 			}
+	// 			// return audioElements[key][audioElements[key].length - 1];
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
+	// // let elem = getAudioElement(keyRefName, srcPath);
+	// // if (elem === null) return setAudioElement(keyRefName, srcPath);
+	// // return elem;
+	// if (getAudioElement(keyRefName, srcPath)) return true;
+	// return setAudioElement(keyRefName, srcPath);
 }
 // (!) получить разрешение на воспроизведение
 function getPlayback(keyName = "") {
@@ -232,13 +272,18 @@ function setPlayback(playback = "", elem = audioElements) {
 		elem.play().catch(error => { // NotAllowedError/AbortError
 			if (error.name === "AbortError") {
 				elem.pause();
+				elem.currentTime = 0;
 			} else if (error.name === "NotAllowedError") { // NotAllowedError: ошибка воспроизведения произошла из-за того, что пользователь сначала не взаимодействовал с документом
+				elem.pause();
+				elem.currentTime = 0;
 				const userInter = writeUserInteraction(); // создание всплывающего элемента для взаимодействия с пользователем
 				if (userInter !== null && userInter === Object(userInter)) {
 					// 'ожидаем выбор пользователя
 					userInter.removeAttribute('style'); // экранируем фрейм взаимодействия с пользователем
 				}
 			} else {
+				elem.pause();
+				elem.currentTime = 0;
 				console.log(error.name);
 			}
 		});
@@ -253,9 +298,22 @@ function setPlayback(playback = "", elem = audioElements) {
 	}
 }
 // (!) анимационное раскачивание
-// 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
-function setSwing(elem = document.body, duration = 0, objAudioElem = audioElements) {
-	// 'elem -.lightswitch-wrapper
+// 'чтобы не было накладок со звуками при разных вызовах как в событиях, так и в функциях
+const getSwing = (eVent, value = false) => {
+	if (eVent.type === "mouseover") {
+		if ((audioElements.objBallDragg.rustleChain === null || audioElements.objBallDragg.rustleChain.paused || audioElements.objBallDragg.rustleChain.currentTime === 0) && (audioElements.objBellSound.rustleChain === null || audioElements.objBellSound.rustleChain.paused || audioElements.objBellSound.rustleChain.currentTime === 0)) {
+			value = true;
+		}
+	} else if (eVent.type === "click") {
+		if ((audioElements.objBallDragg.rustleChain === null || audioElements.objBallDragg.rustleChain.paused || audioElements.objBallDragg.rustleChain.currentTime === 0) && (audioElements.objRustleChain.rustleChain === null || audioElements.objRustleChain.rustleChain.paused || audioElements.objRustleChain.rustleChain.currentTime === 0)) {
+			value = true;
+		}
+	}
+	return value;
+};
+// ''взамен css.lightswitch-shake на кн.idBtnLightSwitch
+function setSwing(elem = document.body, duration = 0, objAudioElem) {
+	// 'elem -.light-switch (idBtnLightSwitch)
 	// 'objAudioElem - ссылка на объект(-ы) в глоб.audioElements
 	if (elem === document.body || elem === null || (elem === null && elem === Object(elem))) {
 		console.error(`(!) Косяк - не удалось осуществить анимационное раскачивание - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setSwing(elem: typeof(${typeof(elem)});\n duration: ${duration}; objAudioElem: ${objAudioElem}):\n 1) Object(${Object(elem)})\n 2) ${elem}`);
@@ -266,6 +324,20 @@ function setSwing(elem = document.body, duration = 0, objAudioElem = audioElemen
 	tooltipLS.style.transition = "none"; // 'чтобы transition не мешал своевременному скрытию на время выполнения анимации
 	let deg = 0;
 	function getDegree() {
+		// const rotate = elem.style.transform.match(/rotate.*\((.+)\)/); // получить значение свойства rotate в JavaScript
+		// if (rotate !== null) {
+		// 	console.log(rotate);
+		// 	const elemStyles = getComputedStyle(elem, null);
+		// 	console.log(elemStyles);
+		// }
+
+		// const matrix = elemStyles.transform || elemStyles.webkitTransform || elemStyles.mozTransform;
+		// if (matrix !== "none") {
+		// 	console.log(matrix);
+		// 	const matrixValue = matrix.match(/rotate.*\((.+)\)/).split(', ');
+		// 	console.log(matrixValue);
+		// }
+
 		let r = 0;
 		let i = 0;
 		while (r === 0) {
@@ -278,38 +350,56 @@ function setSwing(elem = document.body, duration = 0, objAudioElem = audioElemen
 		}
 		return r;
 	}
-	// let rotate = elem.style.transform.match(/rotate\((.+)\)/); // получить значение свойства rotate в JavaScript
-	let angle = getDegree();
-	let req;
-	if (Object.keys(objAudioElem).length > 0) {
-		req = getPlayback("allowPlayback"); // получить разрешение на воспроизведение
-		if (req) {
-			// 'сопоставим ссылку на объект с ссылкой на объект в глоб.переменной
-			if (objAudioElem === audioElements.objRustleChain) { // rustleChain (шуршание цепочкой)
-				if (objAudioElem.rustleChain.currentTime === 0) {
-					setPlayback("play", objAudioElem.rustleChain); // установить pause/play/stop
+	const playback = (action = "play") => {
+		if (action === "play") {
+			if (Object.keys(objAudioElem).length === 0) { // объект без ключа
+				if (objAudioElem !== null) {
+					if (objAudioElem.paused || objAudioElem.currentTime === 0) {
+						setPlayback("play", objAudioElem); // установить pause/play/stop
+					}
 				}
-			} else if (objAudioElem === audioElements.objBellSound) { // (колокольчики) bellSound/rustleChain (шуршание цепочкой)
+			} else { // ключ на объект(-ы)
 				for(let key in objAudioElem) {
-					if (objAudioElem[key].paused && objAudioElem[key].currentTime === 0) {
-						setPlayback("play", objAudioElem[key]); // установить pause/play/stop
+					if (objAudioElem[key] !== null) {
+						if (objAudioElem[key].paused || objAudioElem[key].currentTime === 0) {
+							setPlayback("play", objAudioElem[key]); // установить pause/play/stop
+						}
+					}
+				}
+			}
+		} else if (action === "stop") {
+			if (Object.keys(objAudioElem).length === 0) { // объект без ключа
+				if (objAudioElem !== null) {
+					setPlayback("stop", objAudioElem); // установить pause/play/stop
+				}
+			} else { // ключ на объект(-ы)
+				for(let key in objAudioElem) { // (колокольчики) bellSound/rustleChain (шуршание цепочкой)
+					if (objAudioElem[key] !== null) {
+						setPlayback("stop", objAudioElem[key]); // установить pause/play/stop
 					}
 				}
 			}
 		}
-	}
+	};
+	let angle = getDegree();
+	const req = getPlayback("allowPlayback"); // получить разрешение на воспроизведение
+	if (req) playback("play");
 	let timeStart = performance.now(); // метод производительности выраженный в миллисекундах
 	let rafId = requestAnimationFrame(function animateSwing(time) {
-		if (RAF_RESET) {
+		if (RAF_RESET) { // в глоб.переменной останавливает запущенные ранее аудио эл.
 			cancelAnimationFrame(rafId);
 			rafId = null;
 			for (let key in audioElements) {
 				let obj = audioElements[key];
-				for (let item in obj) {
-					if (obj[item] !== null) {
-						if (obj[item].currentTime > 0) { // почему то пауза срабатывает быстрее, чем стоп
-							setPlayback("pause", obj[item]); // установить pause/play/stop
-							obj[item].currentTime = 0;
+				if (key !== "objBallDragg") { // игнор.ключ для animateBallDrag
+					for (let item in obj) {
+						if (item === "rustleChain") {
+							if (obj[item] !== null) {
+								if (obj[item].currentTime > 0) { // (?) почему то пауза срабатывает быстрее, чем стоп
+									setPlayback("pause", obj[item]); // установить pause/play/stop
+									obj[item].currentTime = 0;
+								}
+							}
 						}
 					}
 				}
@@ -347,23 +437,14 @@ function setSwing(elem = document.body, duration = 0, objAudioElem = audioElemen
 					angle *= -1; // перезаписываем на противоположное значение угла // сокращенная арифметика с присваиванием ( *= ): angle = angle * -1;
 				}
 			}
-			// '
+
 			// if (interval < 1) { // новый заход
 			if (timeCurrent < duration) { // новый заход
 				rafId = requestAnimationFrame(animateSwing);
 			} else {
 				cancelAnimationFrame(rafId);
 				rafId = null;
-				if (Object.keys(objAudioElem).length > 0) {
-					// 'сопоставим ссылку на объект с ссылкой на объект в глоб.переменной
-					if (objAudioElem === audioElements.objRustleChain) { // rustleChain (шуршание цепочкой)
-						setPlayback("stop", objAudioElem.rustleChain); // установить pause/play/stop
-					} else if (objAudioElem === audioElements.objBellSound) { // (колокольчики) bellSound/rustleChain (шуршание цепочкой)
-						for(let key in objAudioElem) {
-							setPlayback("stop", objAudioElem[key]); // установить pause/play/stop
-						}
-					}
-				}
+				playback("stop");
 				elem.removeAttribute('style');
 				tooltipLS.removeAttribute('style'); // возвращаем transition
 				tooltipLS.classList.remove('tooltip_lightswitch-hide'); // убираем принудительное скрытие подсказки
@@ -371,30 +452,144 @@ function setSwing(elem = document.body, duration = 0, objAudioElem = audioElemen
 		}
 	});
 }
+// (!) установить всплывающую подсказку к элементу в MsgBox
+function setMsgBoxItemTooltip(eVent, nameClass = "") {
+	// 'для idIconFingerToggle
+	// ''для idIconLightSwitch над.lightswitch-ball
+	// '''для.lightswitch-ball
+	// *при наведении на иконку (версия desktop - Windows NT...)
+	// **при кликах в мобильной версии firefox
+	let retVal = false;
+	if (nameClass === "" && typeof(nameClass) !== "string") {
+		console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}», location.origin: ${location.origin}\n`);
+		alert(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
+		return false;
+	}
+	if (eVent.target.id === "idIconFingerToggle") {
+		// if (isMobile()) { // проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
+		// }
+		if (getBrowser().toString().toLowerCase() === "firefox") {
+			const tooltip = msgBox.querySelector('.tooltip-finger_toggle');
+			if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+				if (nameClass === "tooltip_finger_toggle-popup") {
+					// setShowOrHide(tooltip,"", "", "", "tooltip_finger_toggle-popup"); // или так
+					tooltip.classList.toggle('tooltip_finger_toggle-popup');
+					eVent.target.classList.toggle('msg_icon-finger_toggle-popup');
+					if (tooltip.classList.contains('tooltip_finger_toggle-popup') && eVent.target.classList.contains('msg_icon-finger_toggle-popup')) {
+						document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+					}
+					retVal = true;
+				}
+			} else {
+				console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
+				alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
+			}
+		}
+	} else if (eVent.target.id === "idIconLightSwitch") {
+		const tooltip = msgBox.querySelector('.tooltip-lightswitch');
+		if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+			if (getBrowser().toString().toLowerCase() === "firefox") {
+				if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+					// setShowOrHide(tooltip,"", "", "", "tooltip_lightswitch-show"); // или так
+					tooltip.classList.toggle(nameClass);
+					if (tooltip.classList.contains(nameClass)) {
+						document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+					}
+					retVal = true;
+				}
+			}
+		} else {
+			console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
+			alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
+		}
+		// 	// на удаление
+		// if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+		// 	if (getBrowser().toString().toLowerCase() === "firefox") {
+		// 	// if (nameClass === "tooltip_lightswitch-show") {
+		// 	// 	if (eVent.type === "mouseover") {
+		// 	// 		tooltip.classList.add(nameClass);
+		// 	// 		// setShowOrHide(tooltip, "", "", "", "tooltip_lightswitch-show"); // или так
+		// 	// 		// setShowOrHide(tooltip, "", "tooltip_lightswitch-show", "", ""); // установить отображение или скрытие
+		// 	// 		// return true;
+		// 	// 		retVal = true;
+		// 	// 	} else if (eVent.type === "mouseout") {
+		// 	// 		tooltip.classList.remove(nameClass);
+		// 	// 		// setShowOrHide(tooltip, "", "", "", "tooltip_lightswitch-show"); // или так
+		// 	// 		// setShowOrHide(tooltip, "", "", "tooltip_lightswitch-show", ""); // установить отображение или скрытие
+		// 	// 		retVal = true;
+		// 	// 	} else { // click...
+		// 	// 		if (getBrowser().toString().toLowerCase() === "firefox") {
+		// 	// 			if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+		// 	// 				// setShowOrHide(tooltip,"", "", "", "tooltip_lightswitch-show"); // или так
+		// 	// 				tooltip.classList.toggle(nameClass);
+		// 	// 				if (tooltip.classList.contains(nameClass)) {
+		// 	// 					document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+		// 	// 				}
+		// 	// 				retVal = true;
+		// 	// 			}
+		// 	// 		}
+		// 	// 	}
+		// 	// } // на удаление
+		// } else {
+		// 	console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
+		// 	alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
+		// } // на удаление
+	} else if (eVent.target.hasAttribute('class')) {
+		if (eVent.target.classList.contains('lightswitch-ball')) {
+			if (getBrowser().toString().toLowerCase() === "firefox") {
+				const tooltip = msgBox.querySelector('.tooltip-lightswitch');
+				if (tooltip !== null && tooltip === Object(tooltip) || typeof(tooltip) === "object") {
+					// setShowOrHide(tooltip,"", "", "tooltip_lightswitch-show", ""); // или так
+					tooltip.classList.add('tooltip_lightswitch-show');
+					document.addEventListener('click', handlerPoPuPs, { capture: true }); // создаем обработчик для всего док. // (i) { once: true } - для button-link не прокатывает и совместить нельзя с опцией capture (фаза всплытие - false/true - погружение)
+					retVal = true;
+
+				} else {
+					console.error(`(!) Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент:\n function setMsgBoxItemTooltip(eVent: ${eVent.type}, nameClass: ${nameClass}): window.«${window.name}»:\n 1) tooltip: ${tooltip}\n 2) typeof(${tooltip}):\n 3) Object(${tooltip})`);
+					alert(`(!) Косяк - Косяк - не удалось установить всплывающую подсказку к элементу в MsgBox - не найден элемент, см.консоль.`);
+				}
+			}
+		}
+	}
+	return retVal;
+}
 function msgbox_onMouseover(eVent) {
 	if (eVent.target.id === "idIconLightSwitch") {
-		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-		if (wraperLS !== null && wraperLS === Object(wraperLS)) {
+		// const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
+		// if (wraperLS !== null && wraperLS === Object(wraperLS)) {
+		// 	if (audioElements.objRustleChain.rustleChain === null) {
+		// 		audioElements.objRustleChain.rustleChain = new Audio("audio/rustle-chain.mp3");
+		// 		audioElements.objRustleChain.rustleChain.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+		// 		let idInt = setInterval(() => {
+		// 			if (audioElements.objRustleChain.rustleChain.paused) {
+		// 				clearInterval(idInt);
+		// 				setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 			}
+		// 		}, 100);
+		// 	} else {
+		// 		if (audioElements.objRustleChain.rustleChain.currentTime > 0) {
+		// 			RAF_RESET = true;
+		// 		}
+		// 		let idInt = setInterval(() => {
+		// 			if (RAF_RESET === false) {
+		// 				clearInterval(idInt);
+		// 				setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 			}
+		// 		}, 100);
+		// 	}
+		// }
+		if (getSwing(eVent)) {
 			if (audioElements.objRustleChain.rustleChain === null) {
-				audioElements.objRustleChain.rustleChain = new Audio("audio/rustle-chain.mp3");
-				audioElements.objRustleChain.rustleChain.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
-				let idInt = setInterval(() => {
-					if (audioElements.objRustleChain.rustleChain.paused) {
-						clearInterval(idInt);
-						setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
-					}
-				}, 100);
-			} else {
-				if (audioElements.objRustleChain.rustleChain.currentTime > 0) {
-					RAF_RESET = true;
-				}
-				let idInt = setInterval(() => {
-					if (RAF_RESET === false) {
-						clearInterval(idInt);
-						setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
-					}
-				}, 100);
+				createNewAudio(eVent);
 			}
+			if (audioElements.objRustleChain.rustleChain.currentTime > 0) RAF_RESET = true;
+			let idInt = setInterval(() => {
+				if (audioElements.objRustleChain.rustleChain.paused || RAF_RESET === false) {
+					clearInterval(idInt);
+					audioElements.objRustleChain.rustleChain.currentTime = 0; // обнуляем продолжительность воспроизведения
+					setSwing(btnLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+				}
+			}, 100);
 		}
 		setMsgBoxItemTooltip(eVent, "tooltip_lightswitch-show"); // установить всплывающую подсказку к элементу в MsgBox
 
@@ -441,14 +636,28 @@ function getTranslateValues(elem) {
 		alert(`(!) Косяк - не удалось получить матрицу стиля Translate - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return null;
 	}
+	// --- пример:
+	// const [elX, elY, elU, elW] = [...document.getElementsByTagName("div")];
+	// const rgx = /(-?[0-9]+(?:\.[0-9]+)?)/gi; // создаем регулярное выражение для извлечения элементов матрицы, с помощью match оно возвращает [a, b, c, d, e, f]
+	// получаем матрицу большого красного родительского квадрата
+	// const matrix_elX = new DOMMatrix(getComputedStyle(elX).transform.match(rgx));
+	// получаем матрицу маленького синего дочернего квадрата
+	// const matrix_elY = new DOMMatrix(getComputedStyle(elY).transform.match(rgx));
+	// let result = DOMMatrix.fromMatrix(matrix_elY).preMultiplySelf(DOMMatrix.fromMatrix(matrix_elX)),
+	// 		result2 = DOMMatrix.fromMatrix(matrix_elX).preMultiplySelf(DOMMatrix.fromMatrix(matrix_elY));
+	// elU.style.transform = result;
+	// elW.style.transform = result2;
+	// ---
 	const elemStyles = getComputedStyle(elem, null);
 	const matrix = elemStyles.transform || elemStyles.webkitTransform || elemStyles.mozTransform;
-	const matrixType = matrix.includes("3d") ? "3d" : "2d";
-	const matrixValue = matrix.match(/matrix.*\((.+)\)/)[1].split(", ");
 	if (matrix === "none") {
-		console.error(`(!) Косяк, что то пошло не так!!! Не удалось получить матрицу стиля Translate:\n function getTranslateValues(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})`);
+		console.log(matrix);
+		console.log(elemStyles);
 		return { x: 0, y: 0, z: 0 };
-	} else if (matrixType === "2d") { // 6 значений, из кот.4, 5. Значение z отсутствует.
+	}
+	const matrixValue = matrix.match(/matrix.*\((.+)\)/).split(', '); // ругается на.split
+	const matrixType = matrix.includes("3d") ? "3d" : "2d";
+	if (matrixType === "2d") { // 6 значений, из кот.4, 5. Значение z отсутствует.
 		return {
 			x: matrixValue[4],
 			y: matrixValue[5],
@@ -469,9 +678,11 @@ function getTranslateValues(elem) {
 function msgbox_onPointerdown(e) {
 	if (e.target.classList.contains('lightswitch-ball')) {
 		e.target.setPointerCapture(e.pointerId); // перенацеливаем все события указателя (до pointerup) на элемент ball
-		// 'трансформация курсора - меняем вид курсора
-		// e.target.style.animationPlayState = "paused";
-		if (e.pointerType === "mouse") e.target.classList.add('cursor-grab');
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			// 'трансформация курсора - меняем вид курсора
+			// e.target.style.animationPlayState = "paused";
+			if (e.pointerType === "mouse") e.target.classList.add('cursor-grab');
+		}
 		// 'определяем первоначальное положение координат Y |— X
 		let eventClient = {
 			X1: e.clientX,
@@ -479,55 +690,17 @@ function msgbox_onPointerdown(e) {
 			X2: e.clientX,
 			Y2: e.clientY,
 		};
+		createNewAudio(e);
 		const req = getPlayback("allowPlayback"); // получить разрешение на воспроизведение
-		// щелчки велосипедной цепи
-		if (audioElements.objBallDragg.ratchetSound === null) {
-			audioElements.objBallDragg.ratchetSound = new Audio("audio/ratchet-sound.mp3");
-		}
-		// механический завод напольных часов
-		if (audioElements.objBallDragg.floorClockMechanism === null) {
-			audioElements.objBallDragg.floorClockMechanism = new Audio("audio/floor-clock-mechanism.mp3");
-		}
-		// шуршание цепочкой
-		if (audioElements.objBallDragg.rustleChain === null) {
-			audioElements.objBallDragg.rustleChain = new Audio("audio/rustle-chain.mp3");
-		}
-		// подготавливаем звук, чтобы он сразу был готов к воспроизведению
-		audioElements.objBallDragg.ratchetSound.preload = "auto";
-		audioElements.objBallDragg.floorClockMechanism.preload = "auto";
-		audioElements.objBallDragg.rustleChain.preload = "auto";
-		let idInt = setInterval(() => {
-			if (audioElements.objBallDragg.ratchetSound.paused && audioElements.objBallDragg.floorClockMechanism.paused && audioElements.objBallDragg.rustleChain.paused) {
-				clearInterval(idInt);
-				audioElements.objBallDragg.ratchetSound.currentTime = 0; // обнуляем продолжительность воспроизведения
-				audioElements.objBallDragg.ratchetSound.loop = true;
-				audioElements.objBallDragg.floorClockMechanism.currentTime = 0; // обнуляем продолжительность воспроизведения
-				audioElements.objBallDragg.floorClockMechanism.loop = true;
-				audioElements.objBallDragg.rustleChain.currentTime = 0; // обнуляем продолжительность воспроизведения
-				audioElements.objBallDragg.rustleChain.loop = true;
-			}
-		}, 100);
-
 		const iconLS = document.getElementById('idIconLightSwitch');
 		let hIconLS = iconLS.offsetHeight;
 		let yIconLS = parseInt(getComputedStyle(iconLS, null).backgroundPositionY, 10);
 		const msgText = document.getElementById('idMsgText');
 		const iconFT = document.getElementById('idIconFingerToggle');
-		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-		const initX = wraperLS.offsetLeft + (wraperLS.offsetWidth / 2); // 'определение положения т.на оси X
+		// const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
+		// const initX = wraperLS.offsetLeft + (wraperLS.offsetWidth / 2); // 'определение положения т.на оси X
+		const initX = btnLS.offsetLeft + (btnLS.offsetWidth / 2); // 'определение положения т.на оси X
 		const tooltipLS = msgBox.querySelector('.tooltip-lightswitch');
-
-		// const stylesTooltipLS = getComputedStyle(tooltipLS, null);
-		// const matrix = stylesTooltipLS.transform || stylesTooltipLS.webkitTransform || stylesTooltipLS.mozTransform;
-		// const matrixValue = matrix.match(/matrix.*\((.+)\)/)[1].split(", ");
-		// const tooltipLSTranslate = {
-		// 	x: matrixValue[4],
-		// 	y: matrixValue[5],
-		// }
-
-		// console.log(`matrix: ${matrix}\n tooltipLSTranslate: ${JSON.stringify(tooltipLSTranslate, null, 2)}`);
-
-
 		const chainLS = e.target.parentElement.querySelector('.lightswitch-chain');
 		if ((chainLS === null) || (chainLS !== Object(chainLS))) {
 			chainLS = msgBox.querySelector('.lightswitch-chain');
@@ -541,8 +714,8 @@ function msgbox_onPointerdown(e) {
 		function getBallDrag(evn) {
 			// 'evn.type - onMousemove
 			// 'evn.target -.lightswitch-ball
-			// .lightswitch-wrapper/idIconLightSwitch/idMsgText/idIconFingerToggle
-			if (btnFT.classList.contains('msg-show')) { // уменьшение иконки, увеличение длинны цепочки
+			// (.lightswitch-wrapper) idIconLightSwitch/idMsgText/idIconFingerToggle
+			if (btnMT.classList.contains('msg-show')) { // уменьшение иконки, увеличение длинны цепочки
 				yIconLS = yIconLS - (evn.clientY - eventClient.Y2); // 0, -1, .., -70px
 				if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
 					hIconLS = hIconLS + (eventClient.Y2 - evn.clientY); // 70, 69, .., 0: уменьшение
@@ -557,7 +730,7 @@ function msgbox_onPointerdown(e) {
 						yIconLS = 0;
 					}
 				}
-			} else if (btnFT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение длинны цепочки
+			} else if (btnMT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение длинны цепочки
 				yIconLS = yIconLS - (eventClient.Y2 - evn.clientY); // /-70, -69, .., 0
 				if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
 					hIconLS = hIconLS + (evn.clientY - eventClient.Y2); // 0, .., 69, 70: увеличение
@@ -574,28 +747,31 @@ function msgbox_onPointerdown(e) {
 				}
 			}
 			// .lightswitch-chain
-			chainLength.len1 = chainLength.len1 + (evn.clientY - eventClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
+			chainLength.len2 = chainLength.len2 + (evn.clientY - eventClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
 			// *получаем угол в градусах и переводим в радианы
 			// (i) угол в градусах - единица измерения углов, которая равна 1/360 полного оборота по окружности (1deg = π/180rad ≈ 0,01745rad)
 			// (i) Math.atan2 возвращает угол в плоскости (в радианах) между положительной осью X и лучом от (0, 0) до точки (x, y) для Math.atan2(y, x)
-			// angle = (Math.atan2(chainLength.len1, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-			angle = Math.atan2(chainLength.len1 + (wraperLS.offsetWidth / 2), evn.clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
+			// angle = (Math.atan2(chainLength.len2, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
+			// angle = Math.atan2(chainLength.len2 + (wraperLS.offsetWidth / 2), evn.clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
+			angle = Math.atan2(chainLength.len2 + (btnLS.offsetWidth / 2), evn.clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
 			angle = angle - 90;
 			// (i) теорема Пифагора: квадрат гипотенузы = сумме квадратов катетов
 			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow((evn.clientY - originY), 2)));
-			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength.len1, 2)));
-			gip = Math.round(Math.sqrt(Math.pow(evn.clientX - initX, 2) + Math.pow(chainLength.len1 + (wraperLS.offsetWidth / 2), 2)));
-			gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
+			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength.len2, 2)));
+			// gip = Math.round(Math.sqrt(Math.pow(evn.clientX - initX, 2) + Math.pow(chainLength.len2 + (wraperLS.offsetWidth / 2), 2)));
+			gip = Math.round(Math.sqrt(Math.pow(evn.clientX - initX, 2) + Math.pow(chainLength.len2 + (btnLS.offsetWidth / 2), 2)));
+			// gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
+			gip = gip - (btnLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
 			// (!) хрень получается
-			// console.log(`(evn.clientY === eventClient.Y2) || (evn.clientX === eventClient.X2): ${(evn.clientY === eventClient.Y2) || (evn.clientX === eventClient.X2)}\n (evn.clientY === eventClient.Y2): ${(evn.clientY === eventClient.Y2)}\n (evn.clientX === eventClient.X2): ${(evn.clientX === eventClient.X2)}\n evn.clientY: ${evn.clientY}; eventClient.Y2: ${eventClient.Y2}\n evn.clientX: ${evn.clientX}; eventClient.X2: ${eventClient.X2}\n chainLength.len1: ${chainLength.len1}; chainLS.offsetHeight: ${chainLS.offsetHeight}`); // x -
+			// console.log(`(evn.clientY === eventClient.Y2) || (evn.clientX === eventClient.X2): ${(evn.clientY === eventClient.Y2) || (evn.clientX === eventClient.X2)}\n (evn.clientY === eventClient.Y2): ${(evn.clientY === eventClient.Y2)}\n (evn.clientX === eventClient.X2): ${(evn.clientX === eventClient.X2)}\n evn.clientY: ${evn.clientY}; eventClient.Y2: ${eventClient.Y2}\n evn.clientX: ${evn.clientX}; eventClient.X2: ${eventClient.X2}\n chainLength.len2: ${chainLength.len2}; chainLS.offsetHeight: ${chainLS.offsetHeight}`); // x -
 			// (?)
 			if (eventClient.Y2 === evn.clientY || eventClient.X2 === evn.clientX) {
-				if (chainLength.len1 > chainLength.len2) { // если цепа стала длиннее
+				if (chainLength.len2 > chainLength.len1) { // если цепа стала длиннее
 					// механический завод напольных часов
 					if (!audioElements.objBallDragg.floorClockMechanism.paused) {
 						setPlayback("pause", audioElements.objBallDragg.floorClockMechanism); // установить pause/play/stop
 					}
-				} else if (chainLength.len1 < chainLength.len2) { // если цепа стала короче
+				} else if (chainLength.len2 < chainLength.len1) { // если цепа стала короче
 					// щелчки велосипедной цепи
 					if (!audioElements.objBallDragg.ratchetSound.paused) {
 						setPlayback("pause", audioElements.objBallDragg.ratchetSound); // установить pause/play/stop
@@ -614,14 +790,14 @@ function msgbox_onPointerdown(e) {
 				if (!audioElements.objBallDragg.rustleChain.paused) {
 					setPlayback("pause", audioElements.objBallDragg.rustleChain); // установить pause/play/stop
 				}
-				let idInt = setInterval(() => {
-					if (eventClient.Y2 !== evn.clientY || eventClient.X2 !== evn.clientX) {
-						clearInterval(idInt);
-					}
-				}, 100);
+				// let idInt = setInterval(() => { // (???)
+				// 	if (eventClient.Y2 !== evn.clientY || eventClient.X2 !== evn.clientX) {
+				// 		clearInterval(idInt);
+				// 	}
+				// }, 100);
 			} else {
 				if (req) {
-					if (chainLength.len1 > chainLength.len2) { // если цепа стала длиннее
+					if (chainLength.len2 > chainLength.len1) { // если цепа стала длиннее
 						// механический завод напольных часов
 						if (audioElements.objBallDragg.floorClockMechanism.paused) {
 							setPlayback("play", audioElements.objBallDragg.floorClockMechanism); // установить pause/play/stop
@@ -654,10 +830,12 @@ function msgbox_onPointerdown(e) {
 			// обновляем переменные
 			eventClient.X2 = evn.clientX;
 			eventClient.Y2 = evn.clientY;
-			chainLength.len2 = chainLength.len1;
+			chainLength.len1 = chainLength.len2;
 		}
 		function ball_onPointermove(eVent) {
-			if (eVent.pointerType === "mouse") eVent.target.classList.replace('cursor-grab', 'cursor-grabbing');
+			if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+				if (eVent.pointerType === "mouse") eVent.target.classList.replace('cursor-grab', 'cursor-grabbing');
+			}
 			getBallDrag(eVent);
 			iconLS.style.backgroundPositionY = yIconLS + "px"; // изменяем выс.от верхнего края
 			iconLS.style.height = hIconLS + "px";
@@ -667,12 +845,16 @@ function msgbox_onPointerdown(e) {
 			msgText.style.height = hIconLS + "px";
 			iconFT.style.height = hIconLS + "px";
 			iconFT.style.backgroundPositionY = yIconLS + "px"; // изменяем выс.от верхнего края
-			wraperLS.style.top = hIconLS + "px"; // выс.иконки+margin-top: 70+6=76
+			// wraperLS.style.top = hIconLS + "px"; // выс.иконки+margin-top: 70+6=76
+			// wraperLS.style.top = hIconLS + "px"; // выс.иконки
 			chainLS.style.height = gip + "px";
+
 			tooltipLS.style.transition = "none"; // 'чтобы transition не мешал своевременному скрытию на время выполнения анимации
-			// tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
-			// (?)'ф.getTranslateValues() не доработана
-			tooltipLS.style.transform = "rotateZ(" + (angle * -1) + "deg) translate(40px, -60px)";
+			tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
+
+			// ---
+			// (?)'ф.getTranslateValues() не реализована
+			// tooltipLS.style.transform = "rotateZ(" + (angle * -1) + "deg) translate(40px, -40px)";
 			// const translate = getTranslateValues(tooltipLS); // Получить значения стиля Translate
 			// if (translate === null) { // по умолчанию
 			// 	tooltipLS.style.transform = "rotateZ(" + (angle * -1) + "deg) translate(40px, -60px)";
@@ -681,7 +863,19 @@ function msgbox_onPointerdown(e) {
 
 			// 	console.log(`translate: ${JSON.stringify(translate, null, 2)}`);
 			// }
-			wraperLS.style.transform = "rotateZ(" + angle + "deg)";
+			// ---
+			// const stylesTooltipLS = getComputedStyle(tooltipLS, null);
+			// const matrix = stylesTooltipLS.transform || stylesTooltipLS.webkitTransform || stylesTooltipLS.mozTransform;
+			// const matrixValue = matrix.match(/matrix.*\((.+)\)/)[1].split(", ");
+			// const tooltipLSTranslate = {
+			// 	x: matrixValue[4],
+			// 	y: matrixValue[5],
+			// }
+			// console.log(`matrix: ${matrix}\n tooltipLSTranslate: ${JSON.stringify(tooltipLSTranslate, null, 2)}`);
+			// ---
+
+			// wraperLS.style.transform = "rotateZ(" + angle + "deg)";
+			btnLS.style.transform = "rotateZ(" + angle + "deg)";
 			// eVent.preventDefault(); // (i) похоже работает и так, проверено на yabrowser, chrome, firefox (кроме моб.вар.)
 			if (hIconLS > 10) {
 				// 'удаляем css св-ва
@@ -720,20 +914,20 @@ function msgbox_onPointerdown(e) {
 			let distance = chainLS.offsetHeight;
 			let deg = angle;
 			let d = Math.abs(deg); // при проверке исключаем отрицательное значение угла
-			tooltipLS.style.transition = "none"; // 'чтобы transition не мешал своевременному скрытию на время выполнения анимации
-			tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
+			// tooltipLS.style.transition = "none"; // 'чтобы transition не мешал своевременному скрытию на время выполнения анимации
+			// tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
 			// '
-			if (btnFT.classList.contains('msg-show')) {
+			if (btnMT.classList.contains('msg-show')) {
 				if (hIconLS <= 30) { // на 5px < половины выс.
-					toggleMsgBox(btnFT); // скрыть/показать всплывающее окно сообщения
+					toggleMsgBox(btnMT); // скрыть/показать всплывающее окно сообщения
 				}
-			} else if (btnFT.classList.contains('msg-hide')) {
+			} else if (btnMT.classList.contains('msg-hide')) {
 				if (hIconLS > 30) { // на 5px < половины выс.
-					toggleMsgBox(btnFT); // скрыть/показать всплывающее окно сообщения
+					toggleMsgBox(btnMT); // скрыть/показать всплывающее окно сообщения
 				}
 			}
 			// 'после применения css.msg-show/hide
-			if (btnFT.classList.contains('msg-show')) {
+			if (btnMT.classList.contains('msg-show')) {
 				if (distance > 50) {
 					distance = distance - 50;
 					// механический завод напольных часов
@@ -762,7 +956,7 @@ function msgbox_onPointerdown(e) {
 						}
 					}
 				}
-			} else if (btnFT.classList.contains('msg-hide')) {
+			} else if (btnMT.classList.contains('msg-hide')) {
 				if (distance > 16) {
 					distance = distance - 16;
 					// механический завод напольных часов
@@ -796,18 +990,19 @@ function msgbox_onPointerdown(e) {
 			msgText.removeAttribute('style');
 			msgText.children[0].removeAttribute('style');
 			iconFT.removeAttribute('style');
-			wraperLS.style.removeProperty('top');
+			// wraperLS.style.removeProperty('top');
+			// wraperLS.style.removeProperty('top');
 			// 'анимация цепочки
-			let rafId = requestAnimationFrame(function animate(time1) {
+			let rafId = requestAnimationFrame(function animateBallDrag(time1) {
 				if (distance > 0) {
 					distance--;
-					if (btnFT.classList.contains('msg-show')) {
+					if (btnMT.classList.contains('msg-show')) {
 						if (chainLS.offsetHeight > 50) {
 							chainLS.style.height = (chainLS.offsetHeight - 1) + "px";
 						} else if (chainLS.offsetHeight < 50) {
 							chainLS.style.height = (chainLS.offsetHeight + 1) + "px";
 						}
-					} else if (btnFT.classList.contains('msg-hide')) {
+					} else if (btnMT.classList.contains('msg-hide')) {
 						if (chainLS.offsetHeight > 16) {
 							chainLS.style.height = (chainLS.offsetHeight - 1) + "px";
 						} else if (chainLS.offsetHeight < 16) {
@@ -852,21 +1047,26 @@ function msgbox_onPointerdown(e) {
 					if (distance > 0) {
 						if (Math.sign(angle) === 1) { // угол положительный
 							if (deg > (angle * (-1))) {
-								wraperLS.style.transform = "rotateZ(" + (deg--) + "deg)";
+								// wraperLS.style.transform = "rotateZ(" + (deg--) + "deg)";
+								btnLS.style.transform = "rotateZ(" + (deg--) + "deg)";
 							} else {
-								wraperLS.style.transform = "rotateZ(" + (deg++) + "deg)";
+								// wraperLS.style.transform = "rotateZ(" + (deg++) + "deg)";
+								btnLS.style.transform = "rotateZ(" + (deg++) + "deg)";
 								angle *= -1; // перезаписываем на противоположное значение угла // сокращенная арифметика с присваиванием ( *= ): angle = angle * -1;
 							}
 						} else if (Math.sign(angle) === -1) { // угол отрицательный
 							if (deg < (angle * (-1))) {
-								wraperLS.style.transform = "rotateZ(" + (deg++) + "deg)";
+								// wraperLS.style.transform = "rotateZ(" + (deg++) + "deg)";
+								btnLS.style.transform = "rotateZ(" + (deg++) + "deg)";
 							} else {
-								wraperLS.style.transform = "rotateZ(" + (deg--) + "deg)";
+								// wraperLS.style.transform = "rotateZ(" + (deg--) + "deg)";
+								btnLS.style.transform = "rotateZ(" + (deg--) + "deg)";
 								angle *= -1; // перезаписываем на противоположное значение угла // сокращенная арифметика с присваиванием ( *= ): angle = angle * -1;
 							}
 						}
 					} else if (distance === 0) {
-						wraperLS.style.transform = "rotateZ(" + deg + "deg)";
+						// wraperLS.style.transform = "rotateZ(" + deg + "deg)";
+						btnLS.style.transform = "rotateZ(" + deg + "deg)";
 					}
 
 					if (distance > 0) {
@@ -948,8 +1148,10 @@ function msgbox_onPointerdown(e) {
 							if (!audioElements.objBallDragg.rustleChain.paused) {
 								setPlayback("stop", audioElements.objBallDragg.rustleChain); // установить pause/play/stop
 							}
-							wraperLS.style.transform = "rotateZ(0deg)";
-							wraperLS.removeAttribute('style');
+							// wraperLS.style.transform = "rotateZ(0deg)";
+							btnLS.style.transform = "rotateZ(0deg)";
+							// wraperLS.removeAttribute('style');
+							btnLS.removeAttribute('style');
 							tooltipLS.removeAttribute('style'); // возвращаем transition
 							tooltipLS.classList.remove('tooltip_lightswitch-hide'); // убираем принудительное скрытие подсказки
 						} else { // новый заход
@@ -976,7 +1178,7 @@ function msgbox_onPointerdown(e) {
 					cancelAnimationFrame(rafId);
 					rafId = null;
 				} else { // новый заход
-					rafId = requestAnimationFrame(animate);
+					rafId = requestAnimationFrame(animateBallDrag);
 				}
 			});
 		}
@@ -985,16 +1187,18 @@ function msgbox_onPointerdown(e) {
 			if (Math.abs(angle) !== 0) { // при проверке исключаем отрицательное значение угла
 				setBallDrag(eVent);
 			}
-			if (eVent.pointerType === "mouse") {
-				eVent.target.classList.remove('cursor-grabbing');
-				eVent.target.classList.remove('cursor-grab');
+			if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+				if (eVent.pointerType === "mouse") {
+					eVent.target.classList.remove('cursor-grabbing');
+					eVent.target.classList.remove('cursor-grab');
+				}
 			}
 			e.target.removeEventListener('pointermove', ball_onPointermove, false);
 			e.target.removeEventListener('pointerup', ball_onPointerup, false);
 
 			if (eVent.button === 0) { // исключаем нажатие правой кн.м.
 				if ((eVent.clientY === eventClient.Y1 && eventClient.Y1 === eventClient.Y2) && (eVent.clientX === eventClient.X1 && eventClient.X1 === eventClient.X2)) {
-					if (btnFT.classList.contains('msg-show')) {
+					if (btnMT.classList.contains('msg-show')) {
 						// console.log(`eVent.type: ${eVent.type}; eVent.pointerType: ${eVent.pointerType}\n eVent.clientY: ${eVent.clientY}; eVent.clientX: ${eVent.clientX}\n ${JSON.stringify(eventClient, null, null)}`); // x -
 						// (i) не помогает (в firefox моб.вар.все равно срабатывает 2-ды):
 						// 'eVent.preventDefault();
@@ -1005,13 +1209,14 @@ function msgbox_onPointerdown(e) {
 						setToggleMsgEffect(eVent.target); // переключение спецэффектов
 						jumpLightswitch(chainLS); // анимационный толчок светового переключателя
 						// шуршание цепочкой
-						if (audioElements.objRustleChain.rustleChain.currentTime > 0) {
+						if (audioElements.objBallDragg.rustleChain.currentTime > 0) {
 							RAF_RESET = true;
 						}
 						let idInt = setInterval(() => {
 							if (RAF_RESET === false) {
 								clearInterval(idInt);
-								setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+								// setSwing(wraperLS, audioElements.objRustleChain.rustleChain.duration * 1000, audioElements.objRustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+								setSwing(btnLS, audioElements.objBallDragg.rustleChain.duration * 1000, audioElements.objBallDragg.rustleChain); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
 							}
 						}, 100);
 					}
@@ -1043,589 +1248,6 @@ function msgbox_onPointerdown(e) {
 		// e.target.ondragstart = function() { return false; };
 	}
 }
-// x -
-// function msgbox_onMousedown(e) {
-// 	if (e.target.classList.contains('lightswitch-ball')) {
-// 		// 'трансформация курсора - меняем вид курсора
-// 		// e.target.style.animationPlayState = "paused";
-// 		e.target.classList.add('cursor-grab');
-// 		// 'определяем первоначальное положение координат Y |— X
-// 		let eventClient = {
-// 			X1: e.clientX,
-// 			Y1: e.clientY,
-// 			X2: e.clientX,
-// 			Y2: e.clientY,
-// 		};
-// 		const iconLS = document.getElementById('idIconLightSwitch');
-// 		let hIconLS = iconLS.offsetHeight;
-// 		const msgText = document.getElementById('idMsgText');
-// 		const iconFT = document.getElementById('idIconFingerToggle');
-// 		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-// 		const initX = wraperLS.offsetLeft + (wraperLS.offsetWidth / 2); // 'определение положения т.на оси X
-// 		const tooltipLS = msgBox.querySelector('.tooltip-lightswitch');
-// 		const chainLS = e.target.parentElement.querySelector('.lightswitch-chain');
-// 		if ((chainLS === null) || (chainLS !== Object(chainLS))) {
-// 			chainLS = msgBox.querySelector('.lightswitch-chain');
-// 		}
-// 		let chainLength = chainLS.offsetHeight;
-// 		let angle = 0; // rotateZ()
-// 		let gip = 0;
-// 		function getBallDrag(evn) {
-// 			// 'evn.type - onMousemove
-// 			// 'evn.target -.lightswitch-ball
-// 			// .lightswitch-wrapper/idIconLightSwitch/idMsgText/idIconFingerToggle
-// 			if (btnFT.classList.contains('msg-show')) { // уменьшение иконки, увеличение цепочки
-// 				if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
-// 					hIconLS = hIconLS + (eventClient.Y2 - evn.clientY); // 70, 69, .., 0: уменьшение
-// 					if (hIconLS < 0) {
-// 						hIconLS = 0;
-// 					}
-// 				} else if (evn.clientY < eventClient.Y2) { // тянем цепу вверх
-// 					hIconLS = hIconLS + (eventClient.Y2 - evn.clientY); // 0, .., 69, 70: увеличение
-// 					if (hIconLS > 70) {
-// 						hIconLS = 70;
-// 					}
-// 				}
-// 			} else if (btnFT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение цепочки
-// 				if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
-// 					hIconLS = hIconLS + (evn.clientY - eventClient.Y2); // 0, .., 69, 70: увеличение
-// 					if (hIconLS > 70) { // доступный диапазон с 0 до 70 включительно
-// 						hIconLS = 70;
-// 					}
-// 				} else if (evn.clientY < eventClient.Y2) { // тянем цепу вверх
-// 					hIconLS = hIconLS + (evn.clientY - eventClient.Y2); // 70, 69, .., 0: уменьшение
-// 					if (hIconLS < 0) { // доступный диапазон с 70 до 0 включительно
-// 						hIconLS = 0;
-// 					}
-// 				}
-// 			}
-// 			// .lightswitch-chain
-// 			chainLength = chainLength + (evn.clientY - eventClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
-// 			// *получаем угол в градусах и переводим в радианы
-// 			// (i) угол в градусах - единица измерения углов, которая равна 1/360 полного оборота по окружности (1deg = π/180rad ≈ 0,01745rad)
-// 			// (i) Math.atan2 возвращает угол в плоскости (в радианах) между положительной осью X и лучом от (0, 0) до точки (x, y) для Math.atan2(y, x)
-// 			// angle = (Math.atan2(chainLength, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 			angle = Math.atan2(chainLength + (wraperLS.offsetWidth / 2), evn.clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 			angle = angle - 90;
-// 			// (i) теорема Пифагора: квадрат гипотенузы = сумме квадратов катетов
-// 			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow((evn.clientY - originY), 2)));
-// 			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength, 2)));
-// 			gip = Math.round(Math.sqrt(Math.pow(evn.clientX - initX, 2) + Math.pow(chainLength + (wraperLS.offsetWidth / 2), 2)));
-// 			gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
-// 			// обновляем переменные
-// 			eventClient.X2 = evn.clientX;
-// 			eventClient.Y2 = evn.clientY;
-// 		}
-// 		function ball_onMousemove(eVent) {
-// 			eVent.target.classList.replace('cursor-grab', 'cursor-grabbing');
-// 			tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
-// 			getBallDrag(eVent);
-// 			iconLS.style.height = hIconLS + "px";
-// 			msgText.style.overflow = "hidden";
-// 			msgText.style.height = hIconLS + "px";
-// 			iconFT.style.height = hIconLS + "px";
-// 			wraperLS.style.top = hIconLS + "px"; // выс.иконки+margin-top: 70+6=76
-// 			chainLS.style.height = gip + "px";
-// 			// tooltipLS.style.transform = "rotateZ(" + (0 - angle) + "deg) translate(40px, -70px)";
-// 			wraperLS.style.transform = "rotateZ(" + angle + "deg)";
-// 			// eVent.preventDefault(); // (i) похоже работает и так, проверено на yabrowser, chrome, firefox (кроме моб.вар.)
-// 			if (hIconLS > 10) {
-// 				// 'удаляем css св-ва
-// 				iconLS.style.removeProperty('margin');
-// 				iconLS.style.removeProperty('padding');
-// 				iconLS.style.removeProperty('border');
-
-// 				msgText.style.removeProperty('overflow');
-// 				msgText.style.removeProperty('margin');
-// 				msgText.style.removeProperty('padding');
-// 				msgText.style.removeProperty('border');
-
-// 				iconFT.style.removeProperty('margin');
-// 				iconFT.style.removeProperty('padding');
-// 				iconFT.style.removeProperty('border');
-// 			} else {
-// 				iconLS.style.margin = 0;
-// 				iconLS.style.padding = 0;
-// 				iconLS.style.border = 0;
-
-// 				msgText.style.margin = 0;
-// 				msgText.style.padding = 0;
-// 				msgText.style.border = 0;
-
-// 				iconFT.style.margin = 0;
-// 				iconFT.style.padding = 0;
-// 				iconFT.style.border = 0;
-// 			}
-// 		}
-// 		document.addEventListener('mousemove', ball_onMousemove, false);
-// 		function setBallDrag(evn) {
-// 			if (hIconLS <= 0) {
-// 				btnFT.classList.replace('msg-show', 'msg-hide');
-// 			} else {
-// 				btnFT.classList.replace('msg-hide', 'msg-show');
-// 			}
-// 			wraperLS.style.transform = "rotateZ(0deg)";
-// 			// tooltipLS.style.transform = "rotateZ(0deg)";
-// 			if (angle > 0) {
-// 				btnLS.classList.add('lightswitch-shake');
-// 			} else {
-// 				btnLS.classList.add('lightswitch-shake-reverse');
-// 			}
-// 			setTimeout(() => { // 'короткое разовое качание кн.переключателя
-// 				btnLS.classList.remove('lightswitch-shake');
-// 				btnLS.classList.remove('lightswitch-shake-reverse');
-// 			}, 2500);
-// 			iconLS.removeAttribute('style');
-// 			msgText.removeAttribute('style');
-// 			iconFT.removeAttribute('style');
-// 			chainLS.removeAttribute('style');
-// 			wraperLS.removeAttribute('style');
-// 			// tooltipLS.removeAttribute('style');
-// 		}
-// 		function ball_onMouseup(eVent) {
-// 			setBallDrag(eVent);
-// 			eVent.target.classList.remove('cursor-grabbing');
-// 			eVent.target.classList.remove('cursor-grab');
-// 			tooltipLS.classList.remove('tooltip_lightswitch-hide'); // убираем принудительное скрытие подсказки
-// 			document.removeEventListener('mousemove', ball_onMousemove, false);
-// 			document.removeEventListener('mouseup', ball_onMouseup, false);
-// 			// '
-// 			if ((eventClient.Y1 === eVent.clientY || eventClient.Y1 === eventClient.Y2) && (eventClient.X1 === eVent.clientX || eventClient.X1 === eventClient.X2)) {
-// 				if (btnFT.classList.contains('msg-show')) {
-// 					eVent.target.addEventListener('click', ball_onClick, false);
-// 				}
-// 			}
-// 		}
-// 		function ball_onClick(eVent) {
-// 			if (eVent.target.classList.contains('lightswitch-ball')) { // idBtnLightSwitch
-// 				// *меняем иконку на соответствующий режим спецэфф
-// 				setToggleMsgEffect(eVent.target); // переключение спецэффектов
-// 				jumpLightswitch(eVent.target); // анимационный толчок светового переключателя
-// 				setMsgBoxItemTooltip(eVent, "tooltip_lightswitch-show"); // установить всплывающую подсказку к элементу в MsgBox // (!) не срабатывает для мобильной версии firefox (добавлен и здесь)
-// 				eVent.target.removeEventListener('click', ball_onClick, false);
-// 				// function ball_onAnimationend(ev) { // для прекращения воспроизведения анимации
-// 				// 	ev.target.style.removeProperty('animation');
-// 				// 	eVent.target.removeEventListener('animationend', ball_onAnimationend, false);
-// 				// }
-// 				// eVent.target.addEventListener('animationend', ball_onAnimationend, false);
-// 			}
-// 		}
-// 		document.addEventListener('mouseup', ball_onMouseup, false);
-// 	}
-// }
-// // x -
-// function msgbox_onTouchstart(e) {
-// 	if (e.target.classList.contains('lightswitch-ball')) {
-// 		// 'трансформация курсора - меняем вид курсора
-// 		// e.target.style.animationPlayState = "paused";
-// 		const touch = e.touches[0]; // получаем первое касание - все пальцы, кот.сейчас взаимодействуют с экраном ("коснуты" экрана)
-// 		// 'определяем первоначальное положение координат Y |— X
-// 		let touchClient = {
-// 			X1: touch.clientX,
-// 			Y1: touch.clientY,
-// 			X2: touch.clientX,
-// 			Y2: touch.clientY,
-// 		};
-// 		const iconLS = document.getElementById('idIconLightSwitch');
-// 		let hIconLS = iconLS.offsetHeight;
-// 		const msgText = document.getElementById('idMsgText');
-// 		const iconFT = document.getElementById('idIconFingerToggle');
-// 		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-// 		const tooltipLS = msgBox.querySelector('.tooltip-lightswitch');
-// 		const chainLS = e.target.parentElement.querySelector('.lightswitch-chain');
-// 		if ((chainLS === null) || (chainLS !== Object(chainLS))) {
-// 			chainLS = msgBox.querySelector('.lightswitch-chain');
-// 		}
-// 		let chainLength = chainLS.offsetHeight;
-// 		let angle = 0; // rotateZ()
-// 		let gip = 0;
-// 		function getBallDrag(evn) {
-// 			// 'evn.type - onTouchstart
-// 			// 'evn.touch -.lightswitch-ball
-// 			const initX = wraperLS.offsetLeft + (wraperLS.offsetWidth / 2); // 'переопределение положения т.на оси X
-// 			// .lightswitch-wrapper/idIconLightSwitch/idMsgText/idIconFingerToggle
-// 			if (btnFT.classList.contains('msg-show')) { // уменьшение иконки, увеличение цепочки
-// 				if (evn.touches[0].clientY > touchClient.Y2) { // тянем цепу вниз
-// 					hIconLS = hIconLS + (touchClient.Y2 - evn.touches[0].clientY); // 70, 69, .., 0: уменьшение
-// 					if (hIconLS < 0) {
-// 						hIconLS = 0;
-// 					}
-// 				} else if (evn.touches[0].clientY < touchClient.Y2) { // тянем цепу вверх
-// 					hIconLS = hIconLS + (touchClient.Y2 - evn.touches[0].clientY); // 0, .., 69, 70: увеличение
-// 					if (hIconLS > 70) {
-// 						hIconLS = 70;
-// 					}
-// 				}
-// 			} else if (btnFT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение цепочки
-// 				if (evn.touches[0].clientY > touchClient.Y2) { // тянем цепу вниз
-// 					hIconLS = hIconLS + (evn.touches[0].clientY - touchClient.Y2); // 0, .., 69, 70: увеличение
-// 					if (hIconLS > 70) { // доступный диапазон с 0 до 70 включительно
-// 						hIconLS = 70;
-// 					}
-// 				} else if (evn.touches[0].clientY < touchClient.Y2) { // тянем цепу вверх
-// 					hIconLS = hIconLS + (evn.touches[0].clientY - touchClient.Y2); // 70, 69, .., 0: уменьшение
-// 					if (hIconLS < 0) { // доступный диапазон с 70 до 0 включительно
-// 						hIconLS = 0;
-// 					}
-// 				}
-// 			}
-// 			// .lightswitch-chain
-// 			chainLength = chainLength + (evn.touches[0].clientY - touchClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
-// 			// *получаем угол в градусах и переводим в радианы
-// 			// (i) угол в градусах - единица измерения углов, которая равна 1/360 полного оборота по окружности (1deg = π/180rad ≈ 0,01745rad)
-// 			// (i) Math.atan2 возвращает угол в плоскости (в радианах) между положительной осью X и лучом от (0, 0) до точки (x, y) для Math.atan2(y, x)
-// 			// angle = (Math.atan2(chainLength, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 			angle = Math.atan2(chainLength + (wraperLS.offsetWidth / 2), evn.touches[0].clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 			angle = angle - 90;
-// 			// (i) теорема Пифагора: квадрат гипотенузы = сумме квадратов катетов
-// 			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow((evn.clientY - originY), 2)));
-// 			// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength, 2)));
-// 			gip = Math.round(Math.sqrt(Math.pow(evn.touches[0].clientX - initX, 2) + Math.pow(chainLength + (wraperLS.offsetWidth / 2), 2)));
-// 			gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target/touch.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
-// 			// обновляем переменные
-// 			touchClient.X2 = evn.touches[0].clientX;
-// 			touchClient.Y2 = evn.touches[0].clientY;
-// 		}
-// 		function ball_onTouchmove(eVent) {
-// 			tooltipLS.classList.add('tooltip_lightswitch-hide'); // принудительное скрытие подсказки
-// 			getBallDrag(eVent);
-// 			iconLS.style.height = hIconLS + "px";
-// 			msgText.style.overflow = "hidden";
-// 			msgText.style.height = hIconLS + "px";
-// 			iconFT.style.height = hIconLS + "px";
-// 			wraperLS.style.top = hIconLS + "px"; // выс.иконки+margin-top: 70+6=76
-// 			chainLS.style.height = gip + "px";
-// 			// tooltipLS.style.transform = "rotateZ(" + (0 - angle) + "deg) translate(40px, -70px)";
-// 			wraperLS.style.transform = "rotateZ(" + angle + "deg)";
-// 			// eVent.preventDefault(); // (i) в прослушивателе установлен passive: false для возможности применения, НО похоже работает и так, проверено на yabrowser, chrome, firefox (кроме моб.вар.)
-// 			if (hIconLS > 10) {
-// 				// 'удаляем css св-ва
-// 				iconLS.style.removeProperty('margin');
-// 				iconLS.style.removeProperty('padding');
-// 				iconLS.style.removeProperty('border');
-
-// 				msgText.style.removeProperty('overflow');
-// 				msgText.style.removeProperty('margin');
-// 				msgText.style.removeProperty('padding');
-// 				msgText.style.removeProperty('border');
-
-// 				iconFT.style.removeProperty('margin');
-// 				iconFT.style.removeProperty('padding');
-// 				iconFT.style.removeProperty('border');
-// 			} else {
-// 				iconLS.style.margin = 0;
-// 				iconLS.style.padding = 0;
-// 				iconLS.style.border = 0;
-
-// 				msgText.style.margin = 0;
-// 				msgText.style.padding = 0;
-// 				msgText.style.border = 0;
-
-// 				iconFT.style.margin = 0;
-// 				iconFT.style.padding = 0;
-// 				iconFT.style.border = 0;
-// 			}
-// 		}
-// 		document.addEventListener('touchmove', ball_onTouchmove, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-// 		function setBallDrag(evn) {
-// 			if (hIconLS <= 0) {
-// 				btnFT.classList.replace('msg-show', 'msg-hide');
-// 			} else {
-// 				btnFT.classList.replace('msg-hide', 'msg-show');
-// 			}
-// 			wraperLS.style.transform = "rotateZ(0deg)";
-// 			// tooltipLS.style.transform = "rotateZ(0deg)";
-// 			if (angle > 0) {
-// 				btnLS.classList.add('lightswitch-shake');
-// 			} else {
-// 				btnLS.classList.add('lightswitch-shake-reverse');
-// 			}
-// 			setTimeout(() => { // 'короткое разовое качание кн.переключателя
-// 				btnLS.classList.remove('lightswitch-shake');
-// 				btnLS.classList.remove('lightswitch-shake-reverse');
-// 			}, 2500);
-// 			iconLS.removeAttribute('style');
-// 			msgText.removeAttribute('style');
-// 			iconFT.removeAttribute('style');
-// 			chainLS.removeAttribute('style');
-// 			wraperLS.removeAttribute('style');
-// 			// tooltipLS.removeAttribute('style');
-// 		}
-// 		function ball_onTouchend(eVent) {
-// 			setBallDrag(eVent);
-// 			tooltipLS.classList.remove('tooltip_lightswitch-hide'); // убираем принудительное скрытие подсказки
-// 			document.removeEventListener('touchmove', ball_onTouchmove, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-// 			document.removeEventListener('touchend', ball_onTouchend, false);
-// 			// '
-// 			if ((touchClient.Y1 === eVent.changedTouches[0].clientY || touchClient.Y1 === touchClient.Y2) && (touchClient.X1 === eVent.changedTouches[0].clientX || touchClient.X1 === touchClient.X2)) {
-// 				if (btnFT.classList.contains('msg-show')) {
-// 					eVent.target.addEventListener('click', ball_onClick, false);
-// 				}
-// 			}
-// 		}
-// 		function ball_onClick(eVent) {
-// 			if (eVent.target.classList.contains('lightswitch-ball')) { // idBtnLightSwitch
-// 				// *меняем иконку на соответствующий режим спецэфф
-// 				setToggleMsgEffect(eVent.target); // переключение спецэффектов
-// 				jumpLightswitch(eVent.target); // анимационный толчок светового переключателя
-// 				setMsgBoxItemTooltip(eVent, "tooltip_lightswitch-show"); // установить всплывающую подсказку к элементу в MsgBox // (!) не срабатывает для мобильной версии firefox
-// 				eVent.target.removeEventListener('click', ball_onClick, false);
-// 				// function ball_onAnimationend(evt) { // для прекращения воспроизведения анимации
-// 				// 	evt.target.style.removeProperty('animation');
-// 				// 	eVent.target.removeEventListener('animationend', ball_onAnimationend, false);
-// 				// }
-// 				// eVent.target.addEventListener('animationend', ball_onAnimationend, false);
-// 			}
-// 		}
-// 		document.addEventListener('touchend', ball_onTouchend, false);
-// 	}
-// }
-// // x -
-// // для событий mouse & touch // (i) код громоздкий + доп.проверка event.type или ф.isMobile() // (!) для firefox не сработает нет поддержки
-// function msgbox_onStartDown(e) {
-// 	if (e.target.classList.contains('lightswitch-ball')) {
-// 		const iconLS = document.getElementById('idIconLightSwitch');
-// 		let hIconLS = iconLS.offsetHeight;
-// 		const msgText = document.getElementById('idMsgText');
-// 		const iconFT = document.getElementById('idIconFingerToggle');
-// 		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-// 		const initX = wraperLS.offsetLeft + (wraperLS.offsetWidth / 2); // 'определение положения т.на оси X
-// 		const tooltipLS = msgBox.querySelector('.tooltip-lightswitch');
-// 		const chainLS = e.target.parentElement.querySelector('.lightswitch-chain');
-// 		if ((chainLS === null) || (chainLS !== Object(chainLS))) {
-// 			chainLS = msgBox.querySelector('.lightswitch-chain');
-// 		}
-// 		let chainLength = chainLS.offsetHeight;
-// 		let angle = 0; // rotateZ()
-// 		let gip = 0;
-// 		if (e.type === "touchstart") { // моя ф.isMobile() - проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-// 			const touch = e.touches[0]; // получаем первое касание - все пальцы, кот.сейчас взаимодействуют с экраном ("коснуты" экрана)
-// 			// 'определяем первоначальное положение координат Y |— X
-// 			var touchClient = {
-// 				X1: touch.clientX,
-// 				Y1: touch.clientY,
-// 				X2: touch.clientX,
-// 				Y2: touch.clientY,
-// 			};
-// 		} else if (e.type === "mousedown") { // - desktop - Windows NT...
-// 			// 'трансформация курсора - меняем вид курсора
-// 			// e.target.style.animationPlayState = "paused";
-// 			e.target.classList.add('cursor-grab');
-// 			// 'определяем первоначальное положение координат Y |— X
-// 			var eventClient = {
-// 				X1: e.clientX,
-// 				Y1: e.clientY,
-// 				X2: e.clientX,
-// 				Y2: e.clientY,
-// 			};
-// 		}
-// 		function getBallDrag(evn) {
-// 			// 'evn.type - onMousemove/onTouchmove
-// 			// 'evn.target/touch -.lightswitch-ball
-// 			// .lightswitch-wrapper/idIconLightSwitch/idMsgText/idIconFingerToggle
-// 			if (evn.type === "touchmove") { // моя ф.isMobile() - проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-// 				if (btnFT.classList.contains('msg-show')) { // уменьшение иконки, увеличение цепочки
-// 					if (evn.touches[0].clientY > touchClient.Y2) { // тянем цепу вниз
-// 						hIconLS = hIconLS + (touchClient.Y2 - evn.touches[0].clientY); // 70, 69, .., 0: уменьшение
-// 						if (hIconLS < 0) {
-// 							hIconLS = 0;
-// 						}
-// 					} else if (evn.touches[0].clientY < touchClient.Y2) { // тянем цепу вверх
-// 						hIconLS = hIconLS + (touchClient.Y2 - evn.touches[0].clientY); // 0, .., 69, 70: увеличение
-// 						if (hIconLS > 70) {
-// 							hIconLS = 70;
-// 						}
-// 					}
-// 				} else if (btnFT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение цепочки
-// 					if (evn.touches[0].clientY > touchClient.Y2) { // тянем цепу вниз
-// 						hIconLS = hIconLS + (evn.touches[0].clientY - touchClient.Y2); // 0, .., 69, 70: увеличение
-// 						if (hIconLS > 70) { // доступный диапазон с 0 до 70 включительно
-// 							hIconLS = 70;
-// 						}
-// 					} else if (evn.touches[0].clientY < touchClient.Y2) { // тянем цепу вверх
-// 						hIconLS = hIconLS + (evn.touches[0].clientY - touchClient.Y2); // 70, 69, .., 0: уменьшение
-// 						if (hIconLS < 0) { // доступный диапазон с 70 до 0 включительно
-// 							hIconLS = 0;
-// 						}
-// 					}
-// 				}
-// 				// .lightswitch-chain
-// 				chainLength = chainLength + (evn.touches[0].clientY - touchClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
-// 				// *получаем угол в градусах и переводим в радианы
-// 				// (i) угол в градусах - единица измерения углов, которая равна 1/360 полного оборота по окружности (1deg = π/180rad ≈ 0,01745rad)
-// 				// (i) Math.atan2 возвращает угол в плоскости (в радианах) между положительной осью X и лучом от (0, 0) до точки (x, y) для Math.atan2(y, x)
-// 				// angle = (Math.atan2(chainLength, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 				angle = Math.atan2(chainLength + (wraperLS.offsetWidth / 2), evn.touches[0].clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 				angle = angle - 90;
-// 				// (i) теорема Пифагора: квадрат гипотенузы = сумме квадратов катетов
-// 				// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow((evn.clientY - originY), 2)));
-// 				// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength, 2)));
-// 				gip = Math.round(Math.sqrt(Math.pow(evn.touches[0].clientX - initX, 2) + Math.pow(chainLength + (wraperLS.offsetWidth / 2), 2)));
-// 				gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target/touch.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
-// 				// обновляем переменные
-// 				touchClient.X2 = evn.touches[0].clientX;
-// 				touchClient.Y2 = evn.touches[0].clientY;
-// 			} else if (evn.type === "mousemove") { // - desktop - Windows NT...
-// 				if (btnFT.classList.contains('msg-show')) { // уменьшение иконки, увеличение цепочки
-// 					if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
-// 						hIconLS = hIconLS + (eventClient.Y2 - evn.clientY); // 70, 69, .., 0: уменьшение
-// 						if (hIconLS < 0) {
-// 							hIconLS = 0;
-// 						}
-// 					} else if (evn.clientY < eventClient.Y2) { // тянем цепу вверх
-// 						hIconLS = hIconLS + (eventClient.Y2 - evn.clientY); // 0, .., 69, 70: увеличение
-// 						if (hIconLS > 70) {
-// 							hIconLS = 70;
-// 						}
-// 					}
-// 				} else if (btnFT.classList.contains('msg-hide')) { // увеличение иконки, уменьшение цепочки
-// 					if (evn.clientY > eventClient.Y2) { // тянем цепу вниз
-// 						hIconLS = hIconLS + (evn.clientY - eventClient.Y2); // 0, .., 69, 70: увеличение
-// 						if (hIconLS > 70) { // доступный диапазон с 0 до 70 включительно
-// 							hIconLS = 70;
-// 						}
-// 					} else if (evn.clientY < eventClient.Y2) { // тянем цепу вверх
-// 						hIconLS = hIconLS + (evn.clientY - eventClient.Y2); // 70, 69, .., 0: уменьшение
-// 						if (hIconLS < 0) { // доступный диапазон с 70 до 0 включительно
-// 							hIconLS = 0;
-// 						}
-// 					}
-// 				}
-// 				// .lightswitch-chain
-// 				chainLength = chainLength + (evn.clientY - eventClient.Y2) + (iconLS.offsetHeight - hIconLS); // увеличение, а уменьшение за счет отрицат.знач.evn.clientY
-// 				// *получаем угол в градусах и переводим в радианы
-// 				// (i) угол в градусах - единица измерения углов, которая равна 1/360 полного оборота по окружности (1deg = π/180rad ≈ 0,01745rad)
-// 				// (i) Math.atan2 возвращает угол в плоскости (в радианах) между положительной осью X и лучом от (0, 0) до точки (x, y) для Math.atan2(y, x)
-// 				// angle = (Math.atan2(chainLength, evn.clientX - initX)) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 				angle = Math.atan2(chainLength + (wraperLS.offsetWidth / 2), evn.clientX - initX) * (180 / Math.PI); // получаем угол в радианах и переводим в градусы
-// 				angle = angle - 90;
-// 				// (i) теорема Пифагора: квадрат гипотенузы = сумме квадратов катетов
-// 				// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow((evn.clientY - originY), 2)));
-// 				// gip = Math.round(Math.sqrt(Math.pow((evn.clientX - initX), 2) + Math.pow(chainLength, 2)));
-// 				gip = Math.round(Math.sqrt(Math.pow(evn.clientX - initX, 2) + Math.pow(chainLength + (wraperLS.offsetWidth / 2), 2)));
-// 				gip = gip - (wraperLS.offsetWidth / 2); // (?)'не понятно почему должна учитываться доп.target.offsetHeight/2 (заменена на ширину) без нее курсор будет на самом левом крае
-// 				// обновляем переменные
-// 				eventClient.X2 = evn.clientX;
-// 				eventClient.Y2 = evn.clientY;
-// 			}
-// 		}
-// 		function ball_onMove(eVent) {
-// 			eVent.target.classList.replace('cursor-grab', 'cursor-grabbing');
-// 			tooltipLS.classList.add('tooltip_lightswitch-hide');
-// 			getBallDrag(eVent);
-// 			iconLS.style.height = hIconLS + "px";
-// 			msgText.style.overflow = "hidden";
-// 			msgText.style.height = hIconLS + "px";
-// 			iconFT.style.height = hIconLS + "px";
-// 			wraperLS.style.top = hIconLS + "px"; // выс.иконки+margin-top: 70+6=76
-// 			chainLS.style.height = gip + "px";
-// 			// tooltipLS.style.transform = "rotateZ(" + (0 - angle) + "deg) translate(40px, -70px)";
-// 			wraperLS.style.transform = "rotateZ(" + angle + "deg)";
-// 			// (i) в прослушивателе установлен passive: false для возможности применения, НО похоже работает и так, проверено на yabrowser, chrome, firefox (кроме моб.вар.)
-// 			// if (eVent.type === "mousemove") {
-// 			// 	eVent.preventDefault();
-// 			// }
-// 			if (hIconLS > 10) {
-// 				// 'удаляем css св-ва
-// 				iconLS.style.removeProperty('margin');
-// 				iconLS.style.removeProperty('padding');
-// 				iconLS.style.removeProperty('border');
-
-// 				msgText.style.removeProperty('overflow');
-// 				msgText.style.removeProperty('margin');
-// 				msgText.style.removeProperty('padding');
-// 				msgText.style.removeProperty('border');
-
-// 				iconFT.style.removeProperty('margin');
-// 				iconFT.style.removeProperty('padding');
-// 				iconFT.style.removeProperty('border');
-// 			} else {
-// 				iconLS.style.margin = 0;
-// 				iconLS.style.padding = 0;
-// 				iconLS.style.border = 0;
-
-// 				msgText.style.margin = 0;
-// 				msgText.style.padding = 0;
-// 				msgText.style.border = 0;
-
-// 				iconFT.style.margin = 0;
-// 				iconFT.style.padding = 0;
-// 				iconFT.style.border = 0;
-// 			}
-// 		}
-// 		if (e.type === "touchstart") { // моя ф.isMobile() - проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-// 			document.addEventListener('touchmove', ball_onMove, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-// 		} else if (e.type === "mousedown") { // - desktop - Windows NT...
-// 			document.addEventListener('mousemove', ball_onMove, false);
-// 		}
-// 		function setBallDrag(evn) {
-// 			if (hIconLS <= 0) {
-// 				btnFT.classList.replace('msg-show', 'msg-hide');
-// 			} else {
-// 				btnFT.classList.replace('msg-hide', 'msg-show');
-// 			}
-// 			wraperLS.style.transform = "rotateZ(0deg)";
-// 			// tooltipLS.style.transform = "rotateZ(0deg)";
-// 			if (angle > 0) {
-// 				btnLS.classList.add('lightswitch-shake');
-// 			} else {
-// 				btnLS.classList.add('lightswitch-shake-reverse');
-// 			}
-// 			setTimeout(() => { // 'короткое разовое качание кн.переключателя
-// 				btnLS.classList.remove('lightswitch-shake');
-// 				btnLS.classList.remove('lightswitch-shake-reverse');
-// 			}, 2500);
-// 			iconLS.removeAttribute('style');
-// 			msgText.removeAttribute('style');
-// 			iconFT.removeAttribute('style');
-// 			chainLS.removeAttribute('style');
-// 			wraperLS.removeAttribute('style');
-// 			// tooltipLS.removeAttribute('style');
-// 		}
-// 		function ball_onEndUp(eVent) {
-// 			setBallDrag(eVent);
-// 			eVent.target.classList.remove('cursor-grabbing');
-// 			eVent.target.classList.remove('cursor-grab');
-// 			tooltipLS.classList.remove('tooltip_lightswitch-hide');
-// 			document.removeEventListener('touchmove', ball_onMove, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-// 			document.removeEventListener('touchend', ball_onEndUp, false);
-// 			// '
-// 			if (eVent.type === "touchend") { // моя ф.isMobile() - проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-// 				if ((touchClient.Y1 === eVent.changedTouches[0].clientY || touchClient.Y1 === touchClient.Y2) && (touchClient.X1 === eVent.changedTouches[0].clientX || touchClient.X1 === touchClient.X2)) {
-// 					if (btnFT.classList.contains('msg-show')) {
-// 						eVent.target.addEventListener('click', ball_onClick, false);
-// 					}
-// 				}
-// 			} else if (eVent.type === "mouseup") { // - desktop - Windows NT...
-// 				if ((eventClient.Y1 === eVent.clientY || eventClient.Y1 === eventClient.Y2) && (eventClient.X1 === eVent.clientX || eventClient.X1 === eventClient.X2)) {
-// 					if (btnFT.classList.contains('msg-show')) {
-// 						eVent.target.addEventListener('click', ball_onClick, false);
-// 					}
-// 				}
-// 			}
-// 		}
-// 		function ball_onClick(eVent) {
-// 			if (eVent.target.classList.contains('lightswitch-ball')) { // idBtnLightSwitch
-// 				// *меняем иконку на соответствующий режим спецэфф
-// 				setToggleMsgEffect(eVent.target); // переключение спецэффектов
-// 				jumpLightswitch(eVent.target); // анимационный толчок светового переключателя
-// 				eVent.target.removeEventListener('click', ball_onClick, false);
-// 				// function ball_onAnimationend(evt) { // для прекращения воспроизведения анимации
-// 				// 	evt.target.style.removeProperty('animation');
-// 				// 	eVent.target.removeEventListener('animationend', ball_onAnimationend, false);
-// 				// }
-// 				// eVent.target.addEventListener('animationend', ball_onAnimationend, false);
-// 			}
-// 		}
-// 		if (eVent.type === "touchstart") { // моя ф.isMobile() - проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-// 			document.addEventListener('touchend', ball_onEndUp, false);
-// 		} else if (eVent.type === "mousedown") { // - desktop - Windows NT...
-// 			document.addEventListener('mouseup', ball_onEndUp, false);
-// 		}
-// 	}
-// }
-
-
 // (!) анимационный толчок светового переключателя
 function jumpLightswitch(elem) {
 	// x // 'elem - idBtnLightSwitch>.lightswitch-ball
@@ -1662,79 +1284,86 @@ function setToggleMsgEffect(elem) {
 		let el = elem; // idMsgBox
 		while (!el.parentElement.classList.contains('topic-box')) {
 			el = el.parentElement;
-			if (el.classList.contains('topic-box')) {
+			if (el.classList.contains('msg-box')) {
 				break;
-			} else if (el.classList.contains('lightswitch-wrapper')) {
-				info2 = el.querySelector('.tooltip-lightswitch-info2');
+			} else if (el.classList.contains('msg-content')) { // вместо.lightswitch-wrapper
+				info2 = el.querySelector('.tooltip-lightswitch-info2'); // не очень хорошая практика перезаписи переменной налету
 			}
 		}
-		// '.tooltip-lightswitch-info2
-		if (info2 !== null && info2 === Object(info2)) {
-			function setMode(value = "") {
-				for (let i = 0; i < info2.children.length; i++) {
-					if (info2.children[i].hasAttribute('mode')) {
-						if (info2.children[i].getAttribute('mode') === value) { // вкл.- на переднем плане
-							info2.children[i].removeAttribute('style');
-							if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-								let msg = {
-									value: "msgBoxUpdate",
-									msgEffect: info2.children[i].getAttribute('mode')
-								};
-								window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-							} else {
-								window.top.vrsTopic.msgEffect = info2.children[i].getAttribute('mode');
+		if (el.hasAttribute('class')) { // idMsgBox
+			if (el.classList.contains('msg-box')) {
+				// '.tooltip-lightswitch-info2
+				if (info2 !== null && info2 === Object(info2)) {
+					function setMode(value = "") {
+						for (let i = 0; i < info2.children.length; i++) {
+							if (info2.children[i].hasAttribute('mode')) {
+								if (info2.children[i].getAttribute('mode') === value) { // вкл.- на переднем плане
+									info2.children[i].removeAttribute('style');
+									if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
+										let msg = {
+											value: "msgBoxUpdate",
+											msgEffect: info2.children[i].getAttribute('mode')
+										};
+										window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
+									} else {
+										window.top.vrsTopic.msgEffect = info2.children[i].getAttribute('mode');
+									}
+								} else {
+									info2.children[i].style.display = "none";
+								}
 							}
-						} else {
-							info2.children[i].style.display = "none";
 						}
 					}
-				}
-			}
-			// 'idIconLightSwitch
-			let icon = el.querySelector('[id=idIconLightSwitch]');
-			if (icon !== null && icon === Object(icon)) {
-				if (icon.classList.contains('msg_icon-eff_on')) {
-					if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
-						lightOff.play();
-					}
-					if (icon.parentElement.hasAttribute('class')) {
-						if (icon.parentElement.classList.contains('msg-content')) {
-							icon.parentElement.classList.add('msg-bgr-content');
+					// 'idIconLightSwitch
+					let icon = el.querySelector('[id=idIconLightSwitch]');
+					if (icon !== null && icon === Object(icon)) {
+						if (icon.classList.contains('msg_icon-eff_on')) {
+							if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
+								lightOff.play();
+							}
+							if (icon.parentElement.hasAttribute('class')) {
+								if (icon.parentElement.classList.contains('msg-content')) {
+									icon.parentElement.classList.add('msg-bgr-content');
+								}
+							} else { // 'в качестве подстраховки
+								el.querySelector('.msg-content').classList.add('msg-bgr-content');
+							}
+							icon.classList.replace('msg_icon-eff_on', 'msg_icon-eff_bgr');
+							setMode("bgr"); // .tooltip-lightswitch-info2
+						} else if (icon.classList.contains('msg_icon-eff_bgr')) {
+							if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
+								lightOff.play();
+							}
+							if (icon.parentElement.hasAttribute('class')) {
+								if (icon.parentElement.classList.contains('msg-content')) {
+									icon.parentElement.classList.remove('msg-bgr-content');
+								}
+							} else { // 'в качестве подстраховки
+								el.querySelector('.msg-bgr-content').classList.remove('msg-bgr-content');
+							}
+							el.classList.remove('msg-effect');
+							icon.classList.replace('msg_icon-eff_bgr', 'msg_icon-eff_off');
+							setMode("off"); // .tooltip-lightswitch-info2
+						} else if (icon.classList.contains('msg_icon-eff_off')) {
+							if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
+								lightOn.play();
+							}
+							el.classList.add('msg-effect');
+							icon.classList.replace('msg_icon-eff_off', 'msg_icon-eff_on');
+							setMode("on"); // .tooltip-lightswitch-info2
 						}
-					} else { // 'в качестве подстраховки
-						el.querySelector('.msg-content').classList.add('msg-bgr-content');
+					} else {
+						console.warn(`(i) Не удалось изменить иконку всплывающей подсказки - не найден элемент:\n function setToggleMsgEffect(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n icon: typeof(${typeof(icon)}) / Object(${Object(icon)}) / ${icon}`);
+						alert(`(i) Не удалось изменить иконку всплывающей подсказки - не найден элемент, см.консоль.`);
 					}
-					icon.classList.replace('msg_icon-eff_on', 'msg_icon-eff_bgr');
-					setMode("bgr"); // .tooltip-lightswitch-info2
-				} else if (icon.classList.contains('msg_icon-eff_bgr')) {
-					if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
-						lightOff.play();
-					}
-					if (icon.parentElement.hasAttribute('class')) {
-						if (icon.parentElement.classList.contains('msg-content')) {
-							icon.parentElement.classList.remove('msg-bgr-content');
-						}
-					} else { // 'в качестве подстраховки
-						el.querySelector('.msg-bgr-content').classList.remove('msg-bgr-content');
-					}
-					el.classList.remove('msg-effect');
-					icon.classList.replace('msg_icon-eff_bgr', 'msg_icon-eff_off');
-					setMode("off"); // .tooltip-lightswitch-info2
-				} else if (icon.classList.contains('msg_icon-eff_off')) {
-					if (getPlayback("allowPlayback")) { // получить разрешение на воспроизведение
-						lightOn.play();
-					}
-					el.classList.add('msg-effect');
-					icon.classList.replace('msg_icon-eff_off', 'msg_icon-eff_on');
-					setMode("on"); // .tooltip-lightswitch-info2
+				} else {
+					console.warn(`(i) Не удалось изменить текст всплывающей подсказки - не найден элемент:\n function setToggleMsgEffect(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n info2: typeof(${typeof(info2)}) / Object(${Object(info2)}) / ${info2}`);
+					alert(`(i) Не удалось изменить текст всплывающей подсказки - не найден элемент, см.консоль.`);
 				}
 			} else {
-				console.warn(`(i) Проверка - не удалось изменить текст всплывающей подсказки - не найден элемент:\n function setToggleMsgEffect(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n icon: typeof(${typeof(icon)}) / Object(${Object(icon)}) / ${icon}`);
-				alert(`(i) Проверка - не удалось изменить текст всплывающей подсказки - не найден элемент, см.консоль.`);
+				console.warn(`(i) Не удалось изменить спецэффект - не найден элемент:\n function setToggleMsgEffect(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n el: typeof(${typeof(el)}) / Object(${Object(el)}) / ${el}`);
+				alert(`(i) Не удалось изменить спецэффект - не найден элемент, см.консоль.`);
 			}
-		} else {
-			console.warn(`(i) Проверка - не удалось изменить текст всплывающей подсказки - не найден элемент:\n function setToggleMsgEffect(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}):\n info2: typeof(${typeof(info2)}) / Object(${Object(info2)}) / ${info2}`);
-			alert(`(i) Проверка - не удалось изменить текст всплывающей подсказки - не найден элемент, см.консоль.`);
 		}
 	}
 }
@@ -1789,31 +1418,57 @@ function msgbox_onClick(eVent) {
 	if (eVent.target.id === "idBtnToggleMsgBox") {
 		toggleMsgBox(eVent.target); // скрыть/показать всплывающее окно сообщения
 	} else if (eVent.target.id === "idIconLightSwitch") { // - указатель на переключение спецэфф.фона
-		const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
-		if (wraperLS !== null && wraperLS === Object(wraperLS)) {
-			if (audioElements.objBellSound.bellSound === null && audioElements.objBellSound.rustleChain === null) {
-				audioElements.objBellSound.bellSound = new Audio("audio/bell-sound.mp3");
-				audioElements.objBellSound.bellSound.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
-				audioElements.objBellSound.rustleChain = new Audio("audio/rustle-chain.mp3");
-				audioElements.objBellSound.rustleChain.loop = true; // автоповтор
-				audioElements.objBellSound.rustleChain.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
-				let idInt = setInterval(() => {
-					if (audioElements.objBellSound.bellSound.paused && audioElements.objBellSound.rustleChain.paused) {
-						clearInterval(idInt);
-						setSwing(wraperLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
-					}
-				}, 100);
-			} else {
-				if (audioElements.objBellSound.bellSound.currentTime > 0 && audioElements.objBellSound.rustleChain.currentTime > 0) {
-					RAF_RESET = true;
-				}
-				let idInt = setInterval(() => {
-					if (RAF_RESET === false) {
-						clearInterval(idInt);
-						setSwing(wraperLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
-					}
-				}, 100);
+		// const wraperLS = msgBox.querySelector('.lightswitch-wrapper');
+		// if (wraperLS !== null && wraperLS === Object(wraperLS)) {
+		// 	if (audioElements.objBellSound.bellSound === null && audioElements.objBellSound.rustleChain === null) {
+		// 		audioElements.objBellSound.bellSound = new Audio("audio/bell-sound.mp3");
+		// 		audioElements.objBellSound.bellSound.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+		// 		audioElements.objBellSound.rustleChain = new Audio("audio/rustle-chain.mp3");
+		// 		audioElements.objBellSound.rustleChain.loop = true; // автоповтор
+		// 		audioElements.objBellSound.rustleChain.preload = "auto"; // подготавливаем звук, чтобы он сразу был готов к воспроизведению
+		// 		let idInt = setInterval(() => {
+		// 			if (audioElements.objBellSound.bellSound.paused && audioElements.objBellSound.rustleChain.paused) {
+		// 				clearInterval(idInt);
+		// 				// setSwing(wraperLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 				setSwing(btnLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 			}
+		// 		}, 100);
+		// 	} else {
+		// 		if (audioElements.objBellSound.bellSound.currentTime > 0 && audioElements.objBellSound.rustleChain.currentTime > 0) {
+		// 			RAF_RESET = true;
+		// 		}
+		// 		let idInt = setInterval(() => {
+		// 			if (RAF_RESET === false) {
+		// 				clearInterval(idInt);
+		// 				// setSwing(wraperLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 				setSwing(btnLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+		// 			}
+		// 		}, 100);
+		// 	}
+		// }
+
+		// const getObj = handleAudioElement(audioElements.objBellSound.bellSound, Object.keys(audioElements)[1]);
+
+		if (getSwing(eVent)) {
+			if (audioElements.objBellSound.bellSound === null || audioElements.objBellSound.rustleChain === null) {
+				createNewAudio(eVent);
 			}
+			if (audioElements.objBellSound.bellSound.currentTime > 0 && audioElements.objBellSound.rustleChain.currentTime > 0) RAF_RESET = true;
+			let idInt = setInterval(() => {
+				if ((audioElements.objBellSound.bellSound.currentTime > 0 && audioElements.objBellSound.rustleChain.currentTime > 0) || (RAF_RESET === false)) {
+					clearInterval(idInt);
+					audioElements.objBellSound.bellSound.currentTime = 0; // обнуляем продолжительность воспроизведения
+					audioElements.objBellSound.rustleChain.currentTime = 0; // обнуляем продолжительность воспроизведения
+					setSwing(btnLS, audioElements.objBellSound.bellSound.duration * 1000, audioElements.objBellSound); // анимационное раскачивание // 'взамен css.lightswitch-shake на кн.idBtnLightSwitch
+				}
+			}, 100);
+		} else {
+			if (audioElements.objBellSound.bellSound === null) {
+				createNewAudio(eVent);
+			}
+			if (audioElements.objBellSound.bellSound.currentTime > 0) audioElements.objBellSound.bellSound.currentTime = 0;
+			// audioElements.objBellSound.bellSound.play();
+			setPlayback("play", audioElements.objBellSound.bellSound);
 		}
 		setMsgBoxItemTooltip(eVent, "tooltip_lightswitch-show"); // установить всплывающую подсказку к элементу в MsgBox
 
@@ -1848,24 +1503,16 @@ function setEventHandlersMsgBox(elem, addOrRemove = "add") {
 	// *добавляем/удаляем обработчики событий
 	if (addOrRemove === "add") {
 		// elem.addEventListener('animationend', msgbox_onAnimationend, false); // отключено
-		elem.addEventListener('mouseover', msgbox_onMouseover, false);
-		// 'mouse or touch
-		// if (isMobile()) { // проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-		// 	elem.addEventListener('touchstart', msgbox_onTouchstart, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-		// } else { // - desktop - Windows NT...
-		// 	elem.addEventListener('mousedown', msgbox_onMousedown, false);
-		// }
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.addEventListener('mouseover', msgbox_onMouseover, false);
+		}
 		elem.addEventListener('pointerdown', msgbox_onPointerdown, false); // 'mouse & touch
 		elem.addEventListener('click', msgbox_onClick, false);
 	} else if (addOrRemove === "remove") {
 		// elem.removeEventListener('animationend', msgbox_onAnimationend, false); // отключено
-		elem.removeEventListener('mouseover', msgbox_onMouseover, false);
-		// 'mouse or touch
-		// if (isMobile()) { // проверить устройство на кот.исп.браузер // (!) для firefox не сработает нет поддержки
-		// 	elem.removeEventListener('touchstart', msgbox_onTouchstart, {passive: false}); // passive - по умолчанию true для touchstart/touchmove - обработчик никогда не вызовет preventDefault(). Если вызов будет произведен, браузер его проигнорит и сгенерирует консольное предупреждение
-		// } else { // - desktop - Windows NT...
-		// 	elem.removeEventListener('mousedown', msgbox_onMousedown, false);
-		// }
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.removeEventListener('mouseover', msgbox_onMouseover, false);
+		}
 		elem.removeEventListener('pointerdown', msgbox_onPointerdown, false); // 'mouse & touch
 		elem.removeEventListener('click', msgbox_onClick, false);
 	}

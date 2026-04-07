@@ -506,11 +506,15 @@ function setEventHandlersUserInter(elem, addOrRemove = "") {
 	//'
 	if (addOrRemove = "add") {
 		elem.addEventListener('keydown', handlersEventsUserInter, false);
-		elem.addEventListener('mouseover', handlersEventsUserInter, false);
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.addEventListener('mouseover', handlersEventsUserInter, false);
+		}
 		elem.addEventListener('click', handlersEventsUserInter, false);
 	} else if (addOrRemove = "remove") {
 		elem.removeEventListener('keydown', handlersEventsUserInter, false);
-		elem.removeEventListener('mouseover', handlersEventsUserInter, false);
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.removeEventListener('mouseover', handlersEventsUserInter, false);
+		}
 		elem.removeEventListener('click', handlersEventsUserInter, false);
 	}
 }

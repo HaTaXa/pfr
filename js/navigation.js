@@ -175,12 +175,26 @@ $(document).ready(function () { // - jq
 	}
 }); // ready end
 // (!) развернуть/свернуть все оглавление
-function setListExpandCollapse (value) {
-	const elem = (document.querySelector('main') === null ? document.querySelectorAll('ul:not(.contacts-list)') : document.querySelector('main'));
+function setListExpandCollapse(value) {
 	// let ulFirstLevel = document.querySelector('ul:first-child'); // ul самый 1-ый родитель - предок всех потомков
 	// let list = document.querySelectorAll('ul:not(:first-child)'); // ul все предки, кроме 1-го
-	let list = elem.querySelectorAll('ul'); // ul все предки
-	if (list !== null && typeof(list) === "object") {
+	const getList = (elem) => {
+		elem = document.querySelector('.toc-body');
+		if (elem === null) {
+			elem = document.querySelector('ul.toc');
+			if (elem === null) {
+				elem = document.querySelector('ul:not(.contacts-list)');
+				if (elem !== null) {
+					elem = elem.parentElement;
+				} else { return []; }
+			} else {
+				elem = elem.parentElement;
+			}
+		}
+		return (elem !== null ? elem.querySelectorAll('ul') : []); // ul все предки
+	};
+	const list = getList(); // NodeListOf<Elemens>
+	if (list.length > 0) {
 		if (value) { // - развернуть все оглавление
 			for (let ul of list) {
 				if (ul.hasAttribute('class')) {

@@ -50,7 +50,6 @@ label {cursor: pointer;}
 	height: 100%;
 	flex: 2 2 100%;
 	align-content: flex-start;
-	overflow: hidden auto;
 }
 
 .ref-index {
@@ -259,3 +258,10 @@ ul.idx-icon li {
 	background-position: 0 4px;
 }
 ul.idx-icon li:not(:first-child) {border-top: 1px solid silver;}
+
+@media (max-width: 501px) {
+	.topic-box {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	}
+}

@@ -389,11 +389,8 @@ $(document).ready(function () { // - jq
 			// 'click
 			document.getElementById('idToolbar').addEventListener('click', function (e) {
 				if (e.target.tagName === "INPUT") {
-					// *toolbar-search
-					if (e.target.id === "idNavPaneToggle") { // (!) кн.-переключатель Скрыть/Показать панель навигации
-						setNavPaneShowHide(!e.target.checked); // - делаем "инверсию" значения св-ва
-					} // *toolbar-center
-					else if (e.target.id === "idBannerShowHide") { // (!) кн.-переключатель Показать/Скрыть баннер
+					if (e.target.id === "idBannerShowHide") { // (!) кн.-переключатель Показать/Скрыть баннер
+						// *toolbar-center
 						setBannerShowHide(!e.target.checked); // - делаем инверсию значения, т.к.на событии click значение e.target.checked уже изменено
 					}
 				} else if (e.target.tagName === "LABEL") {
@@ -491,6 +488,13 @@ $(document).ready(function () { // - jq
 		// (!) idTopicPane - события на пан.топика. Используем делегирование событий, прослушивая общий элемент для всех дочерних элементов
 		// *idTopicControls
 		if (document.getElementById('idTopicControls') !== null && typeof(document.getElementById('idTopicControls')) === "object") {
+			document.getElementById('idNavHandle').addEventListener('click', function (e) {
+				if (e.target.tagName === "INPUT") {
+					if (e.target.id === "idNavPaneToggle") { // (!) кн.-переключатель Скрыть/Показать панель навигации
+						setNavPaneShowHide(!e.target.checked); // - делаем "инверсию" значения св-ва
+					}
+				}
+			}, false); // false - фаза "всплытие"
 			// **idTabsControls - кнопки переключения между вкладками
 			// 'click
 			document.getElementById('idTabsControls').addEventListener('click', function (e) {
@@ -774,7 +778,7 @@ function toggleToolbarSldrBtns() {
 		});
 	}
 }
-// (!) перейти к кнопке на ианели инструментов
+// (!) прокрутка кн.на пан.инстр.
 function scrollToToolbarButton(elem) {
 	// 'elem - div.toolbar-btn-slider
 	if (elem === undefined || typeof(elem) === "undefined" || elem !== Object(elem) || (elem === null && elem === Object(elem))) {
@@ -784,18 +788,13 @@ function scrollToToolbarButton(elem) {
 	}
 	//
 	const sldrTrack = elem.parentElement.querySelector('.toolbar-slider-track');
-	// const tSearch = elem.parentElement.querySelector('.toolbar-search');
-	// const tLeft = elem.parentElement.querySelector('.toolbar-left');
-	// const tCenter = elem.parentElement.querySelector('.toolbar-center');
-	// const tRight = elem.parentElement.querySelector('.toolbar-right');
-
 	// (!) удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться
 	function sldrTrack_onAnimationend(eVent) {
 		eVent.target.style.removeProperty('animation');
 		sldrTrack.removeEventListener('animationend', sldrTrack_onAnimationend, false);
 	}
 	if (elem.classList.contains('toolbar_btn_slider-next')) {
-		if (sldrTrack.scrollLeft === (sldrTrack.scrollWidth - sldrTrack.offsetWidth)) {
+		if (Math.round(sldrTrack.scrollLeft) >= (sldrTrack.scrollWidth - sldrTrack.offsetWidth)) {
 			animationOffset(elem); // - анимационное смещение
 			sldrTrack.addEventListener('animationend', sldrTrack_onAnimationend, false);
 		} else {
@@ -1061,7 +1060,6 @@ function animationNavPane500(duration = 1000, panels, valueShowHide = "show") {
 }
 // (!) скрыть/показать боковую панель навигации
 function setNavPaneShowHide(panelShowHide = true) {
-	let imgNavHandle = document.getElementById('idNavHandleIcon'); // - трансформация иконки на панели тема топика
 	let panels = {
 		banner: document.getElementById('idBanner'),
 		toolbar: document.getElementById('idToolbar'),
@@ -1069,7 +1067,6 @@ function setNavPaneShowHide(panelShowHide = true) {
 		topicpane: document.getElementById('idTopicPane')
 	};
 	const duration = 2000; // - длительность анимации
-	document.getElementById('idNavPaneToggle').disabled = true; // 'делаем кнопку НЕдоступной для нажатия, пока не выполнится анимация
 	if (panelShowHide) { // - нав.пан.раскрыта
 		if (panels.banner.style.display === "none") {
 			// *проверяем внутренний размер окна без полос прокрутки
@@ -1092,8 +1089,6 @@ function setNavPaneShowHide(panelShowHide = true) {
 				animationNavPane500(duration, panels, "hide");
 			}
 		}
-		// *трансформация иконки на кнопке в панели тема топика
-		imgNavHandle.classList.replace('navpane-show', 'navpane-hide');
 	} else { // - нав.пан.скрыта
 		// *проверяем внутренний размер окна без полос прокрутки
 		if (document.documentElement.clientWidth > 500) {
@@ -1104,10 +1099,7 @@ function setNavPaneShowHide(panelShowHide = true) {
 		} else if (document.documentElement.clientWidth < 501) {
 			animationNavPane500(duration, panels, "show");
 		}
-		// *трансформация иконки на кнопке в панели тема топика
-		imgNavHandle.classList.replace('navpane-hide', 'navpane-show');
 	}
-	document.getElementById('idNavPaneToggle').disabled = false; // 'делаем кнопку доступной для нажатия
 }
 // (!) быстрый поиск - поиск в текущем разделе
 function setQuickSearch() {
@@ -1354,20 +1346,20 @@ function setBannerShowHide(bannerShowHide = false) {
 	if (document.documentElement.clientWidth > 500) {
 		if (bannerShowHide) { // - баннер раскрыт - скрываем его
 			panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
-			if (panels.navpane.classList.contains('nav-pane-banner')) {
-				panels.navpane.classList.remove('nav-pane-banner');
+			if (panels.navpane.classList.contains('navpane-banner')) {
+				panels.navpane.classList.remove('navpane-banner');
 			}
-			if (panels.topicpane.classList.contains('topic-pane-banner')) {
-				panels.topicpane.classList.remove('topic-pane-banner');
+			if (panels.topicpane.classList.contains('topicpane-banner')) {
+				panels.topicpane.classList.remove('topicpane-banner');
 			}
 			animationBanner(duration, panels, "hide");
 		} else { // - баннер скрыт - отображаем его
 			panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
-			if (!panels.navpane.classList.contains('nav-pane-banner')) { // - класс отсутствует
-				panels.navpane.classList.add('nav-pane-banner');
+			if (!panels.navpane.classList.contains('navpane-banner')) { // - класс отсутствует
+				panels.navpane.classList.add('navpane-banner');
 			}
-			if (!panels.topicpane.classList.contains('topic-pane-banner')) { // - класс отсутствует
-				panels.topicpane.classList.add('topic-pane-banner');
+			if (!panels.topicpane.classList.contains('topicpane-banner')) { // - класс отсутствует
+				panels.topicpane.classList.add('topicpane-banner');
 			}
 			animationBanner(duration, panels, "show");
 		}

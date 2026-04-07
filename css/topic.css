@@ -157,10 +157,6 @@ html *::-webkit-scrollbar-thumb {
 	/* align-items: center; */
 	/* justify-content: space-between; */
 }
-.topic-box {
-	overflow: hidden auto;
-	scrollbar-width: none;
-}
 .topic-header {
 	position: relative;
 	left: 0;
@@ -574,9 +570,9 @@ div#commentsWrapper {display: none;}
 	margin: 0;
 	padding: 0;
 	border: 0;
-	overflow: hidden hidden;
+	/* overflow: hidden hidden; */
 }
-.msg-hide~.lightswitch-wrapper {top: 0;}
+.msg-hide~.lightswitch-wrapper {top: 0;} /* на удаление */
 .msg-bgr-content { /* (?) не пойму как сделать светлым сверху и снизу сразу */
 	/* background-color: lightyellow; */
 	background: linear-gradient(rgba(0,0,0, 0.86) 85%,rgba(255,255,255));
@@ -714,9 +710,10 @@ div#commentsWrapper {display: none;}
 'idIconFingerToggle
 ''idBtnLightSwitch/.lightswitch-ball
 */
+.tooltip-finger_toggle {left: 0; top: 0;}
+.tooltip-lightswitch {left: 50%; top: 50%;}
 .msg-tooltip {
 	position: absolute;
-	left: 0; top: 0;
 	width: auto;
 	height: auto;
 	padding: 4px;
@@ -728,6 +725,8 @@ div#commentsWrapper {display: none;}
 	color: #fff;
 	border: 1px solid rgba(171,222,247,.9);
 	border-radius: 10px;
+}
+.msg-tooltip {
 	background: linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
 	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #4949494d, endColorstr = #00000099);
 	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #4949494d, endColorstr = #00000099);
@@ -737,10 +736,10 @@ div#commentsWrapper {display: none;}
 	background: -ms-linear-gradient(rgba(73,73,73,.9), rgba(0,0,0,1));
 }
 .msg-tooltip {
-	transition: 1.5s;
-	-webkit-transition: 1.5s;
-	-moz-transition: 1.5s;
-	-o-transition: 1.5s;
+	transition: all 1.5s ease;
+	-webkit-transition: all 1.5s ease;
+	-moz-transition: all 1.5s ease;
+	-o-transition: all 1.5s ease;
 }
 
 .tooltip-finger_toggle {
@@ -775,6 +774,7 @@ div#commentsWrapper {display: none;}
 	opacity: 1;
 }
 /**idBtnLightSwitch */
+/* на удаление */
 .lightswitch-wrapper {
 	position: absolute;
 	left: 38px;
@@ -782,7 +782,8 @@ div#commentsWrapper {display: none;}
 	top: 70px;
 	margin-top: 6px;
 }
-.lightswitch-wrapper {
+.lightswitch-wrapper, /* на удаление */
+.light-switch {
 	transform-origin: center top;
 	-webkit-transform-origin: center top;
 	-moz-transform-origin: center top;
@@ -790,16 +791,21 @@ div#commentsWrapper {display: none;}
 	-ms-transform-origin: center top;
 }
 .msg-tooltip-wrapper, /* (i) для расположения подсказки относительно шарика при изменении размеров и положения висюльки */
-.light-switch,
-.lightswitch-wrapper {
+.lightswitch-wrapper, /* на удаление */
+.light-switch {
 	width: auto;
 	height: auto;
 	display: flex;
 	flex: 0 0 auto;
 	flex-flow: column nowrap;
 }
-.msg-tooltip-wrapper, /* (i) для расположения подсказки относительно шарика при изменении размеров и положения висюльки */
 .light-switch {
+	position: absolute;
+	left: 38px; top: 100%;
+}
+.light-switch {z-index: 1;}
+/* .light-switch, */
+.msg-tooltip-wrapper { /* (i) для расположения подсказки относительно шарика при изменении размеров и положения висюльки */
 	position: relative;
 	left: 0; top: 0;
 }
@@ -834,23 +840,6 @@ div#commentsWrapper {display: none;}
 	background: url(../icon/ball_50x50.png) no-repeat;
 	background-size: 100%;
 }
-.lightswitch-ball:hover {
-	animation: cursor-transform 2s ease infinite;
-	-webkit-animation: cursor-transform 2s ease infinite;
-	-moz-animation: cursor-transform 2s ease infinite;
-	-o-animation: cursor-transform 2s ease infinite;
-}
-.lightswitch-ball:hover .cursor-grab {
-	cursor: grab;
-	cursor: -webkit-grab;
-	cursor: -moz-grab;
-}
-.lightswitch-ball:hover .cursor-grabbing {
-	cursor: grabbing;
-	cursor: -webkit-grabbing;
-	cursor: -moz-grabbing;
-}
-
 .msg-tooltip-wrapper {margin: auto;}
 
 .tooltip-lightswitch {
@@ -884,9 +873,9 @@ div#commentsWrapper {display: none;}
 	border-bottom: 30px solid rgba(171,222,247,.9);
 }
 /**иконка */
-.tooltip-lightswitch:after {left: 95%; top: 85%;}
+.tooltip-lightswitch:after {left: 95%; top: 90%;}
 /* (i) для firefox спец.вставлен (&ensp;) узкий пробел после слеша */
-.tooltip-finger_toggle:after {left: -40%; top: 92%;}
+.tooltip-finger_toggle:after {left: -35%; top: 95%;}
 
 .tooltip-finger_toggle:after,
 .tooltip-lightswitch:after {
@@ -919,7 +908,30 @@ div#commentsWrapper {display: none;}
 'анимационное появление/исчезновение подсказки
 ''покачивание висюльки
 */
-.lightswitch-wrapper .tooltip_lightswitch-show, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+.lightswitch-ball .tooltip_lightswitch-show, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+.msg_icon-lightswitch:hover .tooltip-lightswitch,
+.lightswitch-ball:hover .tooltip-lightswitch {
+	opacity: 1;
+	transform: rotate(0deg) translate(40px, -40px) scale(1);
+	-webkit-transform: rotate(0deg) translate(40px, -40px) scale(1);
+	-moz-transform: rotate(0deg) translate(40px, -40px) scale(1);
+	-o-transform: rotate(0deg) translate(40px, -40px) scale(1);
+	-ms-transform: rotate(0deg) translate(40px, -40px) scale(1);
+}
+.lightswitch-ball .tooltip_lightswitch-show.tooltip_lightswitch-hide,
+.lightswitch-ball .tooltip-lightswitch.tooltip_lightswitch-hide,
+.tooltip-lightswitch {
+	opacity: 0;
+	transform: rotate(180deg) translate(0, 0) scale(0);
+	-webkit-transform: rotate(180deg) translate(0, 0) scale(0);
+	-moz-transform: rotate(180deg) translate(0, 0) scale(0);
+	-o-transform: rotate(180deg) translate(0, 0) scale(0);
+	-ms-transform: rotate(180deg) translate(0, 0) scale(0);
+}
+
+/* на удаление */
+/* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+/* .lightswitch-wrapper .tooltip_lightswitch-show,
 .lightswitch-wrapper:hover .tooltip-lightswitch {
 	opacity: 1;
 	transform: rotate(0deg) translate(40px, -60px) scale(1);
@@ -937,7 +949,10 @@ div#commentsWrapper {display: none;}
 	-moz-transform: rotate(180deg) translate(0, 10px) scale(0);
 	-o-transform: rotate(180deg) translate(0, 10px) scale(0);
 	-ms-transform: rotate(180deg) translate(0, 10px) scale(0);
-}
+} */ /* на удаление */
+
+
+
 /* ~ все равно дрыгается по высоте */
 /* .lightswitch-wrapper .msg-tooltip-wrapper .tooltip_lightswitch-show, */ /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
 /* .lightswitch-ball:hover .tooltip-lightswitch {
@@ -1753,6 +1768,22 @@ li.unic-check-mark:before,
 - Нижний колонтитул топика. Не путать с нижним колонтитулом в контенте топика
 */
 .topic-footer {
+	background-color: rgb(0,0,0);
+	background: linear-gradient(rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
+	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+	background: -moz-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+	background: -o-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+	background: -ms-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
+}
+.topic-footer {
+	border-top: 1px solid silver;
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	font-size: 0.7em;
+	text-indent: 0px; /* отступ первой строки */
+}
+.topic-footer {
 	position: relative;
 	left: 0; bottom: 0;
 	width: auto;
@@ -1764,20 +1795,6 @@ li.unic-check-mark:before,
 	align-items: center;
 	/* align-content: space-between; */ /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 	justify-content: center;
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-	font-size: 0.7em;
-	text-indent: 0px; /* отступ первой строки */
-	border-top: 1px solid silver;
-}
-.topic-footer {
-	background-color: rgb(0,0,0);
-	background: linear-gradient(rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #000000, endColorstr = #999999);
-	background: -webkit-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
-	background: -moz-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
-	background: -o-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
-	background: -ms-linear-gradient(top, rgba(0,0,0, 0.96) 85%,rgba(136,136,136));
 }
 
 .topic-footer-left,
@@ -2065,6 +2082,29 @@ span#sbuttontext {
 /**диапазон от 768px до 991px */
 /* @media (min-width: 768px) and (max-width: 991px) {} */
 /*
+(i) для исключения моб.варианта
+*/
+@media screen and (min-width: 768px) {
+	.lightswitch-ball:hover {
+		animation: cursor-transform 2s ease infinite;
+		-webkit-animation: cursor-transform 2s ease infinite;
+		-moz-animation: cursor-transform 2s ease infinite;
+		-o-animation: cursor-transform 2s ease infinite;
+	}
+	.lightswitch-ball:hover.cursor-grab {
+		animation: none;
+		cursor: grab;
+		cursor: -webkit-grab;
+		cursor: -moz-grab;
+	}
+	.lightswitch-ball:hover.cursor-grabbing {
+		animation: none;
+		cursor: grabbing;
+		cursor: -webkit-grabbing;
+		cursor: -moz-grabbing;
+	}
+}
+/*
 'Landscape phones and portrait tablets
 - Альбомные телефоны и планшеты с портретом
 */
@@ -2073,66 +2113,85 @@ span#sbuttontext {
 
 /**диапазон <= 500px по ширине */
 @media screen and (max-width: 500px) {
-	/* .topic-footer, .topic-body {flex: 1 1 70%;} */
-	.topic-footer {
-		/* height: 10%; */
-		max-height: 10vh;
-		padding: 2px;
-		flex: 1 1 70%; /* (?)~transition работает хорошо, overflow: hidden hidden в замене не нуждается и косяка при переполнении не возникает */
-		overflow: hidden hidden; /* ~при увеличении выс.предотвратит задирание вверх из-за большого объема текта */
-	}
-	/* .topic-footer:hover {
-		overflow: hidden auto;
-		scrollbar-width: none;
-	} */
 	.footer-max,
 	.topic-footer {
-		transition: all 3s 3s ease, max-height 3s 0s ease;
+		transition: all 2s 2s ease, height 2s 0s ease, flex-basis 2s 0s ease;
+		-webkit-transition: all 2s 2s ease, height 2s 0s ease, flex-basis 2s 0s ease;
+		-moz-transition: all 2s 2s ease, height 2s 0s ease, flex-basis 2s 0s ease;
+		-o-transition: all 2s 2s ease, height 2s 0s ease, flex-basis 2s 0s ease;
+		/* transition: all 2s 2s ease, flex-basis 2s 0s ease;
+		-webkit-transition: all 2s 2s ease, flex-basis 2s 0s ease;
+		-moz-transition: all 2s 2s ease, flex-basis 2s 0s ease;
+		-o-transition: all 2s 2s ease, flex-basis 2s 0s ease; */
+		/* (!) аналог flex-basis */
+		/* transition: all 2s 2s ease, height 2s 0s ease;
+		-webkit-transition: all 2s 2s ease, height 2s 0s ease;
+		-moz-transition: all 2s 2s ease, height 2s 0s ease;
+		-o-transition: all 2s 2s ease, height 2s 0s ease; */
+		/* (!) хуже всего - дергает при уходе с:hover */
+		/* transition: all 3s 3s ease, max-height 3s 0s ease;
 		-webkit-transition: all 3s 3s ease, max-height 3s 0s ease;
 		-moz-transition: all 3s 3s ease, max-height 3s 0s ease;
-		-o-transition: all 3s 3s ease, max-height 3s 0s ease;
+		-o-transition: all 3s 3s ease, max-height 3s 0s ease; */
+	}
+	.topic-footer {
+		padding: 2px;
+		height: 23%;
+		/* max-height: 10vh; *//* (!) хуже всего - дергает при уходе с:hover */
+		/* flex: 1 1 23%; */
+		overflow: hidden hidden; /* ~при увеличении выс.предотвратит задирание вверх из-за большого объема текта */
 	}
 	.footer-max,
 	.topic-footer:hover {
-		/* position: absolute; */ /* в обратном порядке получается изменить на relative */
-		right: 0;
-		/* height: 100%; */
-		max-height: 100%;
+		/* position: absolute; right: 0; */ /* в обратном порядке не получается изменить на relative */
+		height: 100%;
+		/* max-height: 100%; */
+		/* flex: 1 1 100%; */
 		z-index: 1;
 	}
-
-	.topic-footer-left {padding: 1px 1px 1px 4px;}
+	/* .topic-footer-left {padding: 1px 1px 1px 4px;}
 	.topic-footer-center {padding: 1px 4px;}
-	.topic-footer-right {padding: 1px 4px 1px 1px;}
+	.topic-footer-right {padding: 1px 4px 1px 1px;} */
+	.topic-footer-left, .topic-footer-right {flex: 1 1 30%;}
 
-	.topic-footer-left, .topic-footer-right {
-		flex: 2 2 30%;
-		/* flex: 2 2; */
-	}
-	.footer-max .topic-footer-left,
+	/* .footer-max .topic-footer-left,
 	.footer-max .topic-footer-right,
 	.topic-footer:hover .topic-footer-left,
-	.topic-footer:hover .topic-footer-right {
+	.topic-footer:hover .topic-footer-right, */
+	.topic-footer-left,
+	.topic-footer-right {
 		overflow: hidden auto;
 		scrollbar-width: none;
 	}
 	/* truncate - усечение длинного текста */
 	.topic-footer p {
-		overflow: hidden auto;
-		scrollbar-width: none;
-	}
-	.topic-footer p {
-		/* max-width: 102px; */
-		text-overflow: ellipsis;
-		-o-text-overflow: ellipsis;
-		-ms-text-overflow: ellipsis;
-	}
-	.footer-max p,
-	.topic-footer:hover p,
-	.topic-footer a {
-		overflow-wrap: anywhere;
+		overflow-wrap: anywhere; /* св-во отменяет word-wrap */
+		/* word-wrap: break-word; *//* св-во отменяет overflow-wrap */
+		/* word-break: break-all; */
 		word-break: break-word;
+		-ms-word-break: break-all;
+		line-break: anywhere;
 	} /* усечение длинного текста */
+}
+/**диапазон <= 350px по ширине */
+@media screen and (max-width: 350px) {
+	/* на удаление */
+	/* .lightswitch-wrapper .tooltip_lightswitch-show,
+	.lightswitch-wrapper:hover .tooltip-lightswitch {
+		transform: rotate(0deg) translate(23px, -58px) scale(1);
+		-webkit-transform: rotate(0deg) translate(23px, -58px) scale(1);
+		-moz-transform: rotate(0deg) translate(23px, -58px) scale(1);
+		-o-transform: rotate(0deg) translate(23px, -58px) scale(1);
+		-ms-transform: rotate(0deg) translate(23px, -58px) scale(1);
+	} *//* на удаление */
+	.lightswitch-ball .tooltip_lightswitch-show,
+	.lightswitch-ball:hover .tooltip-lightswitch {
+		transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-webkit-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-moz-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-o-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-ms-transform: rotate(0deg) translate(26px, -50px) scale(1);
+	}
 }
 /**диапазон <= 648px по высоте или <= 330px по ширине */
 @media screen and (max-height: 648px), (max-width: 330px) {
@@ -2150,23 +2209,15 @@ span#sbuttontext {
 	}
 	.slider-item, .btn-slider {height: 25px;}
 }
-/**диапазон <= 318px по высоте */
-@media screen and (max-height: 318px), (max-width: 250px) {
-	.msg-hide~* .tooltip-lightswitch {top: 0;}
-	.tooltip-lightswitch {
-		left: -14px;
-		top: -110px;
-	}
-	.tooltip-lightswitch:before {top: 116px;}
-
+/**диапазон <= 440px по высоте */
+@media screen and (max-height: 440px) {
 	.tooltip_finger_toggle-popup,
 	.msg-icon:hover .tooltip-finger_toggle {
-		transform: rotate(-50deg) translate(-140px, -60px) scale(1);
-		-webkit-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
-		-moz-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
-		-o-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
-		-ms-transform: rotate(-50deg) translate(-140px, -60px) scale(1);
-		opacity: 1;
+		transform: rotate(-50deg) translate(-140px, -50px) scale(1);
+		-webkit-transform: rotate(-50deg) translate(-140px, -50px) scale(1);
+		-moz-transform: rotate(-50deg) translate(-140px, -50px) scale(1);
+		-o-transform: rotate(-50deg) translate(-140px, -50px) scale(1);
+		-ms-transform: rotate(-50deg) translate(-140px, -50px) scale(1);
 	}
 
 	.tooltip-finger_toggle:before {
@@ -2176,26 +2227,67 @@ span#sbuttontext {
 		border-bottom: none;
 	}
 }
-/**диапазон <= 300px по высоте и <= 300px ширине ИЛИ только <= 300px ширине */
-@media screen and (((max-height: 300px) and (max-width: 300px)) or (max-width: 300px)) {
-	/* .msg-content, */
-	.msg-text {max-height: 70px;}
-	.msg-text p {
-		width: 100%;
-		max-height: 64px; /* минус padding: 6px; иначе переполнение */
-		overflow-wrap: break-word;
-		word-break: break-word;
+/**диапазон <= 420px по высоте и <= 300px по ширине */
+@media screen and ((max-height: 420px) and (max-width: 300px)) {
+	.tooltip-lightswitch p {
+		overflow: hidden auto;
+		scrollbar-width: none;
 	}
+	.tooltip-lightswitch-info1 p {max-height: 50px;}
+	.tooltip-lightswitch-info2 p {max-height: 100px;}
+}
+/**диапазон <= 364px/385px по высоте */
+@media screen and (max-height: 385px) {
+	/* на удаление */
+	/* .lightswitch-wrapper .tooltip_lightswitch-show,
+	.msg-hide~* .tooltip-lightswitch {top: 0;}
+	.lightswitch-wrapper:hover .tooltip-lightswitch {
+		transform: rotate(0deg) translate(23px, -172px) scale(1);
+		-webkit-transform: rotate(0deg) translate(23px, -172px) scale(1);
+		-moz-transform: rotate(0deg) translate(23px, -172px) scale(1);
+		-o-transform: rotate(0deg) translate(23px, -172px) scale(1);
+		-ms-transform: rotate(0deg) translate(23px, -172px) scale(1);
+	} *//* на удаление */
+
+	.msg-hide~* .lightswitch-ball .tooltip_lightswitch-show, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+	.msg-hide~* .msg_icon-lightswitch:hover .tooltip-lightswitch,
+	.msg-hide~* .lightswitch-ball:hover .tooltip-lightswitch {
+		transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-webkit-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-moz-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-o-transform: rotate(0deg) translate(26px, -50px) scale(1);
+		-ms-transform: rotate(0deg) translate(26px, -50px) scale(1);
+	}
+	.lightswitch-ball .tooltip_lightswitch-show, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку idIconLightSwitch */
+	.msg_icon-lightswitch:hover .tooltip-lightswitch,
+	.lightswitch-ball:hover .tooltip-lightswitch {
+		transform: rotate(0deg) translate(26px, -166px) scale(1);
+		-webkit-transform: rotate(0deg) translate(26px, -166px) scale(1);
+		-moz-transform: rotate(0deg) translate(26px, -166px) scale(1);
+		-o-transform: rotate(0deg) translate(26px, -166px) scale(1);
+		-ms-transform: rotate(0deg) translate(26px, -166px) scale(1);
+	}
+	.tooltip-lightswitch:before {top: 120px;}
+}
+/**диапазон <= 385px по высоте и <= 300px ширине ИЛИ только <= 420px по высоте */
+@media screen and ((max-height: 385px) and (max-width: 300px)), (max-height: 420px) {
+	.msg-text {max-height: 70px;}
+	.msg-text p {max-height: 64px;} /* минус padding.msg-text: 6px; иначе переполнение */
 }
 /**диапазон <= 300px по высоте и <= 200px по ширине */
 @media screen and (max-height: 300px) and (max-width: 200px) {
-	.topic-footer {overflow: hidden auto;}
+	.topic-footer {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	}
 }
-/**диапазон <= 268px по высоте */
-@media screen and (max-height: 268px) {
+/**диапазон <= 310px по высоте */
+@media screen and (max-height: 310px) {
+	.tooltip-finger_toggle:after {top: 93%;}
 	.tooltip-finger_toggle p {
 		max-height: 150px;
 		overflow: hidden auto;
+		scrollbar-width: none;
 		line-height: 1;
 	}
 }
@@ -2210,20 +2302,29 @@ span#sbuttontext {
 		word-wrap: normal; /* св-во отменяет overflow-wrap */
 		word-break: break-word; /* normal, чтобы игнорировался разного вида перенос текста */
 		/* line-break: anywhere; */
-		/* text-wrap-style: pretty; */
+		/* text-wrap-style: pretty; *//* text-wrap-mode/text-wrap-style */
 		/* hyphens: auto; */ /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
 		/* -webkit-hyphens: auto; */ /* - все равно не работает */
 		/* -ms-hyphens: auto; */
 	}
+	/* truncate - усечение длинного текста */
+	.msg-text p {
+		text-wrap: wrap; /* text-wrap-mode/text-wrap-style */
+		overflow-wrap: anywhere; /* св-во отменяет word-wrap */
+		/* word-wrap: break-word; */ /* св-во отменяет overflow-wrap */
+		word-break: break-word;
+		/* word-break: break-all; */
+		-ms-word-break: break-all;
+		/* line-break: anywhere; */
+	} /* truncate - усечение длинного текста */
 }
 /**диапазон <= 320px по ширине */
-@media screen and (max-width: 320px) {
-	/* .tooltip-finger_toggle p:last-child, */
-	.tooltip-lightswitch-info2 p {
-		max-height: 100px;
+/* @media screen and (max-width: 320px) {
+	.tooltip-finger_toggle p:last-child {
 		overflow: hidden auto;
+		scrollbar-width: none;
 	}
-}
+} */
 /**диапазон <= 250px по ширине */
 @media screen and (max-width: 250px) {
 	.msg_icon-finger_toggle-popup,
@@ -2236,10 +2337,22 @@ span#sbuttontext {
 		flex-flow: row wrap;
 		justify-content: space-between;
 	}
-	.msg_icon-lightswitch {justify-content: flex-start;}
-	.msg_icon-finger_toggle {
-		order: 2;
-		justify-content: flex-end;
-	}
+	.msg_icon-finger_toggle {order: 2;}
 	.msg-text {order: 3;}
+}
+/**диапазон <= 136px по ширине */
+@media screen and (max-width: 136px) {
+	.msg_icon-finger_toggle-popup,
+	.msg_icon-finger_toggle:hover {
+		transform: rotate(50deg) translate(8px, -4px);
+		-webkit-transform: rotate(50deg) translate(8px, -4px);
+		-moz-transform: rotate(50deg) translate(8px, -4px);
+		-o-transform: rotate(50deg) translate(8px, -4px);
+		-ms-transform: rotate(50deg) translate(8px, -4px);
+	}
+	.msg_icon-finger_toggle {
+		position: absolute;
+		right: 0;
+		margin-left: auto;
+	}
 }

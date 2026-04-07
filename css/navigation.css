@@ -947,33 +947,98 @@ a.github,
 .email:after,
 .github:after {
 	background: linear-gradient(45deg,
-				rgba(206, 135, 21, .01) 45%,
-				rgba(254, 224, 144, 1) 50%,
-				rgba(206, 135, 21, .01) 55%);
+		rgba(206, 135, 21, .01) 45%,
+		rgba(254, 224, 144, 1) 50%,
+		rgba(206, 135, 21, .01) 55%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(206, 135, 21, .01) 45%,
+		rgba(254, 224, 144, 1) 50%,
+		rgba(206, 135, 21, .01) 55%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(206, 135, 21, .01) 45%,
+		rgba(254, 224, 144, 1) 50%,
+		rgba(206, 135, 21, .01) 55%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(206, 135, 21, .01) 45%,
+		rgba(254, 224, 144, 1) 50%,
+		rgba(206, 135, 21, .01) 55%
+	);
 }
 .item-github:hover a:after {
 	background: linear-gradient(45deg,
-				rgba(138, 43, 226, .01) 45%,
-				rgba(255, 255, 255, 1) 50%,
-				rgba(138, 43, 226, .01) 55%);
+		rgba(138, 43, 226, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .01) 55%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(138, 43, 226, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .01) 55%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(138, 43, 226, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .01) 55%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(138, 43, 226, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .01) 55%
+	);
 }
 .item-email:hover a:after {
 	background: linear-gradient(45deg,
-				rgba(43, 158, 206, .01) 45%,
-				rgba(173, 216, 230, 1) 50%,
-				rgba(43, 158, 206, .01) 55%);
+		rgba(43, 158, 206, .01) 45%,
+		rgba(173, 216, 230, 1) 50%,
+		rgba(43, 158, 206, .01) 55%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(43, 158, 206, .01) 45%,
+		rgba(173, 216, 230, 1) 50%,
+		rgba(43, 158, 206, .01) 55%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(43, 158, 206, .01) 45%,
+		rgba(173, 216, 230, 1) 50%,
+		rgba(43, 158, 206, .01) 55%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(43, 158, 206, .01) 45%,
+		rgba(173, 216, 230, 1) 50%,
+		rgba(43, 158, 206, .01) 55%
+	);
 
 	/* background: linear-gradient(45deg,
-				rgba(43, 158, 206, .01) 45%,
-				rgba(255, 255, 255, 1) 50%,
-				rgba(43, 158, 206, .01) 55%); */
+		rgba(43, 158, 206, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(43, 158, 206, .01) 55%
+	); */
 }
 .item-telegram:hover a:after,
 .telegram:after {
 	background: linear-gradient(45deg,
-				rgba(255, 255, 255, .01) 45%,
-				rgba(255, 255, 255, 1) 50%,
-				rgba(255, 255, 255, .01) 55%);
+		rgba(255, 255, 255, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(255, 255, 255, .01) 55%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(255, 255, 255, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(255, 255, 255, .01) 55%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(255, 255, 255, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(255, 255, 255, .01) 55%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(255, 255, 255, .01) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(255, 255, 255, .01) 55%
+	);
 }
 
 .item-telegram:hover a:after,
@@ -1014,18 +1079,56 @@ a.github,
 .item-github:hover {
 	/* background-color: #000; */
 	background: linear-gradient(45deg,
-				rgba(138, 43, 226, .96) 25%,
-				rgba(255, 255, 255, 1) 45%,
-				rgba(255, 255, 255, 1) 50%,
-				rgba(138, 43, 226, .96) 75%);
+		rgba(138, 43, 226, .96) 25%,
+		rgba(255, 255, 255, 1) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .96) 75%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(138, 43, 226, .96) 25%,
+		rgba(255, 255, 255, 1) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .96) 75%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(138, 43, 226, .96) 25%,
+		rgba(255, 255, 255, 1) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .96) 75%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(138, 43, 226, .96) 25%,
+		rgba(255, 255, 255, 1) 45%,
+		rgba(255, 255, 255, 1) 50%,
+		rgba(138, 43, 226, .96) 75%
+	);
 }
 .item-github {
 	/* background-color: darkviolet; */
 	background: linear-gradient(45deg,
-				rgba(206, 135, 21, .96) 25%,
-				rgba(254, 224, 144, 1) 45%,
-				rgba(254, 224, 144, 1) 55%,
-				rgba(206, 135, 21, .96) 75%);
+		rgba(206, 135, 21, .96) 25%,
+		rgba(254, 224, 144, 1) 45%,
+		rgba(254, 224, 144, 1) 55%,
+		rgba(206, 135, 21, .96) 75%
+	);
+	background: -webkit-linear-gradient(45deg,
+		rgba(206, 135, 21, .96) 25%,
+		rgba(254, 224, 144, 1) 45%,
+		rgba(254, 224, 144, 1) 55%,
+		rgba(206, 135, 21, .96) 75%
+	);
+	background: -moz-linear-gradient(45deg,
+		rgba(206, 135, 21, .96) 25%,
+		rgba(254, 224, 144, 1) 45%,
+		rgba(254, 224, 144, 1) 55%,
+		rgba(206, 135, 21, .96) 75%
+	);
+	background: -o-linear-gradient(45deg,
+		rgba(206, 135, 21, .96) 25%,
+		rgba(254, 224, 144, 1) 45%,
+		rgba(254, 224, 144, 1) 55%,
+		rgba(206, 135, 21, .96) 75%
+	);
 }
 
 .item-github:hover,
@@ -1083,6 +1186,9 @@ a.github,
 	height: 100%;
 	border-radius: 5px;
 	z-index: -1;
+}
+.super-job:before,
+.hh-ru:before {
 	animation: eff-line-gradient 10s ease infinite;
 	-webkit-animation: eff-line-gradient 10s ease infinite;
 	-moz-animation: eff-line-gradient 10s ease infinite;
@@ -1166,22 +1272,22 @@ x не используется
 	-moz-hyphens: auto; /* (!) все равно не работает */
 	-ms-hyphens: auto;
 }
-.title_txt-top {
+.title-top {
 	top: 0;
 	align-items: flex-start;
 	align-content: flex-start;
 }
-.title_txt-center {
+.title-center {
 	top: 0; bottom: 0;
 	align-items: center; /* выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении */
 	align-content: center; /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 }
-.title_txt-bottom {
+.title-bottom {
 	bottom: 0;
 	align-items: flex-end;
 	align-content: flex-end;
 }
-.title_txt-custom {bottom: 30px;}
+.title-custom {bottom: 30px;}
 /**треугольник */
 .feedback-tooltip:after {
 	content: "";

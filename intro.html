@@ -85,7 +85,24 @@
 		<div id="idMsgBox" class="msg-box msg-effect" style="display: none;">
 			<div id="idBtnToggleMsgBox" class="msg-btn msg-show" title="Тыкните сюда, чтобы скрыть/показать информационное сообщение"></div>
 			<div id="idMsgContent" class="msg-content">
-				<div id="idIconLightSwitch" class="msg-icon msg_icon-lightswitch not-select msg_icon-eff_on"></div>
+				<div id="idIconLightSwitch" class="msg-icon msg_icon-lightswitch not-select msg_icon-eff_on">
+					<div id="idBtnLightSwitch" class="light-switch">
+						<div class="lightswitch-chain"></div>
+						<div class="lightswitch-ball">
+							<div class="msg-tooltip tooltip-lightswitch">
+								<div class="tooltip-lightswitch-info1">
+									<p>(i) 1. Чтобы скрыть/отобразить окно потяните за висюльку</p>
+								</div>
+								<div class="tooltip-lightswitch-info2">
+									<p>(i) 2. Для переключения спецэффекта нажмите на висюльку</p>
+									<p mode="on">Спецэффект на переднем плане</p>
+									<p mode="bgr" style="display: none;">Спецэффект на заднем плане</p>
+									<p mode="off" style="display: none;">Спецэффект отключен</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div id="idMsgText" class="msg-text"></div>
 				<div id="idIconFingerToggle" class="msg-icon msg_icon-finger_toggle not-select">
 					<div class="msg-tooltip tooltip-finger_toggle">
@@ -94,7 +111,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="lightswitch-wrapper">
+			<!-- <div class="lightswitch-wrapper">
 				<div id="idBtnLightSwitch" class="light-switch">
 					<div class="lightswitch-chain"></div>
 					<div class="lightswitch-ball"></div>
@@ -112,7 +129,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div> <!-- idMsgBox the end -->
 		<!-- (!) idLinksComment-Комментарии
 			*см.функцию в файле comments.js -->

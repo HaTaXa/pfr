@@ -187,13 +187,17 @@ function setEventHandlersLightbox(elem, addOrRemove = "") {
 	if (addOrRemove === "add") {
 		window.addEventListener('resize', lightbox_window_onReSize, false);
 		elem.addEventListener('animationend', lightbox_onAnimationend, false);
-		elem.addEventListener('mouseover', lightbox_onMouseover, false);
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.addEventListener('mouseover', lightbox_onMouseover, false);
+		}
 		elem.addEventListener('keydown', lightbox_onKeydown, false);
 		elem.addEventListener('click', lightbox_onClick, false);
 	} else if (addOrRemove === "remove") {
 		window.removeEventListener('resize', lightbox_window_onReSize, false);
 		elem.removeEventListener('animationend', lightbox_onAnimationend, false);
-		elem.removeEventListener('mouseover', lightbox_onMouseover, false);
+		if (document.documentElement.clientWidth > 768) { // чтобы hover не срабатывал для моб.версий
+			elem.removeEventListener('mouseover', lightbox_onMouseover, false);
+		}
 		elem.removeEventListener('keydown', lightbox_onKeydown, false);
 		elem.removeEventListener('click', lightbox_onClick, false);
 	}

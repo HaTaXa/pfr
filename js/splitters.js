@@ -558,11 +558,11 @@ function reSizePanels(eVent) {
 		navPane.style.removeProperty('height');
 		topicPane.style.removeProperty('height');
 		if (banner.style.display === "none") {
-			navPane.classList.remove('nav-pane-banner');
-			topicPane.classList.remove('topic-pane-banner');
+			navPane.classList.remove('navpane-banner');
+			topicPane.classList.remove('topicpane-banner');
 		} else {
-			navPane.classList.add('nav-pane-banner');
-			topicPane.classList.add('topic-pane-banner');
+			navPane.classList.add('navpane-banner');
+			topicPane.classList.add('topicpane-banner');
 		}
 		if (navPane.style.display === "none") { // нав.пан.скрыта
 			// (!) чтобы не образовывалась ошибка на getComputedStyle
@@ -618,8 +618,8 @@ function reSizePanels(eVent) {
 		navPane.style.removeProperty('left');
 		navPane.style.removeProperty('width');
 		topicPane.style.removeProperty('left');
-		navPane.classList.remove('nav-pane-banner');
-		topicPane.classList.remove('topic-pane-banner');
+		navPane.classList.remove('navpane-banner');
+		topicPane.classList.remove('topicpane-banner');
 		if (navPane.style.display === "none") {
 			navPane.style.removeProperty('display'); // для получения св-тв элемента, (!) НО может не успевать
 			if (reSizes.navpaneHeight === 0) {

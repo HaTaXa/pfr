@@ -130,6 +130,10 @@ div.infoline {font-weight: bold; margin-top: 2px;}
 span.highlight {background-color: #ffff40;}
 
 @media (max-width: 501px) {
+	.topic-box {
+		overflow: hidden auto;
+		scrollbar-width: none;
+	}
 	.zoom_field {width: auto;}
 	.zoom_match {line-height: normal;}
 }
