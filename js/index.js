@@ -6,6 +6,7 @@ window.addEventListener('load', function () { // - js. Сработает, ка�
 		window.sessionStorage.setItem('webReadyState', document.readyState);
 	}
 	toggleToolbarSldrBtns(); // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
+	tabHandlerWheel(); // создание/удаление обработчика события wheel
 }, false); // false - фаза "всплытие"
 // (!) popstate
 // window.addEventListener('popstate', (event) => {
@@ -20,6 +21,7 @@ window.addEventListener('resize', function (e) {
 	// работает, НО не используется в деле
 	// setElemExclude(e); // исключение элементов, например контролы в пан.инстр.
 	toggleToolbarSldrBtns(); // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
+	tabHandlerWheel(); // создание/удаление обработчика события wheel
 }, false);
 // (!) document
 $(document).ready(function () { // - jq
@@ -35,13 +37,9 @@ $(document).ready(function () { // - jq
 					// (?)'replace/push
 					if (event.data.winName === "ifrmnavigation") { // (?)-x-
 						console.log(`из пан.нав.ф.setHistoryState() отменена`);
-
-						setHideNavPane(); // скрыть пан.нав.при размере окна браузера <= 500
 					} else {
 						setHistoryState("push", event.data.href); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
 					}
-				} else if (event.data.value === "setHideNavPane") { // (?)
-					setHideNavPane(); // скрыть пан.нав.при размере окна браузера <= 500
 				} else if (event.data.value === "setVariables" || event.data.value === "goToPage") {
 					// x // setUpdateVariables(event.data.vrsTopic, event.data.vrsNavigation); // обновляем некоторые глобальные переменные в variables.js из iframe текущего топика
 					// *получаем остальную часть глобальных переменных в variables.js через ifrmnavigation
@@ -87,28 +85,15 @@ $(document).ready(function () { // - jq
 						event.source.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 					}, 500);
 				} else if (event.data.value === "setUpdateVariables") {
-					// *обновляем глобальные переменные из ifrmnavigation
-					// if (location.search === "") { // test - в navigetion.js тоже поправить
-					// 	setUpdateElements(); // обновляем группу кнопок навигации на пан.инструментов (домой/назад/вперед), кнопку-переключатель скрытого контента, наименование текущей вкладки на пан.топика, ссылку на текущую тему в текущ.вкладке топика в меню вкладок, а так же аттрибут(-ы) фрейма
-					// } else {
-					// 	setUpdateVariables(
-					// 		event.data.vrsTopic,
-					// 		event.data.vrsNavigation,
-					// 		event.data.vrsPermalink
-					// 	);
-					// 	setUpdateElements(event.data.topic, event.data.navpane); // обновляем группу кнопок навигации на пан.инструментов (домой/назад/вперед), кнопку-переключатель скрытого контента, наименование текущей вкладки на пан.топика, ссылку на текущую тему в текущ.вкладке топика в меню вкладок, а так же аттрибут(-ы) фрейма
-					// }
-					// (?)'test
+					// обновление глобальных переменных variables.js в гл.окне
 					setUpdateVariables(
 						event.data.vrsTopic,
 						event.data.vrsNavigation,
 						event.data.vrsPermalink
 					);
 					setUpdateElements(); // обновляем группу кнопок навигации на пан.инструментов (домой/назад/вперед), кнопку-переключатель скрытого контента, наименование текущей вкладки на пан.топика, ссылку на текущую тему в текущ.вкладке топика в меню вкладок, а так же аттрибут(-ы) фрейма
-					// *проверяем размер окна браузера для определения запуска анимации скрытия пан.нав., если она занимает весь экран
-					if (document.documentElement.clientWidth < 501) {
-						setHideNavPane(); // - скрыть пан.нав.
-					}
+					setHideNavPane(); // - скрыть пан.нав.при ее макс размере
+					// (?)
 					// if (event.data.vrsNavigation.hash === "") { // 'через ifrmnavigation можно попасть из ф.setTabVisibility(), так что проверка hash обязательно
 					// 	setHistoryState("push", event.data.vrsTopic.currP); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
 					// } else {
@@ -133,13 +118,13 @@ $(document).ready(function () { // - jq
 						// *проверяем наличие ссылки на файл lightbox.js
 						// **получить скрипт - ссылка на lightbox.js
 						if (getScript(window, "js/lightbox.js")) { // (i) если еще ни разу не было ни одного раскрытия скрытого контента на стр.
-							setImageFullScreen(lbx); // - вывод текущего lightbox в гл.окне
+							setImageFullScreen(lbx); // вывод текущего.lightbox в гл.окне
 						} else {
-							let js = setScript(window, "js/lightbox.js"); // - создать скрипт - ссылка на js-файл
+							let js = setScript(window, "js/lightbox.js"); // создать скрипт - ссылка на js-файл
 							let idInt = setInterval(() => {
 								if (js) {
 									clearInterval(idInt);
-									setImageFullScreen(lbx); // - вывод текущего lightbox в гл.окне
+									setImageFullScreen(lbx); // вывод текущего.lightbox в гл.окне
 								}
 							}, 500);
 						}
@@ -162,36 +147,6 @@ $(document).ready(function () { // - jq
 				} else if (event.data.value === "handlerPoPuPs") {
 					// *скрываем всплывающие эл.в текущем окне
 					handlerPoPuPs(event); // обработчик вплывающих эл.
-					// event.data.id.forEach((item) => { // x - на удаление
-					// 	if (item === "idPermalinkBox") { // всплывающий(-е) эл.в гл.окне
-					// 		let elem = document.getElementById(item);
-					// 		if (elem !== null && elem === Object(elem)) {
-					// 			setClearPermalink(); // очистить окно Постоянная ссылка
-					// 			if (elem.classList.contains('permalink-popup')) {
-					// 				// x // setShowOrHide(document.getElementById(item), event.data.hide);
-					// 				elem.classList.remove('permalink-popup');
-					// 				setEventHandlersPermalink(elem, 'remove'); // создание/удаление обработчиков событий для узла permalink
-					// 			}
-					// 		}
-					// 	} else if (item === "idTabsMenuBox") { // всплывающий(-е) эл.в гл.окне
-					// 		let elem = document.getElementById(item);
-					// 		if (elem !== null && elem === Object(elem)) {
-					// 			if (elem.classList.contains('tabs-menu-popup')) {
-					// 				// setShowOrHide(elem, "", "", "", "tabs-menu-popup");
-					// 				elem.classList.remove('tabs-menu-popup');
-					// 			}
-					// 		}
-					// 	} else if (item === "idPageMenuToc") { // всплывающий(-е) эл.в топике
-					// 		let msg = {
-					// 			value: event.data.value,
-					// 			id: item
-					// 		};
-					// 		let frm = getFrame(); // получить фрейм текущей вкладки или фрейм вкладки гл.топика по умолчанию
-					// 		if (frm !== null && Object(frm)) {
-					// 			frm.contentWindow.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-					// 		}
-					// 	}
-					// });
 				}
 			}
 		}, false); // false - фаза "всплытие"
@@ -230,76 +185,11 @@ $(document).ready(function () { // - jq
 		}, false); // false - фаза "всплытие"
 		// (!) keydown
 		document.addEventListener('keydown', function (event) {
-			// handlerPoPuPs_onKeyup // x -на удаление
-			// function handlerPoPuPs_onKeyup(eVent) {
-			// 	// *скрываем всплывающие эл.:
-			// 	// 'idPermalinkBox/idTabsMenuBox/(.btn_icon-tooltip-popup - )
-			// 	// ''ifrmtopic -.toc-menu
-			// 	// '''ifrmnavigation:.treeview-tooltip-popup/.toclist-tooltip-popup/.footer_btn-tooltip-popup
-			// 	let elem = document.getElementById('idPermalinkBox');
-			// 	if (elem !== null || typeof(elem) !== "undefined" || elem !== null && elem === Object(elem)) {
-			// 		if (elem.classList.contains('permalink-popup')) {
-			// 			setClearPermalink(); // очистить окно Постоянная ссылка
-			// 			elem.classList.remove('permalink-popup');
-			// 			setEventHandlersPermalink(elem, 'remove'); // создание/удаление обработчиков событий для узла permalink
-			// 		}
-			// 	}
-			// 	if (getBrowser().toString().toLowerCase() === "firefox") {
-			// 		handlerPoPuPs(eVent); // обработчик всплывающих эл.для.btn_icon-tooltip-popup
-			// 	}
-			// 	// *эл."Меню вкладок"
-			// 	elem = document.getElementById('idTabsMenuBox');
-			// 	if (elem !== null || typeof(elem) !== "undefined" || elem !== null && elem === Object(elem)) {
-			// 		if (elem.classList.contains('tabs-menu-popup')) {
-			// 			// setShowOrHide(elem, "", "", "", "tabs-menu-popup");
-			//			elem.classList.remove('tabs-menu-popup');
-			// 		}
-			// 	}
-			// 	// *эл."Меню содержание страницы"
-			// 	let frm = getFrame(); // получить фрейм текущей вкладки или фрейм вкладки гл.топика по умолчанию
-			// 	if (frm !== null && frm === Object(frm)) {
-			// 		if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-			// 			let msg = {
-			// 				value: "setShowOrHide",
-			// 				id: "idPageMenuToc"
-			// 			};
-			// 			frm.contentWindow.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-			// 		} else {
-			// 			elem = frm.contentDocument.getElementById('idPageMenuToc');
-			// 			if (elem !== null || typeof(elem) !== "undefined" || (elem !== null && elem === Object(elem))) {
-			// 				if (elem.classList.contains('toc-menu-popup')) {
-			// 					// setShowOrHide(elem, "", "", "", "toc-menu-popup");
-			//					elem.classList.remove('toc-menu-popup');
-			// 				}
-			// 				let icon = elem.parentElement.querySelector('.toc-btn_icon');
-			// 				if (icon !== null && icon === Object(icon)) {
-			// 					if (icon.style.order === "2") {
-			// 						icon.removeAttribute('style');
-			// 					}
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// 	// *всплывающие подсказки для кн.: SJ/hh/email и эл.-переключателей: idTreeView/idTocList
-			// 	frm = document.getElementById('ifrmnavigation');
-			// 	if (elem !== null || typeof(elem) !== "undefined" || (elem !== null && elem === Object(elem))) {
-			// 		if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-			// 			let msg = {
-			// 				value: "handlerPoPuPs",
-			// 				className: ["treeview-tooltip-popup", "toclist-tooltip-popup", "footer_btn-tooltip-popup"]
-			// 			};
-			// 			frm.contentWindow.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-			// 		} else {
-			// 			// window.top.frames.ifrmnavigation.handlerPoPuPs(); // для firefox - скрытие вплывающих элементов, подсказок
-			// 			frm.contentWindow.handlerPoPuPs(); // для firefox - скрытие вплывающих элементов, подсказок
-			// 		}
-			// 	}
-			// 	document.removeEventListener('keyup', handlerPoPuPs_onKeyup, false);
-			// }
 			// (!) goToTab_onKeyup
 			function goToTab_onKeyup(eVent) {
 				eVent.preventDefault(); // отменяем действия браузера по умолчанию
 				let elem = null;
+				// (i) event.code всегда содержит только одно латинское обозначение в отличие от event.key, кот.содержит обозначение относительно раскладки клавиатуры
 				if (eVent.code === "PageUp" || eVent.key === "PageUp" || eVent.keyCode === 33 || eVent.which === 33) {
 					elem = document.getElementById('idTabPrevious');
 				} else if (eVent.code === "PageDown" || eVent.key === "PageDown" || eVent.keyCode === 34 || eVent.which === 34) {
@@ -347,7 +237,6 @@ $(document).ready(function () { // - jq
 					}
 				} else {
 					if (event.code === "Escape" || event.key === "Escape" || event.keyCode === 27 || event.which === 27) {
-						// x // document.addEventListener('keyup', handlerPoPuPs_onKeyup, false);
 						document.addEventListener('keyup', handlerPoPuPs, false); // создаем обработчик для всего док.
 					} else if (event.code === "PageUp" || event.key === "PageUp" || event.keyCode === 33 || event.which === 33) {
 						document.addEventListener('keyup', goToTab_onKeyup, false);
@@ -366,9 +255,10 @@ $(document).ready(function () { // - jq
 			}
 		}, false); // false - фаза "всплытие"
 		// (!) idToolbar - события на пан.инстр. Используем делегирование событий, прослушивая общий элемент для всех дочерних элементов
-		if (document.getElementById('idToolbar') !== null && typeof(document.getElementById('idToolbar')) === "object") {
+		const toolbar = document.getElementById('idToolbar') || document.querySelector('.toolbar');
+		if (toolbar !== null && toolbar === Object(toolbar)) {
 			// 'input - прослушиваем каждое изменение в отличие от change
-			document.getElementById('idToolbar').addEventListener('input', function (e) {
+			toolbar.addEventListener('input', function (e) {
 				if (e.target.tagName === "INPUT") {
 					if (e.target.id === "idInputSearch") { // (!) поле Быстрый поиск
 						if (e.target.labels.length > 0) {
@@ -387,7 +277,7 @@ $(document).ready(function () { // - jq
 				}
 			}, false);
 			// 'click
-			document.getElementById('idToolbar').addEventListener('click', function (e) {
+			toolbar.addEventListener('click', function (e) {
 				if (e.target.tagName === "INPUT") {
 					if (e.target.id === "idBannerShowHide") { // (!) кн.-переключатель Показать/Скрыть баннер
 						// *toolbar-center
@@ -420,13 +310,13 @@ $(document).ready(function () { // - jq
 								setQuickSearch(); // - быстрый поиск - поиск в текущем разделе
 							}
 						}
-					} // *toolbar-left
-					else if (e.target.id === "idIndexOn") { // (!) кн.Ключевые слова
+					} else if (e.target.id === "idIndexOn") { // (!) кн.Ключевые слова
 						let tab = document.getElementById('idIndexTab');
 						if (!tab.classList.contains('tab-current')) {
 							setTabVisibility(tab, "show"); // показать/скрыть текущую вкладку
 						}
-					} else if (e.target.id === "idUndockTabOn") { // (!) кн.Открепить
+					} // *toolbar-left
+					else if (e.target.id === "idUndockTabOn") { // (!) кн.Открепить
 						alert(`(i) Кнопка «Открепить» на панели пока что в разработке.`);
 						// setUndockTab(elem);
 					} else if (e.target.id === "idNewTabOn") { // (!) кн.Дублировать
@@ -479,77 +369,96 @@ $(document).ready(function () { // - jq
 				} else if (e.target.tagName === "SPAN") {
 					if (e.target.parentElement.hasAttribute('class')) {
 						if (e.target.parentElement.classList.contains('toolbar-btn-slider')) {
-							scrollToToolbarButton(e.target.parentElement);
+							setHandlerSliderScroll(e.target.parentElement);
 						}
 					}
 				}
 			}, false); // false - фаза "всплытие"
 		}
-		// (!) idTopicPane - события на пан.топика. Используем делегирование событий, прослушивая общий элемент для всех дочерних элементов
-		// *idTopicControls
-		if (document.getElementById('idTopicControls') !== null && typeof(document.getElementById('idTopicControls')) === "object") {
-			document.getElementById('idNavHandle').addEventListener('click', function (e) {
-				if (e.target.tagName === "INPUT") {
-					if (e.target.id === "idNavPaneToggle") { // (!) кн.-переключатель Скрыть/Показать панель навигации
-						setNavPaneShowHide(!e.target.checked); // - делаем "инверсию" значения св-ва
+		// (!) idNavPane - события нав.пан. Используем делегирование событий, прослушивая общий элемент для всех дочерних элементов
+		const navpane = document.getElementById('idNavPane') || document.querySelector('.nav-pane');
+		if (navpane !== null && navpane === Object(navpane)) {
+			// 'pointerdown/pointerup
+			function navpane_onPointerDown(e) {
+				if (e.target.hasAttribute('id')) {
+					if (e.target.id === "idSplitterRight" || e.target.id === "idSplitterBottom") {
+						if (e.button === 0) { // исключаем нажатие правой кн.м.
+							setEventHandlersSplitters(e.target, "add"); // (!) создание/удаление обработчиков событий для idSplitterRight/idSplitterBottom
+						}
+					}
+				} else if (e.target.hasAttribute('class')) {
+					if (e.target.classList.contains('splitter-right') || e.target.classList.contains('splitter-bottom')) {
+						if (e.button === 0) { // исключаем нажатие правой кн.м.
+							setEventHandlersSplitters(e.target, "add"); // (!) создание/удаление обработчиков событий для idSplitterRight/idSplitterBottom
+						}
 					}
 				}
-			}, false); // false - фаза "всплытие"
-			// **idTabsControls - кнопки переключения между вкладками
-			// 'click
-			document.getElementById('idTabsControls').addEventListener('click', function (e) {
-				if (e.target.tagName === "IMG") {
-					if (e.target.id === "idToggleMenuTab") { // (!) показать/скрыть меню вкладок
-						let tabsMenu = document.getElementById('idTabsMenuBox');
-						if (tabsMenu !== null && tabsMenu === Object(tabsMenu)) {
-							// tabsMenu.classList.toggle('tabs-menu-popup'); // или так
-							setShowOrHide(tabsMenu, "", "", "", "tabs-menu-popup");
-							// 'создаем обработчик перехвата click для узла.tabs-list/idTabsList
-							let tabsList = document.getElementById('idTabsList');
-							if (tabsList !== null && tabsList === Object(tabsList)) {
-								if (tabsMenu.classList.contains('tabs-menu-popup')) {
-									setEventHandlersTabsList(tabsList, "add"); // создание/удаление обработчиков событий для узла.tabs-list/idTabsList
-									// function tabsList_onMousedown(eVent) {
-									// 	if (eVent.target.tagName === "A") {
-									// 		if (eVent.button === 0) { // исключаем нажатие правой кн.м.
-									// 			function tabsList_onClick(evn) {
-									// 				evn.preventDefault(); // отменяем действия браузера по умолчанию
-									// 				let tabs = document.getElementById('idTabSliderTrack');
-									// 				for (let i = 0; i < tabs.children.length; i++) {
-									// 					if (+tabs.children[i].getAttribute('tabnum') === +evn.target.parentElement.getAttribute('listnum')) {
-									// 						if (!tabs.children[i].classList.contains('tab-current')) {
-									// 							setTabVisibility(tabs.children[i], "show", "goToPage"); // показать/скрыть текущую вкладку
-									// 							break;
-									// 						}
-									// 					}
-									// 				}
-									// 				tabsList.removeEventListener('click', tabsList_onClick, false);
-									// 			}
-									// 			function tabsList_onMouseup(evn) {
-									// 				tabsList.addEventListener('click', tabsList_onClick, false);
-									// 				tabsList.removeEventListener('mouseup', tabsList_onMouseup, false);
-									// 			}
-									// 			tabsList.addEventListener('mouseup', tabsList_onMouseup, false);
-									// 		}
-									// 	}
-									// }
-									// tabsList.addEventListener('mousedown', tabsList_onMousedown, false);
-								} else {
-									// tabsList.removeEventListener('mousedown', tabsList_onMousedown, false);
-									setEventHandlersTabsList(tabsList, "remove"); // создание/удаление обработчиков событий для узла.tabs-list/idTabsList
-								}
+				function navpane_onPointerUp(eVent) {
+					if (eVent.target.hasAttribute('id')) {
+						if (eVent.target.id === "idSplitterRight" || eVent.target.id === "idSplitterBottom") {
+							if (eVent.button === 0) { // исключаем нажатие правой кн.м.
+								setEventHandlersSplitters(eVent.target, "remove"); // (!) создание/удаление обработчиков событий для idSplitterRight/idSplitterBottom
 							}
 						}
-					} else { // (!) idTabFirst/idTabPrevious/idTabNext/idTabLast
-						goToTab(e.target); // переход между вкладками
+					} else if (eVent.target.hasAttribute('class')) {
+						if (eVent.target.classList.contains('splitter-right') || eVent.target.classList.contains('splitter-bottom')) {
+							if (eVent.button === 0) { // исключаем нажатие правой кн.м.
+								setEventHandlersSplitters(eVent.target, "remove"); // (!) создание/удаление обработчиков событий для idSplitterRight/idSplitterBottom
+							}
+						}
 					}
+					e.target.removeEventListener('pointerup', navpane_onPointerUp, true);
 				}
-			}, false); // false - фаза "всплытие"
+				e.target.addEventListener('pointerup', navpane_onPointerUp, true);
+			}
+			navpane.addEventListener('pointerdown', navpane_onPointerDown, true);
+		}
+		// (!) idTopicPane - события на пан.топика. Используем делегирование событий, прослушивая общий элемент для всех дочерних элементов
+		// *idTopicControls
+		const topicControls = document.getElementById('idTopicControls') || document.querySelector('.topic-controls');
+		if (topicControls !== null && Object(topicControls)) {
+			const tglNavPane = document.getElementById('idNavPaneToggle');
+			if (tglNavPane !== null && tglNavPane === Object(tglNavPane)) {
+				tglNavPane.addEventListener('click', function (e) {
+					if (e.target.tagName === "INPUT") { // (!) кн.-переключатель Скрыть/Показать панель навигации
+						setNavPaneShowHide(!e.target.checked); // - делаем "инверсию" значения св-ва
+					}
+				}, false); // false - фаза "всплытие"
+			}
+			// **idTabsControls - кнопки переключения между вкладками
+			// 'click
+			const tabsControls = document.getElementById('idTabsControls') || document.querySelector('.tabs-controls');
+			if (tabsControls !== null && tabsControls === Object(tabsControls)) {
+				tabsControls.addEventListener('click', function (e) {
+					if (e.target.tagName === "IMG") {
+						if (e.target.id === "idToggleMenuTab") { // (!) показать/скрыть меню вкладок
+							let tabsMenu = document.getElementById('idTabsMenuBox');
+							if (tabsMenu !== null && tabsMenu === Object(tabsMenu)) {
+								// tabsMenu.classList.toggle('tabs-menu-popup'); // или так
+								setShowOrHide(tabsMenu, "", "", "", "tabs-menu-popup");
+								// 'создаем обработчик перехвата click для узла.tabs-list/idTabsList
+								let tabsList = document.getElementById('idTabsList');
+								if (tabsList !== null && tabsList === Object(tabsList)) {
+									if (tabsMenu.classList.contains('tabs-menu-popup')) {
+										setEventHandlersTabsList(tabsList, "add"); // создание/удаление обработчиков событий для узла.tabs-list/idTabsList
+									} else {
+										// tabsList.removeEventListener('mousedown', tabsList_onMousedown, false);
+										setEventHandlersTabsList(tabsList, "remove"); // создание/удаление обработчиков событий для узла.tabs-list/idTabsList
+									}
+								}
+							}
+						} else { // (!) idTabFirst/idTabPrevious/idTabNext/idTabLast
+							goToTab(e.target); // переход между вкладками
+						}
+					}
+				}, false); // false - фаза "всплытие"
+			}
 			// **idTabsWindow - вкладки окон панели топика
-			// ***idTabSliderTrack - события вкладок
-			if (document.getElementById('idTabSliderTrack') !== null && typeof(document.getElementById('idTabSliderTrack')) === "object") {
-				// 'mouseover/mouseout - наведение курсора
-				document.getElementById('idTabSliderTrack').addEventListener('mouseover', function (e) {
+			// ***idTabSliderTrack/.tab_slider-track - события вкладок
+			const tabSldrTrack = document.getElementById('idTabSliderTrack') || document.querySelector('.tab_slider-track');
+			if (tabSldrTrack !== null && tabSldrTrack === Object(tabSldrTrack)) {
+				// 'mouseover/mouseout
+				tabSldrTrack.addEventListener('mouseover', function (e) {
 					if (e.target.tagName === "IMG") {
 						e.target.src = "icon/tab-close_on.png"; // или
 						// e.target.setAttribute('src', 'icon/tab-close_on.png');
@@ -562,88 +471,82 @@ $(document).ready(function () { // - jq
 						e.target.addEventListener('mouseout', tabClose_onMouseout, false);
 					}
 				}, false); // false - фаза "всплытие"
-				// mouseout
-				// document.getElementById('idTabSliderTrack').addEventListener('mouseout', function (e) {
-				// }, false); // false - фаза "всплытие"
-				// 'mousedown
-				document.getElementById('idTabSliderTrack').addEventListener('mousedown', function (e) {
-					let tabs = document.getElementById('idTabSliderTrack');
-					if (tabs !== null && tabs === Object(tabs)) {
-						function tabs_onClick(eVent) {
-							eVent.preventDefault(); // отменяем действия браузера по умолчанию
-							// *получаем вкладку на основе делегирования событий (НО это еще не.tab-current)
-							function getTab() {
-								if (eVent.target.tagName === "UL" && eVent.target.classList.contains('tab_slider-track')) return null;
-								let elem = eVent.target;
-								while (!elem.parentElement.classList.contains('tab_slider-track')) {
-									elem = elem.parentElement;
-									if (elem.hasAttribute('tabnum')) {
-										break;
+				// 'mousedown/click/mouseup
+				tabSldrTrack.addEventListener('mousedown', function (e) {
+					function tabSldrTrack_onClick(eVent) {
+						eVent.preventDefault(); // отменяем действия браузера по умолчанию
+						// *получаем вкладку на основе делегирования событий (НО это еще не.tab-current)
+						function getTab() {
+							if (eVent.target.tagName === "UL" && eVent.target.classList.contains('tab_slider-track')) return null;
+							let elem = eVent.target;
+							while (!elem.parentElement.classList.contains('tab_slider-track')) {
+								elem = elem.parentElement;
+								if (elem.hasAttribute('tabnum')) {
+									break;
+								}
+							}
+							return elem;
+						}
+						// *.nodeType === 1 - для узлов-элементов; 3 - для текстовых узловж; 9 - для объектов документа...
+						if (eVent.target.nodeType === 1 && eVent.target.tagName !== undefined) {
+							let tab = getTab();
+							if (eVent.target.tagName === "A") {
+								if (tab !== null && tab === Object(tab)) {
+									if (!tab.classList.contains('tab-current')) {
+										setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
+										// (?)'как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
+										// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
+									}
+									if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
+										handlerPoPuPs(e); // обработчик вплывающих эл.
 									}
 								}
-								return elem;
-							}
-							// *.nodeType === 1 - для узлов-элементов; 3 - для текстовых узловж; 9 - для объектов документа...
-							if (eVent.target.nodeType === 1 && eVent.target.tagName !== undefined) {
-								let tab = getTab();
-								if (eVent.target.tagName === "A") {
-									if (tab !== null && tab === Object(tab)) {
-										if (!tab.classList.contains('tab-current')) {
-											setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
-											// (?)'как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
-											// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
-										}
-										if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
-											handlerPoPuPs(e); // обработчик вплывающих эл.
-										}
-									}
-								} else if (eVent.target.tagName === "IMG") {
-									if (eVent.target.hasAttribute('class')) {
-										if (eVent.target.classList.contains('close-tab')) {
-											if (tab !== null && tab === Object(tab)) {
-												if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
-													setTabVisibility(tab, "hide"); // показать/скрыть текущую вкладку
-												} else { // вкладки-клоны/созданные вкладки
-													setRemoveTab(tab); // удалить текущую вкладку
-												}
+							} else if (eVent.target.tagName === "IMG") {
+								if (eVent.target.hasAttribute('class')) {
+									if (eVent.target.classList.contains('close-tab')) {
+										if (tab !== null && tab === Object(tab)) {
+											if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
+												setTabVisibility(tab, "hide"); // показать/скрыть текущую вкладку
+											} else { // вкладки-клоны/созданные вкладки
+												setRemoveTab(tab); // удалить текущую вкладку
 											}
 										}
 									}
-								} else if (eVent.target.tagName === "LI") {
-									if (eVent.target.hasAttribute('tabnum')) {
-										if (!eVent.target.classList.contains('tab-current')) {
-											setTabVisibility(eVent.target, "show", "goToPage"); // показать/скрыть текущую вкладку
-											// (?) как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
-											// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
-										}
-										if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
-											handlerPoPuPs(e); // обработчик вплывающих эл.
-										}
+								}
+							} else if (eVent.target.tagName === "LI") {
+								if (eVent.target.hasAttribute('tabnum')) {
+									if (!eVent.target.classList.contains('tab-current')) {
+										setTabVisibility(eVent.target, "show", "goToPage"); // показать/скрыть текущую вкладку
+										// (?) как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
+										// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
 									}
-								} else if (eVent.target.tagName === "SPAN") {
-									if (tab !== null && tab === Object(tab)) {
-										if (!tab.classList.contains('tab-current')) {
-											setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
-											// (?) как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
-											// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
-										}
-										if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
-											handlerPoPuPs(e); // обработчик вплывающих эл.
-										}
+									if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
+										handlerPoPuPs(e); // обработчик вплывающих эл.
+									}
+								}
+							} else if (eVent.target.tagName === "SPAN") {
+								if (tab !== null && tab === Object(tab)) {
+									if (!tab.classList.contains('tab-current')) {
+										setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
+										// (?) как узнать куда и ск-ко прокручивать скрол, если вкладка видна частично
+										// tab.parentElement.scrollLeft += eVent.target.clientWidth; // - прокручиваем скроллбар
+									}
+									if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
+										handlerPoPuPs(e); // обработчик вплывающих эл.
 									}
 								}
 							}
-							tabs.removeEventListener('click', tabs_onClick, false);
 						}
-						function tabs_onMouseup(eVent) {
-							tabs.addEventListener('click', tabs_onClick, false);
-							tabs.removeEventListener('mouseup', tabs_onMouseup, false);
-						}
-						tabs.addEventListener('mouseup', tabs_onMouseup, false);
+						e.target.removeEventListener('click', tabSldrTrack_onClick, false);
 					}
+					function tabSldrTrack_onMouseup(eVent) {
+						e.target.addEventListener('click', tabSldrTrack_onClick, false);
+						e.target.removeEventListener('mouseup', tabSldrTrack_onMouseup, false);
+					}
+					e.target.addEventListener('mouseup', tabSldrTrack_onMouseup, false);
 				}, false); // false - фаза "всплытие"
 				// 'dblclick
-				document.getElementById('idTabSliderTrack').addEventListener('dblclick', function (e) {
+				tabSldrTrack.addEventListener('dblclick', function (e) {
 					switch (e.target.tagName) {
 						case 'SPAN':
 							setUndockTab(e.target.parentElement.parentElement);
@@ -663,10 +566,6 @@ $(document).ready(function () { // - jq
 							alert(`(!) Косяк - на текущей вкладке не учтен тег: «${e.target.tagName}», см.консоль`);
 							break;
 					}
-				}, false); // false - фаза "всплытие"
-				// 'animationend - по окончанию анимации удаляем css св-во "animation", иначе она больше не будет воспроизводиться
-				document.getElementById('idTabSliderTrack').addEventListener('animationend', function (e) {
-					e.target.style.removeProperty('animation'); // удаляем css св-во
 				}, false); // false - фаза "всплытие"
 			}
 		}
@@ -763,7 +662,8 @@ function setHistoryState(state = "replace", hrefPage = "") {
 	}
 	return retVal;
 }
-// (!) // отслеживание отображения кн.прокручивания слайдера в пан.инстр.
+// (!) отслеживание отображения кн.прокрутки слайдера в пан.инстр.
+let toolbarWheelHandler = null; // сохраняем ссылку на функцию с обработчиком события
 function toggleToolbarSldrBtns() {
 	const listBtns = document.querySelectorAll('.toolbar-btn-slider span');
 	const sldrTrack = document.querySelector('.toolbar-slider-track');
@@ -773,39 +673,25 @@ function toggleToolbarSldrBtns() {
 				item.removeAttribute('style');
 			} else {
 				item.style.display = "none";
-
 			}
 		});
 	}
+	// wheel - прокрутка колесиком
+	if (sldrTrack.scrollWidth > sldrTrack.clientWidth && toolbarWheelHandler === null) {
+		setHandlerSliderScroll(sldrTrack, "add");
+	} else if (!(sldrTrack.scrollWidth > sldrTrack.clientWidth) && toolbarWheelHandler) {
+		setHandlerSliderScroll(sldrTrack, "remove");
+	}
 }
-// (!) прокрутка кн.на пан.инстр.
-function scrollToToolbarButton(elem) {
-	// 'elem - div.toolbar-btn-slider
-	if (elem === undefined || typeof(elem) === "undefined" || elem !== Object(elem) || (elem === null && elem === Object(elem))) {
-		console.error("(!) Косяк: не удалось осуществить прокрутку на нужный элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function scrollToToolbarButton():\n", elem);
-		alert("(!) Косяк: не удалось осуществить прокрутку на нужный элемент - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.");
-		return;
-	}
-	//
-	const sldrTrack = elem.parentElement.querySelector('.toolbar-slider-track');
-	// (!) удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться
-	function sldrTrack_onAnimationend(eVent) {
-		eVent.target.style.removeProperty('animation');
-		sldrTrack.removeEventListener('animationend', sldrTrack_onAnimationend, false);
-	}
-	if (elem.classList.contains('toolbar_btn_slider-next')) {
-		if (Math.round(sldrTrack.scrollLeft) >= (sldrTrack.scrollWidth - sldrTrack.offsetWidth)) {
-			animationOffset(elem); // - анимационное смещение
-			sldrTrack.addEventListener('animationend', sldrTrack_onAnimationend, false);
-		} else {
-			sldrTrack.scrollLeft += 50; // - прокручиваем скроллбар // (???) как вычислить нужную кн.для получения.clientWidth
-		}
-	} else if (elem.classList.contains('toolbar_btn_slider-prev')) {
-		if (sldrTrack.scrollLeft === 0) {
-			animationOffset(elem); // - анимационное смещение
-			sldrTrack.addEventListener('animationend', sldrTrack_onAnimationend, false);
-		} else {
-			sldrTrack.scrollLeft -= 50; // - прокручиваем скроллбар // (???) как вычислить нужную кн.для получения.clientWidth
+// (!) создание/удаление обработчика события wheel
+let tabWheelHandler = null; // сохраняем ссылку на функцию с обработчиком события
+function tabHandlerWheel() {
+	const tabSldrTrack = document.querySelector('.tab_slider-track');
+	if (tabSldrTrack !== null && tabSldrTrack === Object(tabSldrTrack)) {
+		if (tabSldrTrack.scrollWidth > tabSldrTrack.clientWidth && tabWheelHandler === null) {
+			setHandlerSliderScroll(tabSldrTrack, "add");
+		} else if (!(tabSldrTrack.scrollWidth > tabSldrTrack.clientWidth) && tabWheelHandler) {
+			setHandlerSliderScroll(tabSldrTrack, "remove");
 		}
 	}
 }
@@ -949,155 +835,391 @@ function easeInOut(x, direct = "") {
 		: (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 	}
 }
+// (!) скрыть/показать панель навигации
 // (!) animationNavPane - окно браузера > 500
-function animationNavPane(duration = 1000, panels, valueShowHide = "show") {
-	let newPosition = { navpane: null, topicpane: null };
-	let distance = null; // - расстояние
-	if (valueShowHide === "hide") {
-		distance = parseInt(getComputedStyle(panels.topicpane, null).left, 10);
-	} else if (valueShowHide === "show") {
-		panels.navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
-		distance = parseInt(getComputedStyle(panels.navpane, null).left, 10);
-	}
-	const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
-	rafId = requestAnimationFrame(function animate(time) {
-		if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
-		// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
-		let interval = (time - startTime) / duration;
-		if (interval > 1) interval = 1;
-		if (valueShowHide === "hide") { // (!) проверить вариант с упрощенной записью вычисления, но с условием для ф.easeInOut()
-			newPosition.topicpane = easeInOut(interval, "backNegative") * distance;
-			newPosition.navpane = newPosition.topicpane - distance;
-		} else if (valueShowHide === "show") {
-			newPosition.navpane = easeInOut(interval, "backNegative") * distance;
-			newPosition.topicpane = newPosition.navpane - distance;
-		}
-		panels.navpane.style.left = newPosition.navpane + "px";
-		panels.topicpane.style.left = newPosition.topicpane + "px";
-		if (interval < 1) { // - планируем новый кадр
-			rafId = requestAnimationFrame(animate);
-		} else {
-			cancelAnimationFrame(rafId);
-			rafId = null;
-			if (valueShowHide === "hide") {
-				// setTimeout(() => {
-					panels.navpane.style.display = "none"; // 'скрываем пан.нав.
-				// }, duration);
-			} else if (valueShowHide === "show") {
-				panels.navpane.style.removeProperty('left'); // удаляем css св-во
-				if (reSizes.topicpaneStyleLeft === 0 || reSizes.topicpaneStyleLeft === 304) {
-					panels.topicpane.style.removeProperty('left'); // удаляем css св-во
-				} else {
-					panels.topicpane.style.left = reSizes.topicpaneStyleLeft + "px";
+// function animationNavPane(duration = 1000, panels, valueShowHide = "show") {
+// 	let value = null;
+// 	let distance = null; // - расстояние
+// 	if (valueShowHide === "hide") {
+// 		distance = panels.navpane.offsetWidth;
+// 	} else if (valueShowHide === "show") {
+// 		// distance = parseInt(getComputedStyle(panels.navpane, null).left, 10); // (i) при 1 вар.-размер оставленный при скрытии
+// 		distance = -(parseInt(getComputedStyle(panels.navpane, null).width, 10)); // (i) 2 вар.-размер оставленный при скрытии
+// 	}
+// 	const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
+// 	rafId = requestAnimationFrame(function animate(time) {
+// 		if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
+// 		// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
+// 		let interval = (time - startTime) / duration;
+// 		if (interval > 1) interval = 1;
+// 		let progress = easeInOut(interval, "backNegative") * distance;
+// 		value = progress - distance;
+// 		if (valueShowHide === "hide") {
+// 			// (i) 2 вар.
+// 			panels.navpane.style.width = progress + "px";
+// 			if (progress < -(0.0)) {
+// 				panels.navpane.style.display = "none"; // 'скрываем пан.нав.
+// 				panels.topicpane.style.left = progress + "px";
+// 			} else if (progress === 0) {
+// 				panels.navpane.style.width = distance + "px"; // запоминаем ширину
+// 				// panels.topicpane.style.removeProperty('left');
+// 				panels.topicpane.removeAttribute('style');
+// 			}
+// 			// (i) при 1 вар.
+// 			// panels.navpane.style.width = progress + "px";
+// 			// if (progress < -(0.0)) {
+// 			// 	panels.navpane.style.display = "none"; // 'скрываем пан.нав.
+// 			// 	panels.navpane.style.left = value + "px";
+// 			// 	panels.topicpane.style.left = progress + "px";
+// 			// } else if (progress === 0) {
+// 			// 	// panels.topicpane.style.removeProperty('left');
+// 			// 	panels.topicpane.removeAttribute('style');
+// 			// }
+// 		} else if (valueShowHide === "show") {
+// 			// (i) 2 вар.
+// 			if (value > 0) {
+// 				// panels.navpane.style.removeProperty('left'); // (i) при 1 вар.
+// 				panels.navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
+// 				panels.navpane.style.width = value + "px";
+// 				// panels.topicpane.style.removeProperty('left');
+// 				panels.topicpane.removeAttribute('style');
+// 			} else {
+// 				panels.topicpane.style.left = value + "px";
+// 			}
+// 		}
+
+// 		if (interval < 1) { // - планируем новый кадр
+// 			rafId = requestAnimationFrame(animate);
+// 		} else {
+// 			cancelAnimationFrame(rafId);
+// 			rafId = null;
+// 			if (valueShowHide === "show") {
+// 				panels.navpane.style.width = Math.round(((value / document.documentElement.clientWidth) * 100)) + "vw";
+// 			}
+// 		}
+// 	});
+// 	// (i) вар.при position: absolute;
+// 	// let newPosition = { navpane: null, topicpane: null };
+// 	// let distance = null; // - расстояние
+// 	// if (valueShowHide === "hide") {
+// 	// 	distance = parseInt(getComputedStyle(panels.topicpane, null).left, 10);
+// 	// } else if (valueShowHide === "show") {
+// 	// 	panels.navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
+// 	// 	distance = parseInt(getComputedStyle(panels.navpane, null).left, 10);
+// 	// }
+// 	// const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
+// 	// rafId = requestAnimationFrame(function animate(time) {
+// 	// 	if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
+// 	// 	// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
+// 	// 	let interval = (time - startTime) / duration;
+// 	// 	if (interval > 1) interval = 1;
+// 	// 	if (valueShowHide === "hide") { // (!) проверить вариант с упрощенной записью вычисления, но с условием для ф.easeInOut()
+// 	// 		newPosition.topicpane = easeInOut(interval, "backNegative") * distance;
+// 	// 		newPosition.navpane = newPosition.topicpane - distance;
+// 	// 	} else if (valueShowHide === "show") {
+// 	// 		newPosition.navpane = easeInOut(interval, "backNegative") * distance;
+// 	// 		newPosition.topicpane = newPosition.navpane - distance;
+// 	// 	}
+// 	// 	panels.navpane.style.left = newPosition.navpane + "px";
+// 	// 	panels.topicpane.style.left = newPosition.topicpane + "px";
+// 	// 	if (interval < 1) { // - планируем новый кадр
+// 	// 		rafId = requestAnimationFrame(animate);
+// 	// 	} else {
+// 	// 		cancelAnimationFrame(rafId);
+// 	// 		rafId = null;
+// 	// 		if (valueShowHide === "hide") {
+// 	// 			// setTimeout(() => {
+// 	// 				panels.navpane.style.display = "none"; // 'скрываем пан.нав.
+// 	// 			// }, duration);
+// 	// 		} else if (valueShowHide === "show") {
+// 	// 			panels.navpane.style.removeProperty('left'); // удаляем css св-во
+// 	// 			if (reSizes.topicpaneStyleLeft === 0 || reSizes.topicpaneStyleLeft === 304) {
+// 	// 				panels.topicpane.style.removeProperty('left'); // удаляем css св-во
+// 	// 			} else {
+// 	// 				panels.topicpane.style.left = reSizes.topicpaneStyleLeft + "px";
+// 	// 			}
+// 	// 		}
+// 	// 	}
+// 	// });
+// }
+// (!) animationNavPane500 - окно браузера < 500
+// function animationNavPane500(duration = 1000, panels, valueShowHide = "show") {
+// 	// (i) отключить анимацию в styles.css
+// 	let value = null;
+// 	let distance = 0;
+// 	panels.topicpane.style.zIndex = 0;
+// 	// console.log(panels.navpane.getBoundingClientRect()); // (i) вернет координаты элемента
+// 	if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
+// 		distance = panels.navpane.offsetHeight;
+// 	} else if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
+// 		distance = -(parseInt(getComputedStyle(panels.navpane, null).height, 10));
+// 	}
+// 	const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
+// 	rafId = requestAnimationFrame(function animate(time) {
+// 		if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
+// 		// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
+// 		let interval = (time - startTime) / duration;
+// 		if (interval > 1) interval = 1;
+// 		let progress = easeInOut(interval, "backNegative") * distance;
+// 		value = progress - distance;
+// 		if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
+// 			panels.navpane.style.height = progress + "px";
+// 			if (progress < -(0.0)) {
+// 				panels.navpane.style.display = "none"; // 'скрываем пан.нав.
+// 				panels.topicpane.style.top = progress + "px";
+// 			} else if (progress === 0) {
+// 				panels.navpane.style.height = distance + "px"; // запоминаем ширину
+// 				// panels.topicpane.style.removeProperty('top');
+// 				panels.topicpane.removeAttribute('style');
+// 			}
+// 		} else if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
+// 			if (value > 0) {
+// 				// panels.navpane.style.removeProperty('left'); // (i) при 1 вар.
+// 				panels.navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
+// 				panels.navpane.style.height = value + "px";
+// 				// panels.topicpane.style.removeProperty('left');
+// 				panels.topicpane.removeAttribute('style');
+// 			} else {
+// 				panels.topicpane.style.top = value + "px";
+// 			}
+// 		}
+
+// 		if (interval < 1) { // - планируем новый кадр
+// 			prevPosition = value;
+// 			rafId = requestAnimationFrame(animate);
+// 		} else {
+// 			cancelAnimationFrame(rafId);
+// 			rafId = null;
+// 			if (valueShowHide === "show") {
+// 				panels.navpane.style.height = Math.round(((value / document.documentElement.clientHeight) * 100)) + "vh";
+// 			}
+// 		}
+// 	});
+// 	// (i) вар.при position: absolute;
+// 	// // (i) отключить анимацию в styles.css
+// 	// let newPosition = null;
+// 	// let distance = 0;
+// 	// if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
+// 	// 	distance = parseInt(getComputedStyle(panels.navpane, null).top, 10);
+// 	// } else if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
+// 	// 	distance = parseInt(getComputedStyle(panels.navpane, null).height, 10);
+// 	// 	// distance = parseInt(getComputedStyle(panels.navpane, null).height, 10) + parseInt(getComputedStyle(panels.navpane, null).paddingTop, 10) + parseInt(getComputedStyle(panels.navpane, null).paddingBottom, 10) + parseInt(getComputedStyle(panels.navpane, null).borderTop, 10) + parseInt(getComputedStyle(panels.navpane, null).borderBottom, 10) + parseInt(getComputedStyle(panels.navpane, null).marginTop, 10) + parseInt(getComputedStyle(panels.navpane, null).marginBottom, 10);
+// 	// }
+// 	// // console.log(panels.navpane.getBoundingClientRect()); // (i) вернет координаты элемента
+// 	// const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
+// 	// rafId = requestAnimationFrame(function animate(time) {
+// 	// 	if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
+// 	// 	// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
+// 	// 	let interval = (time - startTime) / duration;
+// 	// 	if (interval > 1) interval = 1;
+// 	// 	// 	let progress = easeInOut(interval);
+// 	// 	// 	let progress = easeInOut(interval, "backPositive");
+// 	// 	let progress = easeInOut(interval, "backNegative");
+// 	// 	newPosition = (distance * progress) - distance;
+// 	// 	if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
+// 	// 		panels.navpane.style.top = (newPosition + distance) + "px";
+// 	// 		if (progress > 1) {
+// 	// 			panels.topicpane.style.top = newPosition + "px"; // качели - делаем небольшой заход вверх вместо кратковременного увеличения размера - не получается его симитировать видимо из-за достигшего размера выс., т.к.приходится подгонять высоту пан.топ.из-за небольшого затыка
+// 	// 		} else if (progress > 0) {
+// 	// 			panels.navpane.style.removeProperty('display');
+// 	// 			panels.navpane.style.height = newPosition + "px";
+// 	// 			panels.topicpane.style.removeProperty('top');
+// 	// 		} else if (progress < 0) {
+// 	// 			panels.navpane.style.height = newPosition + "px";
+// 	// 		} else {
+// 	// 			panels.navpane.style.removeProperty('top');
+// 	// 			panels.navpane.style.height = newPosition + "px";
+// 	// 		}
+// 	// 		panels.topicpane.style.height = (panels.topicpane.clientHeight - distance - newPosition) + "px"; // подгоняем выс.для плавного поднятия, иначе образуется небольшая задержка/приостановка
+// 	// 	} else if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
+// 	// 		// 'делаем подмену выс.на мин.выс., чтобы не возникло внезапного увеличения размера пан.нав.при наличии св-ва height при использовании splitterBottom
+// 	// 		panels.navpane.style.minHeight = (distance + newPosition) + "px";
+// 	// 		if (progress > 1) {
+// 	// 			panels.navpane.style.removeProperty('height'); // если применялся splitterBottom
+// 	// 		} else if (progress > 0) {
+// 	// 			panels.navpane.style.top = newPosition + "px";
+// 	// 		} else if (progress < 0) {
+// 	// 			panels.navpane.style.top = newPosition + "px";
+// 	// 			panels.navpane.style.display = "none";
+// 	// 			panels.topicpane.style.top = (newPosition + distance) + "px"; // качели - делаем небольшой заход вверх вместо кратковременного увеличения размера - не получается его симитировать видимо из-за достигшего размера выс., т.к.приходится подгонять высоту пан.топ.из-за небольшого затыка
+// 	// 		} else {
+// 	// 			panels.navpane.style.top = newPosition + "px";
+// 	// 			panels.navpane.style.removeProperty('min-height');
+// 	// 			panels.topicpane.style.removeProperty('top');
+// 	// 		}
+// 	// 		panels.topicpane.style.height = (panels.topicpane.clientHeight - distance - newPosition) + "px"; // подгоняем выс.для плавного поднятия, иначе образуется небольшая задержка/приостановка
+// 	// 	}
+// 	// 	if (interval < 1) { // - планируем новый кадр
+// 	// 		prevPosition = newPosition;
+// 	// 		rafId = requestAnimationFrame(animate);
+// 	// 	} else {
+// 	// 		cancelAnimationFrame(rafId);
+// 	// 		rafId = null;
+// 	// 	}
+// 	// });
+// }
+// (!) скрыть/показать панель навигации
+// (i) исп.при position: absolute пан.нав.и пан.топиков
+// function setNavPaneShowHide_1(panelShowHide = true) {
+// 	let panels = {
+// 		banner: document.getElementById('idBanner'),
+// 		toolbar: document.getElementById('idToolbar'),
+// 		navpane: document.getElementById('idNavPane'),
+// 		topicpane: document.getElementById('idTopicPane')
+// 	};
+// 	const duration = 2000; // - длительность анимации
+// 	if (panelShowHide) { // - нав.пан.раскрыта
+// 		if (panels.banner.style.display === "none") {
+// 			// *проверяем внутренний размер окна без полос прокрутки
+// 			if (document.documentElement.clientWidth > 500) {
+// 				animationNavPane(duration, panels, "hide");
+
+// 				panels.topicpane.style.left = 0;
+
+// 				// panels.topicpane.classList.remove('topic-pane-expand');
+// 				// panels.topicpane.classList.add('topic-pane-extend'); // - изм.одну выс.пан.топ.на др.
+// 			} else if (document.documentElement.clientWidth < 501) {
+// 				animationNavPane500(duration, panels, "hide");
+// 			}
+// 		} else {
+// 			// *проверяем внутренний размер окна без полос прокрутки
+// 			if (document.documentElement.clientWidth > 500) {
+// 				animationNavPane(duration, panels, "hide");
+
+// 				panels.topicpane.style.left = 0;
+
+// 				// panels.topicpane.classList.remove('topic-pane-extend');
+// 				// panels.topicpane.classList.add('topic-pane-expand'); // - изм.одну выс.пан.топ.на др.
+// 			} else if (document.documentElement.clientWidth < 501) {
+// 				animationNavPane500(duration, panels, "hide");
+// 			}
+// 		}
+// 	} else { // - нав.пан.скрыта
+// 		// *проверяем внутренний размер окна без полос прокрутки
+// 		if (document.documentElement.clientWidth > 500) {
+// 			animationNavPane(duration, panels, "show");
+
+// 			panels.topicpane.style.left = reSizes.topicpaneLeft + "px";
+
+// 			// panels.topicpane.classList.remove('topic-pane-extend');
+// 			// panels.topicpane.classList.remove('topic-pane-expand');
+// 		} else if (document.documentElement.clientWidth < 501) {
+// 			animationNavPane500(duration, panels, "show");
+// 		}
+// 	}
+// }
+function setNavPaneShowHide(isChecked = true) {
+	// (i) 2 вар.при position: relative пан.нав.и пан.топиков
+	const navpane = document.getElementById('idNavPane');
+	const topicpane = document.getElementById('idTopicPane');
+	// var-mobile
+	const getDirection = (value = "") => {
+		if (document.documentElement.clientWidth > 500) {
+			if (navpane.parentElement.classList.contains('var-mobile')) {
+				value = "top";
+			} else { value = "left"; }
+		} else { value = "top"; }
+		return value;
+	};
+	const direction = getDirection();
+	let value = null;
+	topicpane.style.zIndex = -1;
+	const animation = (distance = 0, direction = "left", duration = 2000) => {
+		// console.log(navpane.getBoundingClientRect()); // (i) вернет координаты элемента
+		const setTglBtnDisable = (value = true) => {
+			const btn = document.getElementById('idNavPaneToggle');
+			if (btn !== null && btn === Object(btn)) btn.disabled = value;
+		};
+		setTglBtnDisable(true); // делаем кн.-переключатель недоступной
+		const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
+		rafId = requestAnimationFrame(function animate(time) {
+			if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
+			// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
+			let interval = (time - startTime) / duration;
+			if (interval > 1) interval = 1;
+			let progress = easeInOut(interval, "backNegative") * distance;
+			value = progress - distance;
+			if (direction === "left") {
+				if (isChecked) { // show to hide - пан.нав.раскрыта, скрываем
+					navpane.style.width = progress + "px";
+					if (progress < -(0.0)) {
+						navpane.style.display = "none"; // 'скрываем пан.нав.
+						topicpane.style.left = progress + "px";
+					} else if (progress === 0) {
+						// (?) предположительно срабатывает перед тем, как применяется стиль display: none при progress = 0, поэтому на этапе завершения анимации значение не устанавливается
+						navpane.style.width = (((distance / document.documentElement.clientWidth) * 100)) + "vw"; // запоминаем значение
+						// topicpane.style.removeProperty('left');
+						topicpane.removeAttribute('style');
+					}
+				} else { // hide to show - пан.нав.скрыта, отображаем
+					if (value > 0) {
+						// navpane.style.removeProperty('left'); // (i) при 1 вар.
+						navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
+						navpane.style.width = value + "px";
+						// topicpane.style.removeProperty('left');
+						topicpane.removeAttribute('style');
+					} else {
+						topicpane.style.left = value + "px";
+					}
+				}
+			} else if (direction === "top") {
+				if (isChecked) { // show to hide - пан.нав.раскрыта, скрываем
+					navpane.style.height = progress + "px";
+					if (progress < -(0.0)) {
+						navpane.style.display = "none"; // 'скрываем пан.нав.
+						topicpane.style.top = progress + "px";
+					} else if (progress === 0) {
+						// (?) предположительно срабатывает перед тем, как применяется стиль display: none при progress = 0, поэтому на этапе завершения анимации значение не устанавливается
+						navpane.style.height = (((distance / document.documentElement.clientHeight) * 100)) + "vh"; // запоминаем значение
+						// topicpane.style.removeProperty('top');
+						topicpane.removeAttribute('style');
+					}
+				} else { // hide to show - пан.нав.скрыта, отображаем
+					if (value > 0) {
+						// navpane.style.removeProperty('left'); // (i) при 1 вар.
+						navpane.style.removeProperty('display'); // удаляем css св-во - отображаем нав.пан.
+						navpane.style.height = value + "px";
+						// topicpane.style.removeProperty('left');
+						topicpane.removeAttribute('style');
+					} else {
+						topicpane.style.top = value + "px";
+					}
 				}
 			}
-		}
-	});
-}
-// (!) animationNavPane500 - окно браузера < 500
-function animationNavPane500(duration = 1000, panels, valueShowHide = "show") {
-	// (i) отключить анимацию в styles.css
-	let newPosition = null;
-	let distance = 0;
-	if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
-		distance = parseInt(getComputedStyle(panels.navpane, null).top, 10);
-	} else if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
-		distance = parseInt(getComputedStyle(panels.navpane, null).height, 10);
-		// distance = parseInt(getComputedStyle(panels.navpane, null).height, 10) + parseInt(getComputedStyle(panels.navpane, null).paddingTop, 10) + parseInt(getComputedStyle(panels.navpane, null).paddingBottom, 10) + parseInt(getComputedStyle(panels.navpane, null).borderTop, 10) + parseInt(getComputedStyle(panels.navpane, null).borderBottom, 10) + parseInt(getComputedStyle(panels.navpane, null).marginTop, 10) + parseInt(getComputedStyle(panels.navpane, null).marginBottom, 10);
-	}
-	// console.log(panels.navpane.getBoundingClientRect()); // (i) вернет координаты элемента
-	const startTime = performance.now(); // - метод производительности выраженный в миллисекундах
-	rafId = requestAnimationFrame(function animate(time) {
-		if (!startTime) { startTime = time; } // - при первом вызове сохраняется время, если startTime не известно
-		// *разница между текущим и начальным временем, поделенная на длиительность анимации (некое число - интервал от 0 до 1, где 0 - начало анимации, а 1 - конец анимации)
-		let interval = (time - startTime) / duration;
-		if (interval > 1) interval = 1;
-		// 	let progress = easeInOut(interval);
-		// 	let progress = easeInOut(interval, "backPositive");
-		let progress = easeInOut(interval, "backNegative");
-		newPosition = (distance * progress) - distance;
-		if (valueShowHide === "show") { // пан.нав.скрыта, отображаем
-			panels.navpane.style.top = (newPosition + distance) + "px";
-			if (progress > 1) {
-				panels.topicpane.style.top = newPosition + "px"; // качели - делаем небольшой заход вверх вместо кратковременного увеличения размера - не получается его симитировать видимо из-за достигшего размера выс., т.к.приходится подгонять высоту пан.топ.из-за небольшого затыка
-			} else if (progress > 0) {
-				panels.navpane.style.removeProperty('display');
-				panels.navpane.style.height = newPosition + "px";
-				panels.topicpane.style.removeProperty('top');
-			} else if (progress < 0) {
-				panels.navpane.style.height = newPosition + "px";
+
+			if (interval < 1) { // - планируем новый кадр
+				rafId = requestAnimationFrame(animate);
 			} else {
-				panels.navpane.style.removeProperty('top');
-				panels.navpane.style.height = newPosition + "px";
+				cancelAnimationFrame(rafId);
+				rafId = null;
+				// if (isChecked) { // show to hide
+				// 	if (direction === "left") {
+				// 		navpane.style.width = (((value / document.documentElement.clientWidth) * 100)) + "vw";
+				// 	} else if (direction === "top") {
+				// 		navpane.style.height = (((value / document.documentElement.clientHeight) * 100)) + "vh";
+				// 	}
+				// }
+				if (direction === "left") {
+					navpane.style.width = (((value / document.documentElement.clientWidth) * 100)) + "vw";
+				} else if (direction === "top") {
+					navpane.style.height = (((value / document.documentElement.clientHeight) * 100)) + "vh";
+				}
+				setTglBtnDisable(false); // активируем кн.-переключатель
 			}
-			panels.topicpane.style.height = (panels.topicpane.clientHeight - distance - newPosition) + "px"; // подгоняем выс.для плавного поднятия, иначе образуется небольшая задержка/приостановка
-		} else if (valueShowHide === "hide") { // пан.нав.раскрыта, скрываем
-			// 'делаем подмену выс.на мин.выс., чтобы не возникло внезапного увеличения размера пан.нав.при наличии св-ва height при использовании splitterBottom
-			panels.navpane.style.minHeight = (distance + newPosition) + "px";
-			if (progress > 1) {
-				panels.navpane.style.removeProperty('height'); // если применялся splitterBottom
-			} else if (progress > 0) {
-				panels.navpane.style.top = newPosition + "px";
-			} else if (progress < 0) {
-				panels.navpane.style.top = newPosition + "px";
-				panels.navpane.style.display = "none";
-				panels.topicpane.style.top = (newPosition + distance) + "px"; // качели - делаем небольшой заход вверх вместо кратковременного увеличения размера - не получается его симитировать видимо из-за достигшего размера выс., т.к.приходится подгонять высоту пан.топ.из-за небольшого затыка
-			} else {
-				panels.navpane.style.top = newPosition + "px";
-				panels.navpane.style.removeProperty('min-height');
-				panels.topicpane.style.removeProperty('top');
-			}
-			panels.topicpane.style.height = (panels.topicpane.clientHeight - distance - newPosition) + "px"; // подгоняем выс.для плавного поднятия, иначе образуется небольшая задержка/приостановка
-		}
-		if (interval < 1) { // - планируем новый кадр
-			prevPosition = newPosition;
-			rafId = requestAnimationFrame(animate);
-		} else {
-			cancelAnimationFrame(rafId);
-			rafId = null;
-		}
-	});
-}
-// (!) скрыть/показать боковую панель навигации
-function setNavPaneShowHide(panelShowHide = true) {
-	let panels = {
-		banner: document.getElementById('idBanner'),
-		toolbar: document.getElementById('idToolbar'),
-		navpane: document.getElementById('idNavPane'),
-		topicpane: document.getElementById('idTopicPane')
+		});
 	};
-	const duration = 2000; // - длительность анимации
-	if (panelShowHide) { // - нав.пан.раскрыта
-		if (panels.banner.style.display === "none") {
-			// *проверяем внутренний размер окна без полос прокрутки
-			if (document.documentElement.clientWidth > 500) {
-				animationNavPane(duration, panels, "hide");
-				panels.topicpane.style.left = 0;
-				// panels.topicpane.classList.remove('topic-pane-expand');
-				// panels.topicpane.classList.add('topic-pane-extend'); // - изм.одну выс.пан.топ.на др.
-			} else if (document.documentElement.clientWidth < 501) {
-				animationNavPane500(duration, panels, "hide");
-			}
-		} else {
-			// *проверяем внутренний размер окна без полос прокрутки
-			if (document.documentElement.clientWidth > 500) {
-				animationNavPane(duration, panels, "hide");
-				panels.topicpane.style.left = 0;
-				// panels.topicpane.classList.remove('topic-pane-extend');
-				// panels.topicpane.classList.add('topic-pane-expand'); // - изм.одну выс.пан.топ.на др.
-			} else if (document.documentElement.clientWidth < 501) {
-				animationNavPane500(duration, panels, "hide");
-			}
+
+	if (direction === "left") {
+		if (isChecked) { // - нав.пан.раскрыта
+			animation(navpane.offsetWidth, direction);
+		} else { // - нав.пан.скрыта
+			animation(-(parseInt(getComputedStyle(navpane, null).width, 10)), direction); // (i) размер оставленный при скрытии
 		}
-	} else { // - нав.пан.скрыта
-		// *проверяем внутренний размер окна без полос прокрутки
-		if (document.documentElement.clientWidth > 500) {
-			animationNavPane(duration, panels, "show");
-			panels.topicpane.style.left = reSizes.topicpaneLeft + "px";
-			// panels.topicpane.classList.remove('topic-pane-extend');
-			// panels.topicpane.classList.remove('topic-pane-expand');
-		} else if (document.documentElement.clientWidth < 501) {
-			animationNavPane500(duration, panels, "show");
+	} else if (direction === "top") {
+		if (isChecked) { // - нав.пан.раскрыта
+			animation(navpane.offsetHeight, direction);
+		} else { // - нав.пан.скрыта
+			animation(-(parseInt(getComputedStyle(navpane, null).height, 10)), direction);
 		}
 	}
 }
@@ -1130,9 +1252,9 @@ function setNewTab(srcFrame = "") {
 			return null;
 		}
 	}
-	let boxes = document.getElementById('idTopicContent'); // 'div
+	let boxes = document.getElementById('idTopicPane'); // 'div
 	if (boxes === null && boxes !== Object(boxes)) {
-		boxes = document.querySelector('.topic-content');
+		boxes = document.querySelector('.topic-pane');
 		if (boxes === null && boxes !== Object(boxes)) {
 			console.error(`(!) Косяк: не удалось создать или клонировать элемент - текущую вкладку - не найден элемент:\n function setNewTab(srcFrame: ${srcFrame}): window.«${window.name}», location.origin: ${location.origin}\n boxes: typeof(${typeof(boxes)}) | Object(${Object(boxes)}) | ${boxes}`);
 			alert(`(!) Косяк: не удалось создать или клонировать элемент - контент текущей вкладки - не найден элемент, см.консоль.`);
@@ -1144,7 +1266,7 @@ function setNewTab(srcFrame = "") {
 	if (srcFrame !== "" && typeof(srcFrame) === "string") { // - создаем
 		document.getElementById('idSearchTab').insertAdjacentHTML('afterend', '<li id="' + tabId + '" class="tabs tab-current" tabnum="' + count + '"><a id="tablink-' + count + '" href="#" data="Тема" title="тема"><span>Тема</span></a><img class="close-tab" src="icon/tab-close_off.png" title="Закрыть эту вкладку"></li>');
 
-		document.getElementById('idSearchBox').insertAdjacentHTML('afterend', '<div id="idBox-' + count + '" class="topic-box" boxnum="' + count + '"><iframe id="iframe-' + count + '" name="iframe-' + count + '" class="scroll-pane" src="' + srcFrame + '" title="тема"></iframe></div>');
+		document.getElementById('idSearchBox').insertAdjacentHTML('afterend', '<div id="idBox-' + count + '" class="topic-box" boxnum="' + count + '"><iframe id="iframe-' + count + '" name="iframe-' + count + '" class="pane-item" src="' + srcFrame + '" title="тема"></iframe></div>');
 	} else if (srcFrame === "" && typeof(srcFrame) === "string") { // - клонируем
 		let tabCur = tabs.querySelector('.tab-current');
 		let boxCur = boxes.querySelector('div[boxnum="' + +tabCur.getAttribute('tabnum') + '"]');
@@ -1233,7 +1355,7 @@ function setNewTab(srcFrame = "") {
 }
 // (!) удалить текущую вкладку
 function setRemoveTab(elem) {
-	// 'elem - tagName: li.tabs tab-current
+	// 'elem - tagName: li.tabs.tab-current
 	if (elem === undefined || typeof(elem) === "undefined" || elem !== Object(elem) || (elem === null && elem === Object(elem))) {
 		console.error(`(!) Косяк: не удалось удалить текущую вкладку - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setRemoveTab(elem: typeof(${typeof(elem)}), Object(${Object(elem)}), ${elem}): window."${window.name}", location.origin: ${location.origin}`);
 		alert(`(!) Косяк: не удалось удалить текущую вкладку - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
@@ -1289,7 +1411,7 @@ function easeInOutLiner(time, valueShowHide = "") {
 		return 0.5 * (Math.cos(Math.PI * time));
 	}
 }
-// (!)
+// (!) анимация баннера
 function animationBanner(duration = 1000, panels, valueShowHide = "hide") {
 	// (i) отключить анимацию в styles.css
 	if (valueShowHide === "show") { // баннер скрыт, отображаем
@@ -1305,10 +1427,11 @@ function animationBanner(duration = 1000, panels, valueShowHide = "hide") {
 		if (interval > 1) interval = 1;
 		let progress = easeInOutLiner(interval, valueShowHide);
 		panels.banner.style.height = (progress * distance) + "px";
-		if (document.documentElement.clientWidth > 500) {
-			panels.navpane.style.top = ((progress * distance) + panels.toolbar.offsetHeight + parseInt(getComputedStyle(panels.toolbar, null).marginTop, 10)) + "px";
-			panels.topicpane.style.top = ((progress * distance) + panels.toolbar.offsetHeight + parseInt(getComputedStyle(panels.toolbar, null).marginTop, 10)) + "px";
-		}
+		// (i) исп.при position: absolute
+		// if (document.documentElement.clientWidth > 500) {
+		// 	panels.navpane.style.top = ((progress * distance) + panels.toolbar.offsetHeight + parseInt(getComputedStyle(panels.toolbar, null).marginTop, 10)) + "px";
+		// 	panels.topicpane.style.top = ((progress * distance) + panels.toolbar.offsetHeight + parseInt(getComputedStyle(panels.toolbar, null).marginTop, 10)) + "px";
+		// }
 		if (interval < 1) { // - планируем новый кадр
 			rafId = requestAnimationFrame(animate);
 		} else {
@@ -1318,18 +1441,19 @@ function animationBanner(duration = 1000, panels, valueShowHide = "hide") {
 				panels.banner.style.display = "none"; // 'скрываем баннер
 			}
 			panels.banner.style.removeProperty('height');
-			if (document.documentElement.clientWidth > 500) {
-				panels.navpane.style.removeProperty('top');
-			} else if (document.documentElement.clientWidth < 501) {
-				if (panels.navpane.style.display !== "none") {
-					panels.navpane.style.removeProperty('top');
-				}
-				if (reSizes.navpaneHeight === 0) {
-					panels.navpane.style.removeProperty('height');
-					panels.topicpane.style.removeProperty('height');
-				}
-			}
-			panels.topicpane.style.removeProperty('top');
+			// (i) исп.при position: absolute
+			// if (document.documentElement.clientWidth > 500) {
+			// 	panels.navpane.style.removeProperty('top');
+			// } else if (document.documentElement.clientWidth < 501) {
+			// 	if (panels.navpane.style.display !== "none") {
+			// 		panels.navpane.style.removeProperty('top');
+			// 	}
+			// 	if (reSizes.navpaneHeight === 0) {
+			// 		panels.navpane.style.removeProperty('height');
+			// 		panels.topicpane.style.removeProperty('height');
+			// 	}
+			// }
+			// panels.topicpane.style.removeProperty('top');
 		}
 	});
 }
@@ -1337,41 +1461,56 @@ function animationBanner(duration = 1000, panels, valueShowHide = "hide") {
 function setBannerShowHide(bannerShowHide = false) {
 	let panels = {
 		banner: document.getElementById('idBanner'),
-		toolbar: document.getElementById('idToolbar'),
-		navpane: document.getElementById('idNavPane'),
-		topicpane: document.getElementById('idTopicPane')
+		toolbar: document.getElementById('idToolbar')
 	};
 	// console.log(panels.navpane.getBoundingClientRect()); // (i) вернет координаты элемента
 	const duration = 1500; // - длительность анимации
-	if (document.documentElement.clientWidth > 500) {
-		if (bannerShowHide) { // - баннер раскрыт - скрываем его
-			panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
-			if (panels.navpane.classList.contains('navpane-banner')) {
-				panels.navpane.classList.remove('navpane-banner');
-			}
-			if (panels.topicpane.classList.contains('topicpane-banner')) {
-				panels.topicpane.classList.remove('topicpane-banner');
-			}
-			animationBanner(duration, panels, "hide");
-		} else { // - баннер скрыт - отображаем его
-			panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
-			if (!panels.navpane.classList.contains('navpane-banner')) { // - класс отсутствует
-				panels.navpane.classList.add('navpane-banner');
-			}
-			if (!panels.topicpane.classList.contains('topicpane-banner')) { // - класс отсутствует
-				panels.topicpane.classList.add('topicpane-banner');
-			}
-			animationBanner(duration, panels, "show");
-		}
-	} else if (document.documentElement.clientWidth < 501) {
-		if (bannerShowHide) { // - баннер раскрыт - скрываем его
-			panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
-			animationBanner(duration, panels, "hide");
-		} else { // - баннер скрыт - отображаем его
-			panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
-			animationBanner(duration, panels, "show");
-		}
+	if (bannerShowHide) { // - баннер раскрыт - скрываем его
+		panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
+		animationBanner(duration, panels, "hide");
+	} else { // - баннер скрыт - отображаем его
+		panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
+		animationBanner(duration, panels, "show");
 	}
+
+	// (i) исп.при position: absolute
+	// let panels = {
+	// 	banner: document.getElementById('idBanner'),
+	// 	toolbar: document.getElementById('idToolbar'),
+	// 	navpane: document.getElementById('idNavPane'),
+	// 	topicpane: document.getElementById('idTopicPane')
+	// };
+	// // console.log(panels.navpane.getBoundingClientRect()); // (i) вернет координаты элемента
+	// const duration = 1500; // - длительность анимации
+	// if (document.documentElement.clientWidth > 500) {
+	// 	if (bannerShowHide) { // - баннер раскрыт - скрываем его
+	// 		panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
+	// 		if (panels.navpane.classList.contains('navpane-banner')) {
+	// 			panels.navpane.classList.remove('navpane-banner');
+	// 		}
+	// 		if (panels.topicpane.classList.contains('topicpane-banner')) {
+	// 			panels.topicpane.classList.remove('topicpane-banner');
+	// 		}
+	// 		animationBanner(duration, panels, "hide");
+	// 	} else { // - баннер скрыт - отображаем его
+	// 		panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
+	// 		if (!panels.navpane.classList.contains('navpane-banner')) { // - класс отсутствует
+	// 			panels.navpane.classList.add('navpane-banner');
+	// 		}
+	// 		if (!panels.topicpane.classList.contains('topicpane-banner')) { // - класс отсутствует
+	// 			panels.topicpane.classList.add('topicpane-banner');
+	// 		}
+	// 		animationBanner(duration, panels, "show");
+	// 	}
+	// } else if (document.documentElement.clientWidth < 501) {
+	// 	if (bannerShowHide) { // - баннер раскрыт - скрываем его
+	// 		panels.toolbar.classList.replace('toolbar-banner', 'toolbar');
+	// 		animationBanner(duration, panels, "hide");
+	// 	} else { // - баннер скрыт - отображаем его
+	// 		panels.toolbar.classList.replace('toolbar', 'toolbar-banner');
+	// 		animationBanner(duration, panels, "show");
+	// 	}
+	// }
 }
 // (!) распечатать
 function setPrintTopic(elem) {
@@ -1380,20 +1519,20 @@ function setPrintTopic(elem) {
 	// print();
 	alert(`(i) Кнопка «Печать» на панели пока что в разработке.`);
 }
-// (!) скрыть пан.нав.при размере окна браузера <= 500
+// (!) скрыть пан.нав.при ее макс.размере
 function setHideNavPane() {
-	// *проверяем внутренний размер окна без полос прокрутки
-	if (document.documentElement.clientWidth < 501) {
-		if (document.getElementById('idTopicPane').offsetTop >= document.body.clientHeight) { // если пан.нав.притянута к низу
-			setNavPaneShowHide(true); // скрыть/показать боковую панель навигации
-			// *переводим кнопку в состояние, когда пан.нав.скрыта
-			document.getElementById('idNavPaneToggle').checked = false;
+	const elem = document.getElementById('idNavPaneToggle');
+	const topicpane = document.getElementById('idTopicPane');
+	if (topicpane.offsetHeight === 0) {
+		if (elem.checked) {
+			elem.checked = false; // *переводим кнопку в состояние, когда пан.нав.скрыта
+			setNavPaneShowHide(true); // скрыть/показать панель навигации
 		}
 	}
 }
 // (!) установка перехода на страницу
 function setGoToPage(elem) {
-	setHideNavPane(); // скрыть пан.нав.при размере окна браузера <= 500
+	setHideNavPane(); // скрыть пан.нав.при ее макс.размере
 	// x // setHistoryState("push", elem.getAttribute('href')); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
 }
 // (!) перейти на текущую главу/раздел/подраздел темы
@@ -1449,13 +1588,13 @@ function goToTab(elem) {
 	if (tabsVisible.length === 1) { // скрыты все вкладки, кроме 1-ой, т.е.главной
 		if (elem.id === "idTabFirst" || elem.id === "idTabPrevious") {
 			if (tabsVisible[0].classList.contains('tab-current')) {
-				animationOffset(elem); // анимационное смещение
+				animationOffset(tabs, "jumpToRight"); // анимационное смещение
 			} else {
 				setTabVisibility(tabs.children[0], "show", "goToPage"); // показать/скрыть текущую вкладку
 			}
 		} else if (elem.id === "idTabLast" || elem.id === "idTabNext") {
 			if (tabsVisible[0].classList.contains('tab-current')) {
-				animationOffset(elem); // анимационное смещение
+				animationOffset(tabs, "jumpToLeft"); // анимационное смещение
 			} else {
 				setTabVisibility(tabs.children[0], "show", "goToPage"); // показать/скрыть текущую вкладку
 			}
@@ -1463,7 +1602,7 @@ function goToTab(elem) {
 	} else {
 		if (elem.id === "idTabFirst") {
 			if (tabsVisible[0].classList.contains('tab-current')) {
-				animationOffset(elem); // анимационное смещение
+				animationOffset(tabs, "jumpToRight"); // анимационное смещение
 			} else {
 				setTabVisibility(tabsVisible[0], "show", "goToPage"); // показать/скрыть текущую вкладку
 			}
@@ -1472,7 +1611,7 @@ function goToTab(elem) {
 			for (let i = tabsVisible.length - 1; i >= 0; i--) {
 				if (i === 0) { // если вкладка 1-ая, т.е.главная
 					if (tabsVisible[i].classList.contains('tab-current')) {
-						animationOffset(elem); // анимационное смещение
+						animationOffset(tabs, "jumpToRight"); // анимационное смещение
 					} else {
 						setTabVisibility(tabsVisible[i], "show", "goToPage"); // показать/скрыть текущую вкладку
 						tabs.scrollLeft -= tabsVisible[i].clientWidth; // прокручиваем скроллбар
@@ -1489,7 +1628,7 @@ function goToTab(elem) {
 			for (let i = 0; i < tabsVisible.length; i++) {
 				if (i === tabsVisible.length - 1) { // если видимая вкладка последняя
 					if (tabsVisible[i].classList.contains('tab-current')) {
-						animationOffset(elem); // анимационное смещение
+						animationOffset(tabs, "jumpToLeft"); // анимационное смещение
 					} else {
 						setTabVisibility(tabsVisible[0], "show", "goToPage"); // показать/скрыть текущую вкладку
 						tabs.scrollLeft += tabsVisible[i].clientWidth; // прокручиваем скроллбар
@@ -1504,7 +1643,7 @@ function goToTab(elem) {
 			}
 		} else if (elem.id === "idTabLast") {
 			if (tabsVisible[tabsVisible.length - 1].classList.contains('tab-current')) { // если последняя видимая вкладка уже активна
-				animationOffset(elem); // анимационное смещение
+				animationOffset(tabs, "jumpToLeft"); // анимационное смещение
 			} else {
 				setTabVisibility(tabsVisible[tabsVisible.length - 1], "show", "goToPage"); // показать/скрыть текущую вкладку
 			}

@@ -453,12 +453,22 @@ html *::-webkit-scrollbar-thumb {
 	box-shadow: 0 0 20px 20px #fff;
 }
 /**Фреймворк главной страницы */
-.container {
+/* .container {
 	position: absolute;
-	left: 0; right: 0;
-	top: 0; bottom: 0;
+	left: 0; top: 0;
+	right: 0; bottom: 0;
 	width: 100%;
 	height: 100%;
+} */
+.container {
+	position: relative;
+	left: 0; top: 0;
+	width: 100%;
+	height: 100%;
+	/* height: 100vh; */
+	display: flex;
+	/* flex-flow: column wrap; */
+	flex-flow: column;
 }
 /* (!).banner - баннер */
 .banner {order: 1;}
@@ -572,6 +582,9 @@ img#social_off {border-color: transparent;}
 	-ms-user-select: none;
 }
 /* (!).toolbar, .toolbar-banner */
+/* .nav-pane,
+.topic-box, */
+.toolbar { margin: 4px; }
 .toolbar-banner,
 .toolbar {
 	position: relative;
@@ -579,7 +592,8 @@ img#social_off {border-color: transparent;}
 	width: auto;
 	height: auto;
 	display: flex;
-	flex: 0 1 100%;
+	/* flex: 0 1 100%; */
+	flex: 0 1 auto;
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: space-around;
@@ -598,6 +612,7 @@ img#social_off {border-color: transparent;}
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
+	/* align-self: stretch; */ /* растягивание по выс.родителя */
 }
 .toolbar-slider {
 	justify-content: center;
@@ -617,10 +632,12 @@ img#social_off {border-color: transparent;}
 	position: relative;
 	left: 0; top: 0;
 	width: auto;
-	height: 100%;
+	/* height: 100%; */
+	height: auto;
 	display: flex;
 	flex: 0 1 auto;
 	flex-flow: column nowrap;
+	align-self: stretch; /* растягивание при выс.height: auto; */
 	align-items: center;
 }
 .toolbar_btn_slider-prev {
@@ -635,29 +652,20 @@ img#social_off {border-color: transparent;}
 	justify-content: flex-end;
 	border-radius: 0 5px 5px 0;
 }
-
 .toolbar-btn-slider span {
 	position: relative;
 	left: 0; top: 0;
 	width: 20px;
 	height: auto;
-	/* line-height: 2; */
 	display: flex;
 	flex: 1 1 100%;
-	flex-flow: column nowrap;
+	flex-flow: column;
 	align-items: center;
+	align-self: stretch; /* растягивание по выс.родителя */
 	justify-content: center;
 	text-align: center;
 }
 /**Фон, границы и тень панели инструментов, навигации, баннера и других компонентов */
-.banner,
-.nav-pane,
-.nav-box,
-/* .tabs-menu, */ .tabs-list,
-.topic-content,
-.toolbar-banner,
-.toolbar {border-color: #000000;}
-/* 'Background */
 .nav-pane,
 .toolbar-banner,
 .toolbar {
@@ -680,32 +688,35 @@ img#social_off {border-color: transparent;}
 	background: -ms-linear-gradient(top, #dedede 3%, #3f3f3f 30%);
 	*/
 }
-.nav-pane,
-.topic-content,
+.nav-pane {
+	border: 3px double;
+	background-origin: border-box; /* для border: double */
+}
+.topic-pane .pane-item {
+	border: 1px solid #fff;
+	border-top-color: transparent;
+}
 .toolbar-banner,
-.toolbar { margin: 4px; }
-/* ''Border */
-.toolbar-banner,
-.toolbar {border-width: 1px;}
+.toolbar {border: 1px solid;}
+.topic-box, .keywords-box, .search-box,
+.topic-pane,
+.pane-item,
 .nav-pane,
-.nav-box,
-.topic-content,
 .toolbar-banner,
 .toolbar {
-	border: 1px solid;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 }
 /* ''Shadows - тень */
+/* .topic-pane,
 .nav-pane,
-.topic-content,
 .toolbar-banner,
 .toolbar {
 	box-shadow: 2px 2px 2px #3f3f3f;
 	-webkit-box-shadow: 2px 2px 2px #3f3f3f;
 	-moz-box-shadow: 2px 2px 2px #3f3f3f;
-}
+} */
 
 .toolbar-banner {
 	margin: 0 4px 4px 4px;
@@ -722,6 +733,7 @@ img#social_off {border-color: transparent;}
 	display: flex;
 	flex-flow: row nowrap; /* св-ва flex-direction и flex-wrap вместе определяют основные и поперечные оси flex-контейнера. Применяется к родительскому элементу flex-контейнера. */
 	align-items: center;
+	/* align-self: stretch; */ /* растягивание по выс.родителя */
 }
 .toolbar-slider-track,
 .navpane-toolbar {margin: 0 2px;}
@@ -900,6 +912,7 @@ img#social_off {border-color: transparent;}
 	align-items: flex-start;
 }
 /* (!) checkboxes */
+.topic-controls [for="idNavPaneToggle"],
 [for="idBannerShowHide"] {display: contents;}
 #idBannerShowHide,
 #idNavPaneToggle {display: none;} /* - скрываем "квадратик" checkbox */
@@ -1323,8 +1336,12 @@ img#social_off {border-color: transparent;}
 .btn_icon-off,
 .btn-icon {border: 1px solid transparent;}
 /* .nav-pane:target .nav-box, */ /* :active/:target в firefox не срабатывает */
-.nav-pane:active .nav-box, /* only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
-.nav-pane:hover .nav-box,
+
+/* .nav-pane:active .nav-box, */ /* only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
+/* .nav-pane:hover .nav-box, */
+
+.nav-pane:active .pane-item,
+.nav-pane:hover .pane-item,
 .nav-pane:hover,
 .toolbar-banner:hover,
 .toolbar:hover,
@@ -1538,31 +1555,63 @@ x не используется
 .btn_text-on {color: #dedede; /* color: #f1f1f1; */}
 .btn_text-off {color: #a1a1a1;}
 /*
+(!) фреймворк пан.нав.и топиков
+*/
+.container-item {
+	order: 3;
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	height: auto;
+	margin: 0 4px 4px 4px;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+}
+.var-mobile {flex-flow: column;}
+.var-mobile .nav-pane {
+	width: auto;
+	height: 30vh;
+	margin: 0;
+}
+.nav-pane.maxsize {height: 100%;}
+.nav-pane.minsize {height: auto;} /* для моб.вар. */
+.var-mobile .splitter-bottom {display: block;}
+/*
 (!).nav-pane - панель навигации
 */
 .nav-pane {
-	position: absolute;
-	left: 0; bottom: 0;
-	width: 294px;
-	padding: 2px;
-	/* min-width: 14vw; */ /* - вьюпорт, изменение ширины элемента относительно ширины видимой области браузера */
+	box-sizing: border-box;
+	width: 25vw;
+	margin-right: 0;
+	/* padding: 2px; */
+	margin-right: 4px;
+	/* flex: 0 1 300px; */
+	/* flex: 0 1 25vw; */
+	flex: 0 1 auto;
+}
+.topic-pane {
+	width: auto;
+	flex: 1 1 auto;
 }
 .topic-pane,
 .nav-pane {
-	top: 50px;
+	position: relative;
+	left: 0; top: 0;
+	height: auto;
 	display: flex;
+	flex-flow: column wrap;
+	/* flex-flow: column nowrap; */
 }
-.topicpane-banner,
-.navpane-banner {top: 166px;} /* [nav-pane, topic-pane] top: toolbar height: 100px + banner height: 120px */
 /*
 (!).splitter-right - боковой разделитель между боковой панелью навигации и текстовым топиком
 */
 .splitter-right {
 	position: absolute;
-	right: 0; top: 0; bottom: 0px;
-	width: 4px;
-	padding: 3px; /* (i) для возможности предотвратить потерю захвата splitterRight */
-	/* z-index: 2; */
+	top: 0;
+	right: -3px; bottom: 0px;
+	width: 6px;
+	padding: 3px; /* (i) для возможности предотвратить потерю захвата splitterBottom */
 	cursor: move; /* (i) Указывает на то, что что-то должно быть перемещено - резервный вариант, если курсор захвата не поддерживается, как в IE */
 	cursor: col-resize;
 }
@@ -1570,20 +1619,16 @@ x не используется
 (!).splitter-bottom - нижний разделитель между боковой панелью навигации и текстовым топиком
 */
 .splitter-bottom {
-	position: absolute;
-	left: 0; right: 0;
-	/* bottom: -6px; */
-	bottom: 0;
-	height: 4px;
-	padding: 3px; /* (i) для возможности предотвратить потерю захвата splitterBottom */
-	/* padding: 6px 3px 0px 3px; */ /* (i) для возможности предотвратить потерю захвата splitterBottom */
-	/* z-index: 2; */
 	cursor: move; /* (i) Указывает на то, что что-то должно быть перемещено - резервный вариант, если курсор захвата не поддерживается, как в IE */
 	cursor: row-resize;
 	cursor: grab;
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
-	display: none;
+}
+.cursor-grabbing {
+	cursor: grabbing;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
 }
 /* (i) для сэнсорных экранов предотвращаем запуск и перехват браузером встроенного события pointercancel для процесса перетаскивания drag’n’drop для изображений, а для событий мыши делаем через js */
 .splitter-right,
@@ -1591,17 +1636,16 @@ x не используется
 	touch-action: none;
 	-ms-touch-action: none;
 }
-.icon-grabing {
-	cursor: grabbing;
-	cursor: -webkit-grabbing;
-	cursor: -moz-grabbing;
-}
-
-.nav-box {
+.splitter-bottom {
 	position: absolute;
-	left: 4px; right: 4px;
-	top: 4px; bottom: 4px;
-	/**др.вариант, менее контрастный, см.его так же в navigation.css
+	left: 0; right: 0;
+	bottom: -3px;
+	height: 6px;
+	padding: 3px; /* (i) для возможности предотвратить потерю захвата splitterBottom */
+	display: none;
+}
+/**др.вариант, менее контрастный, см.его так же в navigation.css */
+/* .nav-pane {
 	background-color: #5e5e5e;
 	background: linear-gradient(#666666, #222222);
 	background: -webkit-linear-gradient(top, #666666, #222222);
@@ -1609,69 +1653,62 @@ x не используется
 	background: -o-linear-gradient(top,rgb(102, 102, 102),rgb(34, 34, 34));
 	background: -ms-linear-gradient(top, #666666, #222222);
 	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222); */
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
+} */
+.nav-pane .pane-item {
+	border: 0;
+	border-radius: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
 }
-
-.scroll-pane {
+.pane-item {
+	box-sizing: border-box;
 	position: absolute;
 	left: 0; top: 0;
 	right: 0; bottom: 0;
 	width: 100%;
 	height: 100%;
-	border: 0;
-	border-radius: 5px;
-	/* scroll-behavior: smooth; */ /* плавная прокрутка */
 }
 /* *Панель Тема (топиков)
-(!).topic-pane */
-.topic-pane {
-	position: absolute;
-	left: 304px; right: 0px;
-	bottom: 0px;
-	margin-top: 4px;
-}
-/* (!).topic-controls - компоненты вкладок */
-.tabs-window,
-.topic-controls {height: 32px;}
+(!).topic-pane
+(!).topic-controls - компоненты вкладок
+*/
 .topic-controls {
-	position: relative;
-	/* left: 8px; */
-	left: 0; top: 0;
+	/* position: relative;
+	left: 0; top: 4px; */ /* при исп.var-mobile не дает.topic-pane схлопнуться до 0 по ширине и переноситься раньше времени */
+	position: absolute;
+	left: 4px; right: 4px;
+	top: 4px;
 	width: auto;
-	/* margin: 0 8px; */
-	margin-left: 8px;
+	height: auto;
 	display: flex;
 	flex: 0 1 auto;
 	flex-flow: row nowrap;
+	align-items: flex-end;
 	justify-content: flex-start;
 	background-color: transparent;
 }
 /* (!).nav-handle - кнопка скрыть/показать панель навигации */
-.nav-handle {
-	position: relative;
-	left: 0; top: 10px;
-	width: 20px;
-	height: 18px;
-	display: flex;
-	flex-flow: row nowrap;
-	flex: 0 0 auto;
-	align-items: center;
-	justify-content: center;
-}
-.tab_slider-track,
-.tabs-controls,
-.nav-handle {z-index: 1;}
-
-.tabs-controls:hover,
-.nav-handle:hover {
-	/* top: 12px; */
-	margin-top: 2px;
-}
-/* .tabs, */
+.nav-handle {cursor: pointer;}
 .tabs:not(:last-child), /* .tab_slider-track li:not(:last-child), */
 .tabs-controls,
 .nav-handle {margin-right: 4px;}
-
+.nav-handle:hover {height: 26px;}
+.nav-handle {
+	top: -3px;
+	height: 16px;
+}
+.tabs-controls,
+.nav-handle {
+	position: relative;
+	left: 0;
+	width: auto;
+	display: flex;
+	flex-flow: row nowrap;
+	flex: 0 1 auto;
+	align-items: center;
+	justify-content: center;
+}
 .tabs,
 .tabs-controls,
 .nav-handle {
@@ -1712,12 +1749,11 @@ x не используется
 	flex: 0 0 16px;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
 }
-/* (!) трансформация иконки на кнопке в панеле топика
-TODO: *переделать в псевдо не получится, см.спецификацию:
+/* (!) трансформация кнопки в панеле топика
+TODO: *переделать img в псевдо не получится, см.спецификацию:
 'Псевдоэлементы, созданные с помощью ::before и ::after содержатся в блоке форматирования элемента, и поэтому не применяются к замещаемым элементам, таким как <img> или <br> */
-#idNavPaneToggle:checked~.nav-handle-icon {
+#idNavPaneToggle:checked~.nav-handle {
 	transform: rotate(0deg) scale(1, 1);
 	-webkit-transform: rotate(0deg) scale(1, 1);
 	-moz-transform: rotate(0deg) scale(1, 1);
@@ -1725,7 +1761,7 @@ TODO: *переделать в псевдо не получится, см.спе
 	-ms-transform: rotate(0deg) scale(1, 1);
 	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
-.nav-handle-icon {
+#idNavPaneToggle~.nav-handle {
 	transform: rotate(0deg) scale(-1, 1);
 	-webkit-transform: rotate(0deg) scale(-1, 1);
 	-moz-transform: rotate(0deg) scale(-1, 1);
@@ -1733,22 +1769,41 @@ TODO: *переделать в псевдо не получится, см.спе
 	-ms-transform: rotate(0deg) scale(-1, 1);
 	/* will-change: transform; */ /* (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента */
 }
+.var-mobile #idNavPaneToggle:checked~.nav-handle .nav-handle-icon {
+	transform: rotate(90deg) scale(1, 1);
+	-webkit-transform: rotate(90deg) scale(1, 1);
+	-moz-transform: rotate(90deg) scale(1, 1);
+	-o-transform: rotate(90deg) scale(1, 1);
+	-ms-transform: rotate(90deg) scale(1, 1);
+	/* will-change: transform; */
+}
+.var-mobile #idNavPaneToggle~.nav-handle .nav-handle-icon {
+	transform: rotate(90deg) scale(-1, 1);
+	-webkit-transform: rotate(90deg) scale(-1, 1);
+	-moz-transform: rotate(90deg) scale(-1, 1);
+	-o-transform: rotate(90deg) scale(-1, 1);
+	-ms-transform: rotate(90deg) scale(-1, 1);
+	/* will-change: transform; */
+}
 
 .tabs-controls {
-	position: relative;
-	left: 0; top: 10px;
-	width: auto;
-	height: 19px;
-	display: flex;
-	flex-flow: row nowrap;
-	flex: 0 0 auto;
-	align-items: center;
-	justify-content: center;
 	font-family: Tahoma, Verdana, Arial, sans-serif, Helvetica;
 	font-size: 11px;
 	font-weight: normal;
 }
+.tab_slider-track,
+.tabs-controls {z-index: 1;}
+.tabs-controls {
+	top: -2px;
+	width: auto;
+}
 
+.tabs-btns,
+.tabs-menu {
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
 .tabs-btns,
 .tabs-menu {
 	position: relative;
@@ -1762,9 +1817,6 @@ TODO: *переделать в псевдо не получится, см.спе
 	flex: 0 0 auto;
 	align-items: center;
 	justify-content: center;
-	border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
 }
 .tabs-btns,
 .tabs-menu {border: 1px solid transparent;}
@@ -1775,6 +1827,10 @@ TODO: *переделать в псевдо не получится, см.спе
 }
 /* (!).tabs-menu-box */
 .tabs-menu-box {
+	font-family: Verdana, Arial, sans-serif, Helvetica;
+	font-size: 11px;
+}
+.tabs-menu-box {
 	position: absolute;
 	left: -50px; top: 26px;
 	width: max-content;
@@ -1782,8 +1838,6 @@ TODO: *переделать в псевдо не получится, см.спе
 	min-width: fit-content;
 	height: auto;
 	padding: 4px;
-	font-family: Verdana, Arial, sans-serif, Helvetica;
-	font-size: 11px;
 }
 .tabs-menu-box {
 	background-color: rgba(63,63,63,.9); /* #3f3f3f; */
@@ -1824,6 +1878,7 @@ TODO: *переделать в псевдо не получится, см.спе
 	-o-transition: all ease 1s;
 	/* will-change: transform, transition; */
 }
+.tabs-btns:hover~.tabs-menu-box,
 .tabs-menu-popup {
 	transform: translate(0, 0) scale(1);
 	-webkit-transform: translate(0, 0) scale(1);
@@ -1879,56 +1934,92 @@ TODO: *переделать в псевдо не получится, см.спе
 	font-family: 'Lucida Grande', 'Trebuchet MS', Arial, Verdana, sans-serif;
 	text-indent: 0;
 }
-.tabs-window {margin-right: 8px;}
+.tabs-window {height: 30px;}
 .tab_slider-track,
-.tab-slider,
 .tabs-window {
 	position: relative;
 	left: 0; top: 0;
 	width: auto;
+}
+.tab_slider-track,
+.tab-slider,
+.tabs-window {
 	display: flex;
 	flex: 1 1 auto;
 	flex-flow: row nowrap;
+	align-items: flex-end;
 }
 .tab_slider-track,
 .tab-slider {height: auto;}
+.tab-slider {
+	position: absolute; /* скрывает прокручиваемую ленту вкладок */
+	left: 0; top: 0;
+	right: 0; bottom: 0;
+	width: auto;
+}
 /**TODO: сделать тень по бокам */
 /* .tab-slider {
 	box-shadow: 35px 0 30px -20px #000 inset,
 				-35px 0 30px -20px #000 inset;
 } */
-/*
-(!).tab_slider-track - вкладки
-*/
-/* иначе не будет прокрутки для моб.версий и скрытый контент вылезает за пределы видимости окна что так же влияет на смещение всего в лево, НО если.tabs-window располжить внутри.topic-controls, тогда overflow не дает вывести список меню idTabsList поверх себя */
-.tabs-window,
+
+/* .tabs-window, *//* (i) при position:relative иначе не будет прокрутки для моб.версий и скрытый контент вылезает за пределы видимости окна что так же влияет на смещение всего в лево, НО если.tabs-window располжить внутри.topic-controls, тогда overflow не дает вывести список меню idTabsList поверх себя */
 .tab-slider {overflow: hidden hidden;}
 .tab_slider-track {
-	justify-content: flex-start;
 	overflow: auto hidden;
 	scrollbar-width: none;
 }
 .tab_slider-track {list-style:none;}
-/**Одиночная вкладка */
-.tabs span,
-.tabs a,
-.tabs {
-	position: relative;
-	left: 0; top: 0;
-	width: auto;
+.tab_slider-track {
+	height: 100%;
+	justify-content: flex-start;
 }
+/**Одиночная вкладка */
 .tabs {
-	height: 28px; /* с учетом.tabs span {line-height: 28px;} */
 	list-style-image: none;
 }
-.tab-current,
-.tabs:hover {
-	/* margin-top: 10px; */
-	height: auto;
-	margin-top: auto;
+.tabs {
+	top: -3px;
+	/* margin-top: 2px; */ /* (i) не для transition */
+	height: 26px; /* для transition */
+	/* height: 100%; (i) не прокатит из-за.topic-controls top: 3px; */
 }
-
-.nav-handle,
+.tabs:hover,
+.tabs-controls:hover,
+.tab-current {top: 0;}
+/* .nav-handle, */
+.tabs-controls,
+.tab-current, /* (!).tabs.tab-current - для повышения приоритета при переносе в др.место */
+.tabs:hover {height: 60%;}
+/* (!).tabs.tab-current:hover - для повышения приоритета при переносе в др.место */
+.tab-current:hover {height: 23px;}
+/* (i) исключит эфект потери наведения курсора над эл. */
+.tabs:hover:before {
+	content: "";
+	position: absolute;
+	left: 0; top: -100%;
+	right: 0; bottom: 0;
+	background: transparent;
+}
+.tabs a,
+.tabs {
+	/* position: relative;
+	left: 0; top: 0;
+	width: auto; */
+	position: relative;
+	left: 0;
+	width: auto;
+	display: flex;
+	flex: 0 1 auto;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: flex-start;
+}
+/* .tabs { */
+	/* height: 28px; */ /* с учетом.tabs span {line-height: 28px;} */
+	/* height: auto; */
+/* } */
+#idNavPaneToggle~.nav-handle,
 .tabs {
 	background-color: #6e6e6e;
 	background: linear-gradient(#f1f1f1 3%, #888888 20%);
@@ -1938,7 +2029,7 @@ TODO: *переделать в псевдо не получится, см.спе
 	background: -ms-linear-gradient(top, #f1f1f1 3%, #888888 20%);
 }
 /**Текущая вкладка */
-.nav-handle:hover,
+#idNavPaneToggle:checked~.nav-handle,
 .tabs-controls,
 .tab-current {
 	background-color: #3f3f3f;
@@ -1948,35 +2039,29 @@ TODO: *переделать в псевдо не получится, см.спе
 	background: -o-linear-gradient(top,rgb(255,255,255) 3%,rgb(63,63,63) 20%);
 	background: -ms-linear-gradient(top, #f1f1f1 3%, #3f3f3f 20%);
 }
-
-.nav-handle,
+/* тень */
+/* .nav-handle,
 .tabs-controls,
 .tab-current,
 .tabs {
 	box-shadow: 2px -1px 4px -1px #3f3f3f;
 	-webkit-box-shadow: 2px -1px 4px -1px #3f3f3f;
 	-moz-box-shadow: 2px -1px 4px -1px #3f3f3f;
-}
+} */
 /**плавное появление при наведении курсора */
 /* (?)(!).tabs span и.tabs a плавают при наведении */
 .nav-handle,
 .tabs-controls,
-.tab-current,
-.tabs span:hover,
-.tabs span,
-.tabs a:hover,
-.tabs a,
-.tabs:hover,
 .tabs {
 	transition: .3s ease;
-	-webkit-transition: .3s ease; /* Chrome, Safari, iOS */
-	-moz-transition: .3s ease; /* Firefox */
-	-o-transition: .3s ease; /* Opera */
+	-webkit-transition: all .1s .1s ease, top .4s 0s ease, height .4s 0s ease; /* Chrome, Safari, iOS */
+	-moz-transition: all .1s .1s ease, top .4s 0s ease, height .4s 0s ease; /* Firefox */
+	-o-transition: all .1s .1s ease, top .4s 0s ease, height .4s 0s ease; /* Opera */
 }
+.tabs span,
+.tabs a {height: auto;}
 .tabs a {
-	height: auto;
 	padding: 0px 10px;
-	display: block;
 	font-size: 13px;
 	text-align: center;
 	text-decoration: none;
@@ -1988,11 +2073,11 @@ TODO: *переделать в псевдо не получится, см.спе
 .tabs:hover a {
 	color: #fff;
 }
-.tabs span {
+/* .tabs span {
 	height: auto;
 	display: block;
-	line-height: 28px; /* с учетом.tabs {height: 28px;} */
-}
+	line-height: 28px; */ /* с учетом.tabs {height: 28px;} */
+/* } */
 /* (i) перенос текста, пробелы, дефисы, тире */
 .tabs span {
 	white-space: nowrap; /* текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
@@ -2005,7 +2090,8 @@ TODO: *переделать в псевдо не получится, см.спе
 	-ms-hyphens: none;
 	text-wrap: nowrap; /* (!) new - экспериментальный */
 	/* truncate - усечение длинного текста */
-	max-width: 120px;
+	/* max-width: 120px; */
+	max-width: 10vw;
 	text-overflow: ellipsis;
 	-o-text-overflow: ellipsis;
 	-ms-text-overflow: ellipsis;
@@ -2019,10 +2105,10 @@ TODO: *переделать в псевдо не получится, см.спе
 /* img.close-tab, */
 .tab-current img { padding: 0 0 5px 5px; } /**for event click для версий в моб.вар. */
 /**Текущая вкладка */
-.tabs:hover span,
+/* .tabs:hover span,
 .tab-current:hover span,
 .tab-current span,
-.tab-current {line-height: 21px;}
+.tab-current {line-height: 21px;} */
 .tab-current span,
 .tab-current a {
 	color: #737373;
@@ -2041,30 +2127,31 @@ TODO: *переделать в псевдо не получится, см.спе
 	visibility: hidden;
 }
 /*
-(!).topic-content - содержимое контейнеров
+(!).topic-box - содержимое контейнеров топиков
 */
-.topic-content {
-	position: absolute;
-	left: 0; right: 0;
-	top: 25px; bottom: 0;
-	background-color: #fff;
-	border-color: #fff;
-}
-/* (i).topic-box - имя класса так же присутствует в стилях topic.css, но правила разные */
 .new-tab-box, /* (?) предположительно класс создается кодом js */
 .search-box,
 .keywords-box,
+/* (i).topic-box - имя класса так же присутствует в стилях topic.css, но правила разные */
 .topic-box {
 	position: absolute;
 	left: 0; right: 0;
-	top: 0; bottom: 0;
+	top: 30px; bottom: 0;
+	/* position: relative;
+	left: 0; top: 0; */ /* при исп.var-mobile не дает.topic-pane схлопнуться до 0 по ширине и переноситься раньше времени */
+	width: auto;
+	height: auto;
+	display: flex;
+	flex: 1 1 auto;
+	/* flex: 1 1 100%; */
+	flex-flow: row nowrap;
 }
-/* (?) не понятно где и для чего */
-.interface {
+/* (?) не понятно где и для чего предназначалось */
+/* .interface {
 	font-family: Verdana, Arial, sans-serif, Helvetica;
 	font-size: 8pt;
 	font-weight: bold;
-}
+} */
 /* (!) МЕДИА ЗАПРОСЫ */
 /*
 'Portrait tablets and medium desktops
@@ -2081,14 +2168,14 @@ TODO: *переделать в псевдо не получится, см.спе
 /**диапазон от 768px до 991px */
 /* @media (min-width: 768px) and (max-width: 991px) {} */
 /**диапазон < 768px по ширине */
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
 	.tabs span {max-width: 10vw;}
-}
+} */
 /**диапазон < 660px по ширине */
 @media screen and (max-width: 660px) {
 	.btn_text-off, .btn_text-on {width: min-content;} /* только так.toolbar_btn-right, .toolbar_btn-center, .toolbar_btn-left будут строго внутри себя не расходиться между собой по разным сторонам */
-	.topic-pane, .nav-pane {top: 60px;}
-	.topicpane-banner, .navpane-banner {top: 176px;}
+	/* .topic-pane, .nav-pane {top: 60px;} */
+	/* .topicpane-banner, .navpane-banner {top: 176px;} */
 }
 /*
 'Landscape phones and portrait tablets
@@ -2107,46 +2194,30 @@ TODO: *переделать в псевдо не получится, см.спе
 		transition: max-width .9s ease;
 	}
 
-	.container {
-		display: flex;
-		flex-flow: column nowrap;
-	}
-
 	.toolbar-banner,
 	.toolbar,
 	.banner {z-index: 1;}
 	/* 'убираем тень */
-	.nav-pane,
-	.topic-content,
+	/* .nav-pane,
+	.topic-pane,
 	.toolbar-banner,
 	.toolbar {
 		box-shadow: none;
 		-webkit-box-shadow: none;
 		-moz-box-shadow: 0 0 0;
-	} /* 'убираем тень */
-	.toolbar-banner,
-	.toolbar {
-		width: auto;
-		flex: 0 0 auto;
-	}
-	.topic-pane,
+	} */ /* 'убираем тень */
+
+	.container-item {flex-flow: column;}
 	.nav-pane {
-		position: relative;
-		top: 0;
 		width: auto;
-		height: auto;
-		margin-top: 0;
-		display: flex; /* создает переполнение и вылезает за пределы видимости */
-		flex: 1 1 auto;
-		flex-wrap: nowrap;
-		z-index: 0;
+		height: 30vh;
+		margin: 0;
 	}
-	.topic-pane {left: 0;}
 
 	.splitter-right {display: none;}
 	.splitter-bottom {display: block;}
 	/*(!) трансформация иконки на кнопке в панеле топика */
-	#idNavPaneToggle:checked~.nav-handle-icon {
+	#idNavPaneToggle:checked~.nav-handle .nav-handle-icon {
 		transform: rotate(90deg) scale(1, 1);
 		-webkit-transform: rotate(90deg) scale(1, 1);
 		-moz-transform: rotate(90deg) scale(1, 1);
@@ -2157,7 +2228,7 @@ TODO: *переделать в псевдо не получится, см.спе
 		*/
 		/* will-change: transform; */
 	}
-	.nav-handle-icon {
+	#idNavPaneToggle~.nav-handle .nav-handle-icon {
 		transform: rotate(90deg) scale(-1, 1);
 		-webkit-transform: rotate(90deg) scale(-1, 1);
 		-moz-transform: rotate(90deg) scale(-1, 1);

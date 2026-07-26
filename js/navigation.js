@@ -31,55 +31,17 @@ $(document).ready(function () { // - jq
 				} else if (event.data.value === "handlerPoPuPs") {
 					// *скрываем всплывающие эл.в текущем окне
 					handlerPoPuPs(event); // обработчик вплывающих эл.
+				} else if (event.data === "innerHeightTop") {
+					let msg = {value: event.data};
+					const tocbody = document.querySelector('.toc-body');
+					msg.innerHeightTop = tocbody.clientHeight - parseInt(getComputedStyle(tocbody, null).paddingTop, 10) - parseInt(getComputedStyle(tocbody, null).paddingBottom, 10);
+					event.source.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 				}
 			}
 		}, false); // false - фаза "всплытие"
 		// (!) click
 		document.addEventListener('click', function (e) {
 			handlerPoPuPs(e); // обработчик вплывающих эл.
-			// x -на удаление
-			// if (window.name === "ifrmnavigation") { // (window === self || self !== top && window.name !== "") // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-			// 	// *скрываем всплывающие эл.toc-menu/idPermalinkBox/idTabsMenuBox
-			// 	if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-			// 		let msg = {
-			// 			value: "setShowOrHide",
-			// 			id: ["idPermalinkBox", "idTabsMenuBox", "idPageMenuToc"]
-			// 		};
-			// 		window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-			// 	} else {
-			// 		let elems = [
-			// 			window.top.document.getElementById('idPermalinkBox'),
-			// 			window.top.document.getElementById('idTabsMenuBox'),
-			// 			window.top.getFrame().contentDocument.getElementById('idPageMenuToc'),
-			// 		];
-			// 		elems.forEach(item => {
-			// 			if (item !== null && item === Object(item)) {
-			// 				if (item.id === "idPermalinkBox") { // всплывающий(-е) эл.в гл.окне
-			// 					window.top.setClearPermalink(); // очистить окно Постоянная ссылка
-			// 					setShowOrHide(item, "", "", "", "permalink-popup");
-			// 					item.classList.remove('permalink-popup');
-			// 					window.top.setEventHandlersPermalink(item, 'remove'); // создание/удаление обработчиков событий для узла permalink
-			// 				} else if (item.id === "idTabsMenuBox") { // всплывающий(-е) эл.в гл.окне
-			// 					if (item.classList.contains('tabs-menu-popup')) {
-			// 						// setShowOrHide(item, "", "", "", "tabs-menu-popup");
-			// 						item.classList.remove('tabs-menu-popup');
-			// 					}
-			// 				} else if (item.id === "idPageMenuToc") { // всплывающий(-е) эл.в топике
-			// 					if (item.classList.contains('toc-menu-popup')) {
-			// 						// setShowOrHide(item, "", "", "", "toc-menu-popup");
-			//						item.classList.remove('toc-menu-popup');
-			// 						let icon = item.parentElement.querySelector('.toc-btn_icon');
-			// 						if (icon !== null && icon === Object(icon)) {
-			// 							if (icon.style.order === "2") {
-			// 								icon.removeAttribute('style');
-			// 							}
-			// 						}
-			// 					}
-			// 				}
-			// 			}
-			// 		});
-			// 	}
-			// }
 			// '
 			if (e.target.tagName === "INPUT" && e.target.type === "checkbox") {
 				if (e.target.id === "idTreeView") { // переключатель режимов древовидного списка
@@ -127,37 +89,6 @@ $(document).ready(function () { // - jq
 					isCollapse = true;
 					if (window === top && window.name === "") {
 						goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // перейти на страницу
-					} else {
-						if (window.name === "ifrmnavigation") { // (window === self || self !== top && window.name !== "") // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
-							if (location.origin !== "file://" && location.origin !== "null") { // (i) в Firefox origin = "null"
-								// *проверяем размер окна браузера для определения запуска анимации скрытия пан.нав., если она занимает весь экран
-								if (window.top.document.documentElement.clientWidth < 501) {
-									window.top.setHideNavPane(); // - скрыть пан.нав.
-								}
-							}
-
-							// x -на удаление
-							// if (location.origin === "file://" || location.origin === "null") { // (i) в Firefox origin = "null"
-							// 	let msg = {
-							// 		value: "setHistoryState",
-							// 		href: e.target.parentElement.getAttribute('href'),
-							// 		winName: window.name
-							// 	};
-							// 	window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-							// } else {
-							// 	// goToPage(e.target.parentElement, e.target.parentElement.getAttribute('href')); // перейти на страницу
-							// 	// (i) только, чтобы при загрузке в топике сработало условие вторичной загрузки
-							// 	window.top.setHistoryState("push", e.target.parentElement.getAttribute('href')); // сохранение текущей ссылки в истории браузера для возможности дальнейшей навигации - возврата на предыдущую стр.
-							// 	// window.top.getFrame().src = e.target.parentElement.getAttribute('href'); // 'изменит src iframe
-							// 	// *проверяем размер окна браузера для определения запуска анимации скрытия пан.нав., если она занимает весь экран
-							// 	if (window.top.document.documentElement.clientWidth < 501) {
-							// 		window.top.setHideNavPane(); // - скрыть пан.нав.
-							// 	}
-							// } // x -
-						} else {
-							console.error(`(!) Косяк - не удалось установить имя текущего окна:\n e: ${e}, e.type: ${e.type}\n e.target: ${e.target}\n window.«${window.name}», location.origin: ${location.origin}`);
-							alert(`(!) Косяк - не удалось установить имя текущего окна, см.консоль.`);
-						}
 					}
 				}
 			}

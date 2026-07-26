@@ -197,93 +197,95 @@
 				</div>
 			</div>
 		</div>
-		<!-- (!) панель навигации -->
-		<div id="idNavPane" class="nav-pane">
-			<div id="idNavBox" class="nav-box">
-				<iframe id="ifrmnavigation" name="ifrmnavigation" class="scroll-pane" src="navigation.html" title="Панель Навигация"></iframe>
+		<div class="container-item">
+			<!-- (!) панель навигации -->
+			<div id="idNavPane" class="nav-pane">
+				<!-- <div id="idNavBox" class="nav-box"> --> <!-- на удаление -->
+					<iframe id="ifrmnavigation" name="ifrmnavigation" class="pane-item" src="navigation.html" title="Панель Навигация"></iframe>
+				<!-- </div> -->
+				<!-- боковой разделитель -->
+				<div id="idSplitterRight" class="splitter-right" title="Разширить/Сузить панель навигации"></div>
+				<!-- нижний разделитель -->
+				<div id="idSplitterBottom" class="splitter-bottom" title="Опустить/Поднять панель навигации"></div>
 			</div>
-			<!-- боковой разделитель -->
-			<div id="idSplitterRight" class="splitter-right" title="Разширить/Сузить панель навигации"></div>
-			<!-- нижний разделитель -->
-			<div id="idSplitterBottom" class="splitter-bottom" title="Опустить/Поднять панель навигации"></div>
-		</div>
-		<!-- (!) панель топиков -->
-		<div id="idTopicPane" class="topic-pane">
-			<div id="idTopicControls" class="topic-controls">
-				<!-- (!) checkbox Скрыть/Покать пан.нав. -->
-				<div id="idNavHandle" class="nav-handle">
+			<!-- (!) панель топиков -->
+			<div id="idTopicPane" class="topic-pane">
+				<div id="idTopicControls" class="topic-controls">
+					<!-- (!) checkbox Скрыть/Покать пан.нав. -->
 					<label for="idNavPaneToggle">
 						<input type="checkbox" name="NavPaneToggle" id="idNavPaneToggle" checked="checked">
-						<img id="idNavHandleIcon" class="nav-handle-icon" src="icon/navpane-handle.png" title="Скрыть/Показать панель навигации">
+						<div id="idNavHandle" class="nav-handle">
+							<img id="idNavHandleIcon" class="nav-handle-icon" src="icon/navpane-handle.png" title="Скрыть/Показать панель навигации">
+						</div>
 					</label>
-				</div>
-				<!-- (!) контролы - кнопки переключения между вкладками -->
-				<div id="idTabsControls" class="tabs-controls">
-					<img id="idTabFirst" class="tabs-btns" src="icon/tab-first.png" title="Первая вкладка">
-					<img id="idTabPrevious" class="tabs-btns" src="icon/tab-previous.png" title="Предыдущая вкладка">
-					<div id="idTabsMenu" class="tabs-menu">
-						<img id="idToggleMenuTab" class="tabs-btns" src="icon/tabs-menu.png" title="Меню вкладок">
-						<div id="idTabsMenuBox" class="tabs-menu-box">
-							<ul id="idTabsList" class="tabs-list">
-								<li listnum="0">
-									<a id="idTabList0" href="#">Актуальная Тема:&ensp;</a>
+					<!-- (!) контролы - кнопки переключения между вкладками -->
+					<div id="idTabsControls" class="tabs-controls">
+						<img id="idTabFirst" class="tabs-btns" src="icon/tab-first.png" title="Первая вкладка">
+						<img id="idTabPrevious" class="tabs-btns" src="icon/tab-previous.png" title="Предыдущая вкладка">
+						<div id="idTabsMenu" class="tabs-menu">
+							<img id="idToggleMenuTab" class="tabs-btns" src="icon/tabs-menu.png" title="Меню вкладок">
+							<div id="idTabsMenuBox" class="tabs-menu-box">
+								<ul id="idTabsList" class="tabs-list">
+									<li listnum="0">
+										<a id="idTabList0" href="#">Актуальная Тема:&ensp;</a>
+									</li>
+									<li listnum="1">
+										<a id="idTabList1" href="#">Ключевые слова</a>
+									</li>
+									<li listnum="2">
+										<a id="idTabList2" href="#">Поиск</a>
+									</li>
+									<hr style="display: none;">
+								</ul>
+							</div>
+						</div>
+						<img id="idTabNext" class="tabs-btns" src="icon/tab-next.png" title="Следующая вкладка">
+						<img id="idTabLast" class="tabs-btns" src="icon/tab-last.png" title="Последняя вкладка">
+					</div>
+					<!-- (!) вкладки окон топиков -->
+					<div id="idTabsWindow" class="tabs-window">
+						<div id="idTabSlider" class="tab-slider">
+							<ul id="idTabSliderTrack" class="tab_slider-track">
+								<!-- (!) вкладка "Тема" -->
+								<li id="idTopicTab" class="tabs" tabnum="0">
+									<a id="topictablink" href="#topictablink" data="Тема текста" title="Тема текста">
+										<span>Тема текста</span>
+									</a>
 								</li>
-								<li listnum="1">
-									<a id="idTabList1" href="#">Ключевые слова</a>
+								<!-- (!) вкладка "Ключевые слова" -->
+								<li id="idIndexTab" class="tabs" tabpage="index" tabnum="1">
+									<a id="indextablink" href="#indextablink" title="Щелкните жважды, чтобы открепить вкладку «Ключевые слова»">
+										<span>Ключевые слова</span>
+									</a>
+									<img class="close-tab" src="icon/tab-close_off.png" title="Закрыть эту вкладку">
 								</li>
-								<li listnum="2">
-									<a id="idTabList2" href="#">Поиск</a>
+								<!-- (!) вкладка "Поиск" -->
+								<li id="idSearchTab" class="tabs" tabpage="search" tabnum="2">
+									<a id="searchtablink" href="#searchtablink" title="Щелкните дважды, чтобы открепить вкладку «Поиск»">
+										<span>Поиск</span>
+									</a>
+									<img class="close-tab" src="icon/tab-close_off.png" title="Закрыть эту вкладку">
 								</li>
-								<hr style="display: none;">
 							</ul>
 						</div>
 					</div>
-					<img id="idTabNext" class="tabs-btns" src="icon/tab-next.png" title="Следующая вкладка">
-					<img id="idTabLast" class="tabs-btns" src="icon/tab-last.png" title="Последняя вкладка">
 				</div>
-			</div>
-			<!-- (!) вкладки окон топиков -->
-			<div id="idTabsWindow" class="tabs-window">
-				<div id="idTabSlider" class="tab-slider">
-					<ul id="idTabSliderTrack" class="tab_slider-track">
-						<!-- (!) вкладка "Тема" -->
-						<li id="idTopicTab" class="tabs" tabnum="0">
-							<a id="topictablink" href="#topictablink" data="Тема текста" title="Тема текста">
-								<span>Тема текста</span>
-							</a>
-						</li>
-						<!-- (!) вкладка "Ключевые слова" -->
-						<li id="idIndexTab" class="tabs" tabpage="index" tabnum="1">
-							<a id="indextablink" href="#indextablink" title="Щелкните жважды, чтобы открепить вкладку «Ключевые слова»">
-								<span>Ключевые слова</span>
-							</a>
-							<img class="close-tab" src="icon/tab-close_off.png" title="Закрыть эту вкладку">
-						</li>
-						<!-- (!) вкладка "Поиск" -->
-						<li id="idSearchTab" class="tabs" tabpage="search" tabnum="2">
-							<a id="searchtablink" href="#searchtablink" title="Щелкните дважды, чтобы открепить вкладку «Поиск»">
-								<span>Поиск</span>
-							</a>
-							<img class="close-tab" src="icon/tab-close_off.png" title="Закрыть эту вкладку">
-						</li>
-					</ul>
-				</div>
-			</div>
-			<!-- (!)*окна топиков: контент тема, ключевые слова, поиск -->
-			<div id="idTopicContent" class="topic-content">
-				<!-- (!) стр."Контент Тема" -->
-				<div id="idTopicBox" class="topic-box" boxnum="0">
-					<script type="text/javascript">writeTopic();</script>
-					<noscript><iframe id="ifrmtopic" name="ifrmtopic" class="scroll-pane" src="about.html" title="Вкладка Тема"></iframe></noscript>
-				</div>
-				<!-- (!) стр."Ключевые слова" -->
-				<div id="idKeywordsBox" class="keywords-box" boxnum="1" style="display: none;">
-					<iframe id="ifrmkeywords" name="ifrmkeywords" class="scroll-pane" src="keywords.html" title="Вкладка Ключевые слова"></iframe>
-				</div>
-				<!-- (!) стр."Поиск" -->
-				<div id="idSearchBox" class="search-box" boxnum="2" style="display: none;">
-					<iframe id="ifrmsearch" name="ifrmsearch" class="scroll-pane" src="search.html" title="Вкладка Поиск"></iframe>
-				</div>
+				<!-- (!)*окна топиков: контент тема, ключевые слова, поиск -->
+				<!-- <div id="idTopicContent" class="topic-content"> --> <!-- на удаление -->
+					<!-- (!) стр."Контент Тема" -->
+					<div id="idTopicBox" class="topic-box" boxnum="0">
+						<script type="text/javascript">writeTopic();</script>
+						<noscript><iframe id="ifrmtopic" name="ifrmtopic" class="pane-item" src="about.html" title="Вкладка Тема"></iframe></noscript>
+					</div>
+					<!-- (!) стр."Ключевые слова" -->
+					<div id="idKeywordsBox" class="keywords-box" boxnum="1" style="display: none;">
+						<iframe id="ifrmkeywords" name="ifrmkeywords" class="pane-item" src="keywords.html" title="Вкладка Ключевые слова"></iframe>
+					</div>
+					<!-- (!) стр."Поиск" -->
+					<div id="idSearchBox" class="search-box" boxnum="2" style="display: none;">
+						<iframe id="ifrmsearch" name="ifrmsearch" class="pane-item" src="search.html" title="Вкладка Поиск"></iframe>
+					</div>
+				<!-- </div> -->
 			</div>
 		</div>
 	</div>

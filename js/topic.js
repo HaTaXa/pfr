@@ -23,7 +23,9 @@ window.addEventListener('load', function (e) { // - js. Сработает, ка
 				} else { // ~первичная загрузка всего сайта
 					msg.value = "setVariables";
 					// исключаем наличие hash, если есть
+					// (?) не доделано - возникает ошибка, если одну из переменных убрать msg.currP (ошибка в navigation.js)/msg.href (ошибка в index.js)
 					msg.currP = href.slice(href.lastIndexOf("#") + 1); // перезаписываем переменную без #
+					msg.href = msg.currP;
 					msg.hash = hash;
 					msg.frmName = window.name;
 				}
@@ -36,12 +38,19 @@ window.addEventListener('load', function (e) { // - js. Сработает, ка
 		} else {
 			if (window.top.document.readyState === "complete") { // ~последующая зарузка топика во фрейм
 				// *делаем вкладку текущей
-				let tab = window.top.document.querySelector('.tab-current');
-				if (tab === null && tab !== Object(tab)) {
-					tab = window.top.document.getElementById('idTopicTab'); // вкладка текущ.топика по умолчанию
-				}
+				const getTabCurrent = (tab) => {
+					tab = window.top.document.querySelector('.tab-current');
+					if (tab === null && tab !== Object(tab)) {
+						tab = window.top.document.getElementById('idTopicTab'); // вкладка текущ.топика по умолчанию
+					} else {
+						if (tab.id === "idIndexTab" || tab.id === "idSearchTab") {
+							tab = window.top.document.getElementById('idTopicTab'); // вкладка текущ.топика по умолчанию
+						}
+					}
+					return tab;
+				};
 				// window.top.setTabVisibility(tab, "show", "setVariables"); // показать/скрыть текущую вкладку
-				window.top.setTabVisibility(tab, "show", "goToPage"); // показать/скрыть текущую вкладку
+				window.top.setTabVisibility(getTabCurrent(), "show", "goToPage"); // показать/скрыть текущую вкладку
 				setTimeout(() => { // нужна небольшая выдержка времени
 					// *создаем навигационные ссылки
 					writeBreadCrumbs(window.top.vrsNavigation.breadCrumbs);
@@ -138,99 +147,31 @@ $(document).ready(function () { // - jq
 				} else if (event.data.value === "handlerPoPuPs") {
 					// *скрываем всплывающие эл.в текущем окне
 					handlerPoPuPs(event); // обработчик вплывающих эл.
-					// let tocMenu = document.getElementById(event.data.id); // всплывающий(-е) эл.в текущем окне // x -на удаление
-					// if (tocMenu !== null || typeof(tocMenu) !== "undefined" || tocMenu !== null && tocMenu === Object(tocMenu)) {
-					// 	if (tocMenu.classList.contains('toc-menu-popup')) {
-					// 		// setShowOrHide(tocMenu, "", "", "", "toc-menu-popup");
-					//		tocMenu.classList.remove('toc-menu-popup');
-					// 	}
-					// 	let icon = tocMenu.parentElement.querySelector('.toc-btn_icon');
-					// 	if (icon !== null && icon === Object(icon)) {
-					// 		if (icon.style.order === "2") {
-					// 			icon.removeAttribute('style');
-					// 		}
-					// 	}
-					// }
+				} else if (event.data === "innerHeightBottom") {
+					let msg = {value: event.data};
+					if (window.name === "ifrmkeywords") {
+						msg.innerHeightBottom = document.querySelector('.kwd-body').clientHeight;
+					} else if (window.name === "ifrmsearch") {
+						msg.innerHeightBottom = document.querySelector('.search-body').clientHeight;
+					} else {
+						msg.innerHeightBottom = document.querySelector('.topic-body').clientHeight;
+					}
+					event.source.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 				}
 			}
 		}, false); // false - фаза "всплытие"
-
-
 		// (!) hashchange
 		// window.addEventListener('hashchange', (e) => {
 
 		// 	// console.log(e.type, ": window.«", window.name, "», location.origin: ", location.origin, "\n e.oldURL: ", e.oldURL, "\n e.newURL: ", e.newURL);
 
 		// }, false); // false - фаза "всплытие"
-
-
-		// 'focusIn
-		document.addEventListener('focusin', function (event) {
-			// console.log("«", event.type, "», window.«", window.name, "»", "\n document.activeElement: ", document.activeElement, "\n event.target: ", event.target);
-			if (event.target.hasAttribute('class')) {
-				if (event.target.classList.contains('lightbox')) {
-					setEventHandlersLightbox(event.target, "add"); // создание/удаление обработчиков событий для узла.lightbox
-				}
-			}
-		}, false);
-		// 'focusOut
-		document.addEventListener('focusout', function (event) {
-			// console.log("«", event.type, "», window.«", window.name, "»", "\n document.activeElement: ", document.activeElement, "\n event.target: ", event.target);
-			if (event.target.hasAttribute('class')) {
-				if (event.target.classList.contains('lightbox')) {
-					if (event.target.tabIndex !== 0) {
-						setEventHandlersLightbox(event.target, "remove"); // создание/удаление обработчиков событий для узла.lightbox
-					}
-				}
-			}
-		}, false);
 		// 'keydown
 		document.addEventListener('keydown', function (event) {
 			if (event.code === "Escape" || event.key === "Escape" || event.keyCode === 27 || event.which === 27) {
 				// (i) event.code всегда содержит только одно латинское обозначение в отличие от event.key, кот.содержит обозначение относительно раскладки клавиатуры
 				// 'keyup
 				document.addEventListener('keyup', handlerPoPuPs, false); // создаем обработчик для всего док.
-				// x - на удаление
-				// let tocMenu = document.getElementById('idPageMenuToc'); // всплывающий(-е) эл.в текущем окне
-				// if (tocMenu !== null || typeof(tocMenu) !== "undefined" || tocMenu !== null && tocMenu === Object(tocMenu)) {
-				// 	if (tocMenu.classList.contains('toc-menu-popup')) {
-				// 		// setShowOrHide(tocMenu, "", "", "", "toc-menu-popup");
-				//		tocMenu.classList.remove('toc-menu-popup');
-				// 	}
-				// 	let icon = tocMenu.parentElement.querySelector('.toc-btn_icon');
-				// 	if (icon !== null && icon === Object(icon)) {
-				// 		if (icon.style.order === "2") {
-				// 			icon.removeAttribute('style');
-				// 		}
-				// 	}
-				// }
-				// if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-				// 	let msg = {
-				// 		value: "setShowOrHide",
-				// 		id: ["idPermalinkBox", "idTabsMenuBox"]
-				// 	};
-				// 	window.top.postMessage(msg, '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-				// } else {
-				// 	let elems = [
-				// 		window.top.document.getElementById('idPermalinkBox'),
-				// 		window.top.document.getElementById('idTabsMenuBox')
-				// 	];
-				// 	elems.forEach(item => {
-				// 		if (item !== null && item === Object(item)) {
-				// 			if (item.id === "idPermalinkBox") { // всплывающий(-е) эл.в гл.окне
-				// 				window.top.setClearPermalink(); // очистить окно Постоянная ссылка
-				// 				// setShowOrHide(item, "", "", "", "permalink-popup");
-				// 				item.classList.remove('permalink-popup');
-				// 				window.top.setEventHandlersPermalink(item, 'remove'); // создание/удаление обработчиков событий для узла permalink
-				// 			} else if (item.id === "idTabsMenuBox") { // всплывающий(-е) эл.в гл.окне
-				// 				if (item.classList.contains('tabs-menu-popup')) {
-				// 					// setShowOrHide(item, "", "", "", "tabs-menu-popup");
-				// 					item.classList.remove('tabs-menu-popup');
-				// 				}
-				// 			}
-				// 		}
-				// 	});
-				// }
 			}
 		}, false); // false - фаза "всплытие"
 		// (!) idTopicHeader
@@ -292,7 +233,7 @@ $(document).ready(function () { // - jq
 		}
 		// (!) idContentText
 		if (document.getElementById('idContentText') !== null && typeof(document.getElementById('idContentText')) === "object") {
-			// 'mousedown
+			// 'mousedown/click/mouseup
 			document.getElementById('idContentText').addEventListener('mousedown', function (e) {
 				if (e.target.tagName === "A") {
 					if (e.button === 0) { // исключаем нажатие правой кн.м.
@@ -697,7 +638,7 @@ function setMsgBox(msgBox = "enable", msgBtn = true, msgText = "Информац
 	// 'лапатим все скрипты во фрейме
 	if (!getScript(window.self, "js/msgbox.js")) { // - получить скрипт - ссылка на js-файл
 		// ''создаем и проверяем объект - ссылка на js-файл
-		if (!setScript(window.self, "js/msgbox.js")) { // - создать скрипт - ссылка на js-файл
+		if (!setScript(window.self, "js/msgbox.js")) { // создать скрипт - ссылка на js-файл
 			console.error(`(!) Косяк - не удалось создать ссылку на скрипт для инфо-сообщения:\n function setMsgBox(msgBox = "${msgBox}", msgBtn = ${msgBtn}, msgText = "${msgText}", msgEffect = ${msgEffect}): window.«${window.name}», location.origin: ${location.origin}`);
 			alert(`(!) Косяк - не удалось создать ссылку на скрипт для инфо-сообщения, см.консоль.`);
 			return;
@@ -765,7 +706,7 @@ function setToggleContent(elem) {
 		// *лапатим все скрипты во фрейме
 		if (!getScript(window.self, "js/lightbox.js")) { // - получить скрипт - ссылка на js-файл
 			// *создаем и проверяем объект - ссылка на js-файл
-			if (!setScript(window.self, "js/lightbox.js")) { // - создать скрипт - ссылка на js-файл
+			if (!setScript(window.self, "js/lightbox.js")) { // создать скрипт - ссылка на js-файл
 				console.error("(!) Косяк - не удалось создать ссылку на скрипт для скрытого контента:\n function setToggleContent(elem: ", elem, "): window.«", window.name, "», location.origin: ", location.origin, "js: ", js);
 				alert(`(!) Косяк - не удалось создать ссылку на скрипт для скрытого контента, см.консоль.`);
 				return;
@@ -796,7 +737,7 @@ function setToggleContent(elem) {
 	// 	if (js === null || js !== Object(js)) {
 	// 		// *лапатим все скрипты во фрейме
 	// 		if (!getScript(window.self, "js/lightbox.js")) { // - получить скрипт - ссылка на js-файл
-	// 			setScript(window.self, "js/lightbox.js"); // - создать скрипт - ссылка на js-файл
+	// 			setScript(window.self, "js/lightbox.js"); // создать скрипт - ссылка на js-файл
 	// 		}
 	// 	} else {
 	// 		if (js !== null && js === Object(js)) {

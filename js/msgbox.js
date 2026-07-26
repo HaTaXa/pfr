@@ -1243,7 +1243,7 @@ function msgbox_onPointerdown(e) {
 		// }
 		e.target.addEventListener('pointerup', ball_onPointerup, false);
 		// 'для событий мыши предотвращаем запуск и перехват браузером встроенного события pointercancel для процесса перетаскивания drag’n’drop для изображений
-		// ''для сэнсорного эрана исп.css св-во: touch-action: none; см.в.lightswitch-ball
+		// ''для сэнсорного экрана исп.css св-во: touch-action: none; см.в.lightswitch-ball
 		e.target.ondragstart = () => false; // или так
 		// e.target.ondragstart = function() { return false; };
 	}

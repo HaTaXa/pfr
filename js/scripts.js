@@ -12,7 +12,7 @@ function writeTopic() {
 	}
 	// *при первичной загрузке создаем iframe топика по умолчанию
 	// if (document.getElementById('ifrmtopic') === null) {
-	// 	document.currentScript.insertAdjacentHTML("afterend", '<iframe id="ifrmtopic" name="ifrmtopic" class="scroll-pane" src="' + vrsTopic.currP + '" title="Вкладка Тема"></iframe>');
+	// 	document.currentScript.insertAdjacentHTML("afterend", '<iframe id="ifrmtopic" name="ifrmtopic" class="pane-item" src="' + vrsTopic.currP + '" title="Вкладка Тема"></iframe>');
 	// }
 	// (i) др.вариант
 	let iframe = document.getElementById('ifrmtopic');
@@ -20,7 +20,7 @@ function writeTopic() {
 	iframe = document.createElement('iframe');
 	iframe.id = "ifrmtopic";
 	iframe.name = "ifrmtopic";
-	iframe.classList.add('scroll-pane');
+	iframe.classList.add('pane-item');
 	iframe.setAttribute('src', vrsTopic.currP);
 	iframe.title = "Вкладка Тема";
 	document.getElementById('idTopicBox').appendChild(iframe);
@@ -189,7 +189,7 @@ function getValueFullSizeProperty(elem) {
 	}
 	return size;
 }
-// (!) фокусировка
+// (!) фокусировка с созданием/удалением аттрибута tabIndex
 function setFocus(elem, focusInOut = "", focusOptions = {scrolling: false, visible: true}) {
 	// ~focus и blur не всплывают, но имеют фазу погружения и перехват на внутренний эл.может быть только через родителя
 	// не всегда работает - браузер сам решает на свое усмотрение
@@ -997,8 +997,9 @@ function setTabVisibility(elem, visibilityState = "", setGoTo = "") {
 		alert(`(!) Косяк - не удалось показать/скрыть текущую вкладку - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль`);
 		return;
 	}
+	// if (elem === null) elem = window.top.document.getElementById('idTopicTab'); // вкладка текущ.топика по умолчанию
 	let tabs = elem.parentElement; // idTabSliderTrack/.tab_slider-track
-	let boxes = window.top.document.getElementById('idTopicContent'); // .topic-content
+	let boxes = window.top.document.getElementById('idTopicPane'); // .topic-pane
 	let box = boxes.querySelector('div[boxnum="' + +elem.getAttribute('tabnum') + '"]');
 	let kontent = null; // контентная часть найденной вкладки в цикле
 	if (box === null || box === Object(box) && box === null) {
@@ -1063,6 +1064,7 @@ function setTabVisibility(elem, visibilityState = "", setGoTo = "") {
 				}
 			}
 		}
+		setHideNavPane(); // - скрыть пан.нав.при ее макс размере
 	} else if (visibilityState === "hide") {
 		// *скрываем текущую вкладку и переназначаем предыдущей ВИДИМОЙ вкладке значение на "текущая", если текущая вкладка была активной
 		if (elem.classList.contains('tab-current')) {
@@ -1100,69 +1102,131 @@ function setTabVisibility(elem, visibilityState = "", setGoTo = "") {
 		return;
 	}
 	setUpdateTabsMenuList(tabs); // обновление списка Меню вкладок и выделение ссылки на текущую вкладку
+	tabHandlerWheel(); // создание/удаление обработчика события wheel
 }
 // (!) animationOffset - анимационное смещение для: 1) вкладок на панели тема топика, 2) слайдера изо в скрытом контенте
-function animationOffset(elem) {
-	// 'elem - tagName div.toolbar-slider-track
-	// ''elem - tagName img.tabs-btns: idTabFirst/idTabPrevious/idTabNext/idTabLast
-	// '''elem - tagName div.slider-track
+function animationOffset(elem, toJump = "") {
+	// 'div.toolbar-slider-track
+	// ''ul.tab_slider-track
+	// '''div.slider-track
 	if (typeof(elem) === "undefined" || elem === null && (elem === Object(elem) || typeof(elem) === "object")) {
-		console.error(`(!) Косяк - не удалось воспроизвести анимацию - переменная аргумента не определена:\n function animationOffset(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}`);
+		console.error(`(!) Косяк - не удалось воспроизвести анимацию - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function animationOffset(): window."${window.name}", location.origin: ${location.origin}\n elem: ${elem}\n toJump: ${toJump}`);
 		alert(`(!) Косяк: не удалось воспроизвести анимацию - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.`);
 		return;
 	}
-	if (elem.hasAttribute('id') || elem.hasOwnProperty('id') || elem.getAttribute('id') !== null) { // *для вкладок на панели тема топика
-		let topicTabs = document.getElementById('idTabSliderTrack');
-		if (typeof(topicTabs) === "undefined" || topicTabs === null && (topicTabs === Object(topicTabs) || typeof(topicTabs) === "object")) {
-			console.error(`(!) Косяк - не удалось воспроизвести анимацию - не найден элемент:\n function animationOffset(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n topicTabs: typeof(${typeof(topicTabs)}) / Object(${Object(topicTabs)}) / ${topicTabs}`);
-			alert(`(!) Косяк: не удалось воспроизвести анимацию - не найден элемент, см.консоль.`);
-			return;
-		}
-		// topicTabs.style.animationFillMode = "backwards"; // Элемент сохранит стиль первого ключевого кадра на протяжении периода animation-delay. Первый ключевой кадр определяется значением animation-direction
-		switch (elem.id) {
-			case 'idTabFirst': case 'idTabPrevious':
-				topicTabs.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css
-				break;
-			case 'idTabNext': case 'idTabLast':
-				topicTabs.style.animation = "jumpToLeft"; // имя @keyframes в файле styles.css
-				break;
-			default:
-				console.error(`(!) Косяк - не удалось воспроизвести анимацию - текущая вкладка не определена:\n function animationOffset(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem}): window."${window.name}", location.origin: ${location.origin}:\n elem.id: ${elem.id}`);
-				alert(`(!) Косяк: не удалось воспроизвести анимацию - текущая вкладка не определена, см.консоль.`);
-				return;
-		}
-		topicTabs.style.animationDuration = ".1s"; // продолжительность одного цикла анимации
-		topicTabs.style.animationTimingFunction = "cubic-bezier(0.18, 0.89, 0.32, 1.28)"; // временнАя функция - описывает, как будет развиваться анимация между каждой парой ключевых кадров. *Во время задержки анимации временные функции не применяются
-		topicTabs.style.animationIterationCount = 1; // кол-во повторов - ск-ко раз проигрывается цикл анимации
-		// topicTabs.style.animationDirection = "alternate"; // alternate-reverse // направление - определяет, должна ли анимация воспроизводиться в обратном порядке в некоторых или во всех циклах. *Когда анимация воспроизводится в обратном порядке, временные функции также меняются местами. Например, при воспроизведении в обратном порядке функция ease-in будет вести себя как ease-out
-		topicTabs.style.animationDelay = "0ms"; // задержка - определяет, когда анимация начнется. *Задается в секундах s или миллисекундах ms
-		// topicTabs.style.animationFillMode = "both"; // Анимация будет вести себя так, как будто значения forwards и backwards заданы одновременно
-		// topicTabs.style.animationFillMode = "forwards"; // По окончании анимации элемент сохранит стили последнего ключевого кадра, который определяется значениями animation-direction и animation-iteration-count. Определяет, какие значения применяются анимацией вне времени ее выполнения. Когда анимация завершается, элемент возвращается к своим исходным стилям. По умолчанию анимация не влияет на значения свойств animation-name и animation-delay, когда анимация применяется к элементу. Кроме того, по умолчанию анимация не влияет на значения свойств animation-duration и animation-iteration-count после ее завершения. Свойство animation-fill-mode может переопределить это поведение
-		// topicTabs.style.willChange = "transform"; // (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
-	} else if (elem.classList.contains('toolbar_btn_slider-next') || elem.classList.contains('toolbar_btn_slider-prev')) { // *для слайдера кн.на пан.инстр.
-		const sldrTrack = elem.parentElement.querySelector('.toolbar-slider-track');
-		if (elem.classList.contains('toolbar_btn_slider-next')) {
-			sldrTrack.style.animation = "jumpToLeft"; // имя @keyframes в файле styles.css
-		} else if (elem.classList.contains('toolbar_btn_slider-prev')) {
-			sldrTrack.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css
-		}
-		sldrTrack.style.animationDuration = ".1s"; // продолжительность одного цикла анимации
-		sldrTrack.style.animationTimingFunction = "cubic-bezier(0.18, 0.89, 0.32, 1.28)"; // временнАя функция - описывает, как будет развиваться анимация между каждой парой ключевых кадров. *Во время задержки анимации временные функции не применяются
-		sldrTrack.style.animationIterationCount = 1; // кол-во повторов - ск-ко раз проигрывается цикл анимации
-		sldrTrack.style.animationDelay = "0ms"; // задержка - определяет, когда анимация начнется. *Задается в секундах s или миллисекундах ms
-	} else if (elem.classList.contains('slider-track')) { // *для слайдера изо.в скрытом контенте
-		if (elem.firstElementChild.classList.contains('slider-current')) {
-			elem.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css
-		} else if (elem.lastElementChild.classList.contains('slider-current')) {
+	//
+	if (toJump === "" || toJump === null) {
+		if (Math.round(elem.scrollLeft) >= (elem.scrollWidth - elem.offsetWidth)) {
 			elem.style.animation = "jumpToLeft"; // имя @keyframes в файле styles.css
-		} else {
-			console.error(`(!) Косяк - не удалось воспроизвести анимацию - элемент не определен:\n function animationOffset(elem: typeof(${typeof(elem)}) / Object(${Object(elem)}) / ${elem})\n elem.classList: ${JSON.stringify(elem.classList, null, 1)}`);
-			alert(`(!) Косяк: не удалось воспроизвести анимацию - элемент не определен, см.консоль.`);
+		} else if (elem.scrollLeft === 0) {
+			elem.style.animation = "jumpToRight"; // имя @keyframes в файле styles.css
 		}
-		elem.style.animationDuration = ".1s"; // продолжительность одного цикла анимации
-		elem.style.animationTimingFunction = "cubic-bezier(0.18, 0.89, 0.32, 1.28)"; // временнАя функция - описывает, как будет развиваться анимация между каждой парой ключевых кадров. *Во время задержки анимации временные функции не применяются
-		elem.style.animationIterationCount = 1; // кол-во повторов - ск-ко раз проигрывается цикл анимации
-		elem.style.animationDelay = "0ms"; // задержка - определяет, когда анимация начнется. *Задается в секундах s или миллисекундах ms
+	} else {
+		elem.style.animation = toJump; // имя @keyframes в файле styles.css
+	}
+	elem.style.animationDuration = ".1s"; // продолжительность одного цикла анимации
+	elem.style.animationTimingFunction = "cubic-bezier(0.18, 0.89, 0.32, 1.28)"; // временнАя функция - описывает, как будет развиваться анимация между каждой парой ключевых кадров. *Во время задержки анимации временные функции не применяются
+	elem.style.animationIterationCount = 1; // кол-во повторов - ск-ко раз проигрывается цикл анимации
+	// elem.style.animationDirection = "alternate"; // alternate-reverse // направление - определяет, должна ли анимация воспроизводиться в обратном порядке в некоторых или во всех циклах. *Когда анимация воспроизводится в обратном порядке, временные функции также меняются местами. Например, при воспроизведении в обратном порядке функция ease-in будет вести себя как ease-out
+	elem.style.animationDelay = "0ms"; // задержка - определяет, когда анимация начнется. *Задается в секундах s или миллисекундах ms
+	// elem.style.animationFillMode = "both"; // Анимация будет вести себя так, как будто значения forwards и backwards заданы одновременно
+	// elem.style.animationFillMode = "forwards"; // По окончании анимации элемент сохранит стили последнего ключевого кадра, который определяется значениями animation-direction и animation-iteration-count. Определяет, какие значения применяются анимацией вне времени ее выполнения. Когда анимация завершается, элемент возвращается к своим исходным стилям. По умолчанию анимация не влияет на значения свойств animation-name и animation-delay, когда анимация применяется к элементу. Кроме того, по умолчанию анимация не влияет на значения свойств animation-duration и animation-iteration-count после ее завершения. Свойство animation-fill-mode может переопределить это поведение
+	// elem.style.willChange = "transform"; // (i) - св-во will-change - экспериментальная технология, заранее передает браузеру инфу о возможном предстоящем изменении элемента
+
+	// (!) удаляем css св-во "animation" по окончанию воспроизведения анимации, иначе она больше не будет воспроизводиться
+	function elem_onAnimationend(eVent) {
+		eVent.target.style.removeProperty('animation');
+		eVent.target.removeEventListener('animationend', elem_onAnimationend, false);
+	}
+	elem.addEventListener('animationend', elem_onAnimationend, false);
+}
+// обработчик прокрутки слайдеров
+function setHandlerSliderScroll(elem, addOrRemove = "add") {
+	// (i) elem:
+	// *toolbar:
+	// 'div.toolbar-slider-track
+	// ''div.toolbar-btn-slider
+	// *topic controls:
+	// 'ul.tab_slider-track
+	// *lightbox:
+	// 'div.slider-track
+	if (elem === undefined || typeof(elem) === "undefined" || elem !== Object(elem) || (elem === null && elem === Object(elem))) {
+		console.error("(!) Косяк: не удалось осуществить прокрутку - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки:\n function setHandlerSliderScroll():\n elem:", elem);
+		alert("(!) Косяк: не удалось осуществить прокрутку - переменная аргумента не определена или значение переменной не соответствует условию(-ям) проверки, см.консоль.");
+		return;
+	}
+	function setSliderScroll_onWheel(eVent) {
+		if (elem.scrollWidth === elem.offsetWidth) return;
+		eVent.preventDefault(); // Запрещаем стандартную вертикальную прокрутку
+		// (i) eVent.deltaY содержит величину прокрутки (положительное - вверх, отрицательное - вниз)
+		// (i) Чтобы получить горизонтальное движение, инвертируем знак (например, колесо вниз → прокрутка вправо - eVent.deltaY отрицательный, положительный - колесо вверх <- прокрутка влево)
+		const scrollAmount = eVent.deltaY; // * 1.5; // Множитель для настройки скорости
+		// Обновляем позицию прокрутки по горизонтали
+		if (scrollAmount > 0) {
+			if (Math.round(elem.scrollLeft) >= (elem.scrollWidth - elem.offsetWidth)) {
+				animationOffset(elem, null); // анимационное смещение
+			} else {
+				elem.scrollLeft += scrollAmount;
+			}
+		} else {
+			if (elem.scrollLeft === 0) {
+				animationOffset(elem, ""); // анимационное смещение
+			} else {
+				// element.scrollLeft -= (scrollAmount * -1); // или через инверсию знака eVent.deltaY
+				// element.scrollLeft -= -scrollAmount; // или через инверсию знака eVent.deltaY
+				elem.scrollLeft += scrollAmount;
+			}
+		}
+	}
+	function setSliderScrollButton(btn) {
+		const sldr = btn.parentElement.querySelector('.toolbar-slider-track');
+		if (btn.classList.contains('toolbar_btn_slider-next')) {
+			if (Math.round(sldr.scrollLeft) >= (sldr.scrollWidth - sldr.offsetWidth)) {
+				animationOffset(sldr); // анимационное смещение
+			} else {
+				sldr.scrollLeft += 50; // - прокручиваем скроллбар
+			}
+		} else if (btn.classList.contains('toolbar_btn_slider-prev')) {
+			if (sldr.scrollLeft === 0) {
+				animationOffset(sldr); // анимационное смещение
+			} else {
+				sldr.scrollLeft -= 50; // - прокручиваем скроллбар
+			}
+		}
+	}
+	//
+	if (elem.classList.contains('toolbar-slider-track')) {
+		if (addOrRemove === "add") {
+			toolbarWheelHandler = (event) => {
+				setSliderScroll_onWheel(event);
+			};
+			elem.addEventListener('wheel', toolbarWheelHandler);
+		} else if (addOrRemove === "remove") {
+			elem.removeEventListener('wheel', toolbarWheelHandler);
+			toolbarWheelHandler = null; // Обнуляем, чтобы помочь сборщику мусора
+		}
+	} else if (elem.classList.contains('tab_slider-track')) {
+		if (addOrRemove === "add") {
+			tabWheelHandler = (event) => {
+				setSliderScroll_onWheel(event);
+			};
+			elem.addEventListener('wheel', tabWheelHandler);
+		} else if (addOrRemove === "remove") {
+			elem.removeEventListener('wheel', tabWheelHandler);
+			tabWheelHandler = null; // Обнуляем, чтобы помочь сборщику мусора
+		}
+	} else if (elem.classList.contains('slider-track')) {
+		if (addOrRemove === "add") {
+			lightboxWheelHandler = (event) => {
+				setSliderScroll_onWheel(event);
+			};
+			elem.addEventListener('wheel', lightboxWheelHandler);
+		} else if (addOrRemove === "remove") {
+			elem.removeEventListener('wheel', lightboxWheelHandler);
+			lightboxWheelHandler = null; // Обнуляем, чтобы помочь сборщику мусора
+		}
+	} else if (elem.classList.contains('toolbar-btn-slider')) {
+		setSliderScrollButton(elem); // прокрутка кн.на пан.инстр.
 	}
 }
 // (!) обработчик вплывающих эл.
@@ -1236,7 +1300,6 @@ function handlerPoPuPs(eVent) {
 				}
 			});
 		// } else if (eVent.type === undefined) {
-
 		} else {
 			if (eVent.type === "message") {
 				// 'эл."Постоянная ссылка"
@@ -1250,7 +1313,7 @@ function handlerPoPuPs(eVent) {
 						setMeHide(item); // скрытие эл.в текущем окне
 					}
 				});
-				// x (?)
+				// x - старый код временно сохранен из событий в разных местах
 				// eVent.data.id.forEach((item) => {
 				// 	if (item === "idPermalinkBox") { // всплывающий(-е) эл.в гл.окне
 				// 		let elem = document.getElementById(item);
@@ -1302,7 +1365,7 @@ function handlerPoPuPs(eVent) {
 						elem.contentWindow.handlerPoPuPs(); // обработчик вплывающих эл.
 					}
 				}
-				// x (?)
+				// x - старый код временно сохранен из событий в разных местах
 				// let frm = getFrame(); // получить фрейм текущей вкладки или фрейм вкладки гл.топика по умолчанию
 				// if (frm !== null && frm === Object(frm)) {
 				// 	if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
@@ -1327,7 +1390,8 @@ function handlerPoPuPs(eVent) {
 				// 		}
 				// 	}
 				// }
-				// ''всплывающие подсказки для кн.: SJ/hh/email и эл.-переключателей: idTreeView/idTocList
+
+				// ''всплывающие подсказки для кн.в футере и эл.-переключателей: idTreeView/idTocList
 				if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
 					window.top.frames.ifrmnavigation.postMessage('handlerPoPuPs', '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 				} else {
@@ -1355,13 +1419,13 @@ function handlerPoPuPs(eVent) {
 				// если стр.не открыта отдельным окном
 				if (window === self || self !== top && window.name !== "") { // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
 					if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-						// const msg = { // x (?)
+						// const msg = { // x - старый код временно сохранен из событий в разных местах
 						// 	value: "handlerPoPuPs",
 						// 	id: ["idPermalinkBox", "idTabsMenuBox"],
 						// 	className: ["btn_icon-tooltip-popup"]
 						// };
 						window.top.postMessage('handlerPoPuPs', '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-						// перезаписываем значения массивов в объекте для окна ifrmtopic // x (?)
+						// перезаписываем значения массивов в объекте для окна ifrmtopic // x - старый код временно сохранен из событий в разных местах
 						// msg.id = ["idPageMenuToc"];
 						// msg.className = ["tooltip_finger_toggle-popup", "tooltip_lightswitch-show"];
 						window.top.frames.ifrmtopic.postMessage('handlerPoPuPs', '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
@@ -1373,7 +1437,7 @@ function handlerPoPuPs(eVent) {
 						window.top.handlerPoPuPs(); // обработчик вплывающих эл.
 						const frm = window.top.getFrame(); // получить фрейм текущей вкладки или фрейм вкладки гл.топика по умолчанию
 						frm.contentWindow.handlerPoPuPs(); // обработчик вплывающих эл.
-						// x (?)
+						// x - старый код временно сохранен из событий в разных местах
 						// const elems = [
 						// 	window.top.document.getElementById('idPermalinkBox'),
 						// 	window.top.document.querySelector('.btn_icon-tooltip-popup'),
@@ -1492,20 +1556,20 @@ function handlerPoPuPs(eVent) {
 				// если стр.не открыта отдельным окном
 				if (window === self || self !== top && window.name !== "") { // 'еще вариант проверки яв-ся ли окно фреймом: (window.frameElement && window.frameElement.nodeName === "IFRAME")
 					if (window.location.origin === "file://" || window.location.origin === "null") { // при локальном использовании // (i) в Firefox origin = "null"
-						// let msg = { // x (?)
+						// let msg = { // x - старый код временно сохранен из событий в разных местах
 						// 	value: "handlerPoPuPs",
 						// 	id: ["idPermalinkBox", "idTabsMenuBox"],
 						// 	className: ["btn_icon-tooltip-popup"]
 						// };
 						window.top.postMessage('handlerPoPuPs', '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
-						// перезаписываем значения массивов в объекте для окна ifrmnavigation // x (?)
+						// перезаписываем значения массивов в объекте для окна ifrmnavigation // x - старый код временно сохранен из событий в разных местах
 						// msg.qSelector = ["[for=idTreeView]", "idTocList"]; // создаем/добавляем новое св-во в объекте
 						// msg.className = ["footer_btn-tooltip-popup"];
 						window.top.frames.ifrmnavigation.postMessage('handlerPoPuPs', '*'); // когда звездочка - это плохое использование в целях безопасности от взлома страниц // (?)
 					} else {
 						window.top.handlerPoPuPs(); // обработчик вплывающих эл.
 						window.top.frames.ifrmnavigation.handlerPoPuPs(); // обработчик вплывающих эл.
-						// x (?)
+						// x - старый код временно сохранен из событий в разных местах
 						// const frm = window.top.frames.ifrmnavigation.handlerPoPuPs(); // обработчик вплывающих эл.
 						// let elems = [
 						// 	window.top.document.getElementById('idPermalinkBox'),

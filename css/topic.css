@@ -173,10 +173,10 @@ html *::-webkit-scrollbar-thumb {
 	border-bottom: 1px solid silver;
 }
 .topic-header {
-	/* font-size: 10px; */
-	/* font-size: .6rem; */
-	font-size: 0.6em;
 	text-indent: 0.5em;
+	font-size: 0.6em;
+	/* font-size: 9px; */
+	/* font-size: .6rem; */
 }
 
 .nav-links a, /* - чтобы перебить ссылкам назначенный браузером стиль по умолчанию */
@@ -319,13 +319,13 @@ html *::-webkit-scrollbar-thumb {
 .toc-menu:before {
 	content: "";
 	position: absolute;
-	right: 40px;
-	top: -16px;
-	border-left: 50px solid transparent;
-	border-bottom: 16px solid silver;
+	right: 2px;
+	bottom: 100%;
+	border-right: 24px solid transparent;
+	border-bottom: 22px solid silver;
 }
 .toc-menu:hover:before {
-	border-bottom: 16px solid #fff;
+	border-bottom-color: #fff;
 }
 /**при отсутствии содержания на стр.по умолчанию будет всплывать подсказка */
 .toc-menu-title {border-color: rgba(171,222,247,.9);}
@@ -363,6 +363,7 @@ html *::-webkit-scrollbar-thumb {
 	-moz-transition: all ease 1s;
 	-o-transition: all ease 1s;
 }
+.toc-btn_icon:hover~.toc-menu,
 .toc-menu-popup {
 	transform: translate(0, 0) scale(1);
 	-webkit-transform: translate(0, 0) scale(1);
@@ -431,22 +432,28 @@ li.toc-list,
 }
 /* (!).topic-title - наименование темы топика */
 .topic-title {
+	font-family: 'Times New Roman', Times, Georgia, serif;
+	font-weight: bold;
+	/* text-indent: 0.5em; */ /* test - div перемещен в div nav-links/idNavLinks */
+	/* font-size: 18px; */
+	/* font-size: 1.2rem; */
+	/* font-size: 1.9em; */
+	font-size: calc(14px + 4 * (100vw - 320px) / 880);
+	/* font-size: calc(14px + (26 - 22) * (100vw - 320px) / (1200 - 320)); */
+}
+.topic-title {
 	position: relative;
-	width: 100%;
+	/* width: 100%; */ /* test - div перемещен в div nav-links/idNavLinks */
+	width: auto;
 	height: auto;
 	/* min-height: 18px; */
 	padding: 2px 0 4px 0;
 	display: flex;
-	flex: 1 1 100%;
+	/* flex: 1 1 100%; */ /* test - div перемещен в div nav-links/idNavLinks */
 	flex-flow: row wrap;
 	align-items: center; /* выравнивание флекс-элементов внутри контейнера в перпендикулярном направлении */
 	align-content: center; /* Выравнивает линии в пределах flex-контейнера, когда есть дополнительное пространство на поперечной оси. Не действует, когда есть только одна строка flex-элементов, а так же, если flex-wrap: nowrap. *//**либо align-items: center. */
 	justify-content: flex-end;
-	/* font-size: 18px; */
-	/* font-size: 1.2rem; */
-	font-size: 1.9em;
-	font-weight: bold;
-	text-indent: 0.5em;
 	overflow: hidden auto;
 }
 .topic-title:hover {color: #fff;}
@@ -464,6 +471,15 @@ div#commentsWrapper {display: none;}
 }
 /* (!) idMsgBox - всплывающее окно сообщения */
 .msg-box {
+	font-family: "Times New Roman", Times, sans-serif;
+	text-indent: 0;
+	text-align: center;
+	font-weight: bold;
+	/* font-size: 18px; */
+	/* font-size: 1.1em; */
+	font-size: calc(14px + 4 * (100vw - 320px) / 880);
+}
+.msg-box {
 	position: relative;
 	left: 0; top: 0;
 	width: 100%;
@@ -472,12 +488,6 @@ div#commentsWrapper {display: none;}
 	flex: 1 1 auto;
 	flex-flow: column nowrap;
 	justify-content: space-between;
-	font-family: "Times New Roman", Times, sans-serif;
-	/* font-size: 18px; */
-	font-size: 1.1em;
-	text-indent: 0;
-	text-align: center;
-	font-weight: bold;
 	/* overflow: hidden hidden; */ /**влияет на отображение контента в.msg-btn */
 	z-index: 1; /* чтобы.msg-effect:before/:after распологались под элементом, но для.light-switch была возможность нависать над контентом в.topic-body */
 }
@@ -1780,8 +1790,10 @@ li.unic-check-mark:before,
 .topic-footer {
 	border-top: 1px solid silver;
 	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-	font-size: 0.7em;
 	text-indent: 0px; /* отступ первой строки */
+	/* font-size: 0.7em; */
+	/* font-size: calc(9px + (2 - 1) * (100vw - 320px) / (1200 - 320)); */
+	font-size: calc(9px + 1 * (100vw - 320px) / 880);
 }
 .topic-footer {
 	position: relative;

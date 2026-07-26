@@ -8,21 +8,27 @@
 	/* box-sizing: border-box; */ /* 'размеры будут учитываться браузером без padding и border */
 }
 body, html {
+	font-family: Verdana, Tahoma, Helvetica, sans-serif;
+	text-indent: 0;
+}
+body, html {
 	position: absolute;
 	left: 0; right: 0;
 	top: 0; bottom: 0;
 	background-color: transparent;
-	font-family: Verdana, Tahoma, Helvetica, sans-serif;
-	text-indent: 0;
 }
-html {overflow: hidden hidden;}
+body {
+	display: flex;
+	overflow: hidden hidden;
+}
 /* (!) Scrollbars
 *для Mozilla Firefox будет работать пока только общий стиль */
 *,
 html * /* - если нужен общий стиль, его следует применять к тегу html, а не к body */
 {
 	scrollbar-width: thin;
-	scrollbar-color: gray #3f3f3f;
+	/* scrollbar-color: gray #3f3f3f; */
+	scrollbar-color: #3f3f3f transparent;
 	scroll-behavior: smooth; /* плавная прокрутка */
 }
 *::-webkit-scrollbar,
@@ -95,37 +101,6 @@ html *::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 }
 /* Scrollbars the end */
-body {
-	overflow: hidden auto;
-	scrollbar-width: none;
-}
-body {
-	display: flex;
-	flex-flow: column nowrap;
-	align-items: center;
-	align-content: space-between; /* не учитывается из-за nowrap */
-	justify-content: space-between;
-}
-body {
-	background-color: #2a2a2a;
-	background: linear-gradient(#888888, #000000);
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
-	background: -webkit-linear-gradient(top, #888888, #000000);
-	background: -moz-linear-gradient(top, #888888, #000000);
-	background: -o-linear-gradient(top,rgb(136, 136, 136),rgb(0, 0, 0));
-	background: -ms-linear-gradient(top, #888888, #000000);
-	/**др.вариант, менее контрастный, см.его так же в styles.css
-	background-color: #5e5e5e;
-	background: linear-gradient(#666666, #222222);
-	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
-	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
-	background: -webkit-linear-gradient(top, #666666, #222222);
-	background: -moz-linear-gradient(top, #666666, #222222);
-	background: -o-linear-gradient(top,rgb(102, 102, 102),rgb(34, 34, 34));
-	background: -ms-linear-gradient(top, #666666, #222222); */
-}
-
 a {
 	color: silver;
 	text-decoration: none;
@@ -161,9 +136,15 @@ ul, li {
 .reflect *.reflect,
 .reflect {
 	direction: rtl;
+	justify-content: flex-end;
 }
 .reflect * {
 	direction: ltr;
+}
+
+.nav-box {
+	overflow: hidden auto;
+	scrollbar-width: none;
 }
 .toc-footer,
 .toc,
@@ -171,34 +152,49 @@ ul, li {
 .toc-subtitle,
 .toc-title,
 .toc-tools,
-.toc-header {
+.toc-header,
+.nav-box {
 	position: relative;
 	left: 0; top: 0;
 }
-.toc-header {
-	width: 100%;
-	height: fit-content;
-	margin: 1px;
+
+.nav-box {
+	width: auto;
+	height: auto;
 	display: flex;
 	flex: 1 1 auto;
-	flex-flow: row wrap;
-	align-items: center;
-	align-content: space-between;
-	justify-content: space-between;
-	/* overflow: hidden hidden; */ /* (i) влияет на высоту потомков */
-}
-
-.toc-tools {
-	order: 1;
-	width: 100%;
-	height: 20px;
-	margin: 0 1px;
-	padding: 1px;
-	flex: 1 1 auto; /* i flex-basis - auto означает, что размер flex-элементов рассчитывается с использованием либо элемента width, либо элемента height (в зависимости от того, определяется ли макет на основе строк или столбцов) */
-	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
-	justify-content: space-between;
+}
+.nav-box {
+	background-color: #2a2a2a;
+	background: linear-gradient(#888888, #000000);
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #999999, endColorstr = #000000);
+	background: -webkit-linear-gradient(top, #888888, #000000);
+	background: -moz-linear-gradient(top, #888888, #000000);
+	background: -o-linear-gradient(top,rgb(136, 136, 136),rgb(0, 0, 0));
+	background: -ms-linear-gradient(top, #888888, #000000);
+	/**др.вариант, менее контрастный, см.его так же в styles.css
+	background-color: #5e5e5e;
+	background: linear-gradient(#666666, #222222);
+	filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
+	-ms-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = #ffffff, endColorstr = #222222);
+	background: -webkit-linear-gradient(top, #666666, #222222);
+	background: -moz-linear-gradient(top, #666666, #222222);
+	background: -o-linear-gradient(top,rgb(102, 102, 102),rgb(34, 34, 34));
+	background: -ms-linear-gradient(top, #666666, #222222); */
+}
+
+.toc-header {
+	width: 100%;
+	height: auto;
+	display: flex;
+	flex: 0 1 auto;
+	flex-flow: row wrap;
+	align-items: center;
+}
+.toc-tools {
 	font-size: 0.7em;
 	/* color: #737373; */
 	border: 1px solid #3f3f3f;
@@ -210,6 +206,20 @@ ul, li {
 	background: -o-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6));
 	background: -ms-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6));
 	box-shadow: inset 0 1px 1px 0 rgba(255,255,255,.2), 0 1px 2px 0 rgba(0,0,0,.5);
+}
+.toc-tools {
+	order: 1;
+	width: auto; /* width: 100%; - если flex-flow: row */
+	height: 20px; /* (!) height: auto; - если переделать кн.в position: relative */
+	margin: 1px;
+	padding: 1px;
+	flex: 1 1 100%;
+	display: flex;
+	flex-flow: column wrap;
+	/* flex-flow: row wrap; */
+	align-items: center;
+	/* align-content: space-between; - если flex-flow: column */
+	/* justify-content: space-between; - если flex-flow: row */
 }
 .toc-tools:active, /* 'only firefox for mobil version - работает только как короткое мигание даже при длительном клике */
 .toc-tools:hover {
@@ -539,14 +549,16 @@ ul, li {
 }
 
 .toc-title,
+.toc-subtitle {overflow: hidden auto;}
+.toc-title,
 .toc-subtitle {
-	width: 100%;
-	height: fit-content;
-	flex: 1 1 auto;
-	margin: 2px;
-	padding: 2px;
-	overflow: hidden auto;
-	scroll-behavior: smooth; /* плавная прокрутка */
+	width: auto;
+	height: auto;
+	margin: 1px;
+	display: flex;
+	flex: 1 1 100%;
+	/* flex: 1 1 auto; */
+	flex-flow: row wrap;
 }
 
 .toc-title::-webkit-scrollbar-thumb,
@@ -558,22 +570,28 @@ ul, li {
 	border-radius: 10px;
 }
 .toc-title {order: 2;}
-
-.nav-title {
-	/* font-size: 16px; */
-	font-size: 1em;
-	font-weight: bold;
-	line-height: 100%;
-}
-
 .toc-subtitle {order: 3;}
-
 .nav-subtitle {
 	/* font-size: 11px; */
-	font-size: 0.7em;
+	/* font-size: 0.7em; */
+	font-size: calc(10px + 14 * (100vw - 320px) / (1200 - 320));
 	font-weight: bold;
 	color: silver;
 	/* line-height: 100%; */
+}
+.nav-title {
+	/* font-size: 16px; */
+	/* font-size: 1em; */
+	font-size: calc(16px + 20 * (100vw - 320px) / (1200 - 320));
+	font-weight: bold;
+	/* line-height: 100%; */
+}
+/* .toc-title p,
+.toc-subtitle p, */
+.nav-subtitle,
+.nav-title {
+	width: 100%;
+	/* padding: 0 0 0 4px; */
 }
 
 .no-js-title {
@@ -589,24 +607,28 @@ ul, li {
 .no-js-title a:hover {text-decoration: underline;}
 
 .toc-body {
-	width: 96%;
-	height: 100%;
-	padding: 2px;
 	border-style: solid;
 	border-color: #3f3f3f;
 	border-bottom-color: #4f4f4f;
 	border-width: thin; /* border-width: 1px 0 1px 0; */
-	overflow: hidden auto;
 	/* background-image: url("../icon/spacer.gif"); */ /* (?) не понятно для чего */
+}
+.toc-body {overflow: hidden auto;}
+.toc-body {
+	width: auto;
+	height: auto;
+	margin: 1px;
+	padding: 1px 2px 1px 1px;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: column wrap;
+	align-self: stretch;
 }
 /* (!) TOC LIST CSS */
 /**General margin of the TOC (root entry) - Общее поле оглавления (корневая запись) */
-.toc-body,
-.toc {margin: 2px;}
+.toc {height: 100%;}
 .toc ul, /**для каждого потомка ul */
-.toc {
-	padding: 0 0 0 16px;
-}
+.toc {padding: 0 0 0 16px;}
 .toc ul {
 	margin: 0 0 0 -16px; /* - Indentation per level (negative value) - Отступ на уровень (отрицательное значение) */
 }
@@ -743,16 +765,20 @@ ul, li {
 .heading3,
 .heading2,
 .heading1 {
-	white-space: normal; /* текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
-	word-spacing: normal; /* нормальный интервал между словами, определенный текущим шрифтом и/или браузером */
-	overflow-wrap: normal; /* св-во отменяет word-wrap */
-	word-wrap: break-word; /* св-во отменяет overflow-wrap */
-	word-break: normal; /* normal, чтобы игнорировался разного вида перенос текста */
+	/* white-space: normal; */ /* текст в окне браузера выводится как обычно, переносы строк устанавливаются автоматически. Разбивает строки, чтобы заполнить строчные боксы */
+	/* word-spacing: normal; */ /* нормальный интервал между словами, определенный текущим шрифтом и/или браузером */
+	/* overflow-wrap: normal; */ /* св-во отменяет word-wrap */
+	/* word-wrap: break-word; */ /* св-во отменяет overflow-wrap */
+	/* word-break: normal; */ /* normal, чтобы игнорировался разного вида перенос текста */
+
 	/* line-break: anywhere; */
 	/* text-wrap-style: pretty; */
-	hyphens: none; /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
-	-moz-hyphens: none; /* - все равно не работает */
-	-ms-hyphens: none;
+
+	/* hyphens: none; */ /* none, чтобы браузер не обращал внимания на мягкий дефис, вставляем, НО для Chrome, с Firefox все сложнее */
+	/* -moz-hyphens: none; */ /* - все равно не работает */
+	/* -ms-hyphens: none; */
+
+	overflow-wrap: anywhere;
 }
 /**подсветка ссылки текущего топика */
 .highlight {
@@ -763,27 +789,31 @@ ul, li {
 
 .toc-footer {
 	width: 100%;
-	height: fit-content;
-	/* margin: auto; */
+	height: auto;
 	display: flex;
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	flex-flow: row wrap;
 	align-items: center;
-	/* align-content: space-between; */
-	justify-content: center;
-	/* overflow: hidden hidden; *//* (!) влияет на размер, а так же отображение.feedback-tooltip/.email-feedback */
 }
+
 .toc-footer span,
 .toc-footer a,
 .toc-footer p {
-	width: 100%;
-	height: auto;
-	margin: 1px 2px;
-	padding: 2px 0;
 	font-size: 11px;
 	text-align: center;
 	color: #737373;
 }
+.toc-footer span,
+.toc-footer a,
+.toc-footer p {
+	margin: 1px 2px;
+	padding: 2px 0;
+}
+.toc-footer p {
+	width: 100%;
+	height: auto;
+}
+
 .footer_btn-tooltip-popup, /* (i) для моб.вар.firefox имитация псевдо:hover через js при событии click на иконку: SJ/email/hh */
 .footer-btn span:hover,
 .toc-footer .footer-btn a:hover,
@@ -811,7 +841,6 @@ ul, li {
 	flex: 1 1 100%;
 	flex-flow: row wrap;
 	align-items: center;
-	/* justify-content: center; */
 	justify-content: space-around;
 }
 
@@ -1542,6 +1571,11 @@ x не используется
 }
 /** диапазон 267 или 265 по высоте */ /* firefox */
 @media screen and (max-height: 267px), (max-height: 265px) {
+	/* .toc-body { */
+		/* min-height: min-content; */
+		/* min-height: fit-content; */
+		/* min-height: max-content; */
+	/* } */
 	.feedback-tooltip {
 		transform: translate(-38px, -58px) scale(0);
 		-webkit-transform: translate(-38px, -58px) scale(0);

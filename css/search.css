@@ -8,19 +8,36 @@ a:hover {color: blue;}
 .zoom_button,
 label {cursor: pointer;}
 
-.inner-box {
-	position: relative;
-	left: 0; top: 0;
-	width: auto;
-	height: auto;
-	margin: 10px 4px;
-	display: flex;
-	/* flex: 1 1 auto; */
-	flex-flow: row wrap;
-	border-bottom: 1px solid silver;
+.search-header {
 	font-family: Verdana, Tahoma, Helvetica, sans-serif;
 	/* font-size: 12px; */
 	font-size: .8em;
+}
+.search-body,
+.search-header {
+	position: relative;
+	left: 0; top: 0;
+	width: auto;
+	margin: 2px 4px;
+}
+.search-header {
+	height: auto;
+	display: flex;
+	flex: 0 1 auto;
+	flex-flow: row wrap;
+	border-bottom: 1px solid silver;
+}
+.search-body {
+	height: 100%;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row wrap;
+}
+
+.search-body p {
+	color: blue;
+	width: 100%;
+	height: fit-content;
 }
 
 .zoom_button,
